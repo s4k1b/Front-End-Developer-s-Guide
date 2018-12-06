@@ -529,3 +529,67 @@ We can define color values in the following formats:
 * **HSL Value:** `hsl(hue, saturation%, lightness%)`
 * **RGBA Value:** `rgb(red, green, blue, opacity(0-1))`
 * **HSLA Value:** `hsl(hue, saturation%, lightness%, ,opacity(0~1))`
+
+___
+___
+
+## HTML CSS
+CSS stands for Cascading Style Sheets. CSS describes how HTML elements are to be displayed on screen, paper, or in other media. CSS saves a lot of work. It can control the layout of multiple web pages all at once.
+
+CSS can be added to HTML elements in 3 ways:
+* #### Inline CSS
+An Inline CSS is used to apply unique style to a single HTML element.
+```html
+<h1 style="color:blue;">This is a blue heading</h1>
+```
+* #### Internal CSS
+An internal CSS is used to define a style for a single HTML page. It is defined inside the `<head>` section.
+```html
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+body {background-color: powderblue;}
+h1   {color: blue;}
+p    {color: red;}
+</style>
+</head>
+<body>
+
+<h1>This is a heading</h1>
+<p>This is a paragraph.</p>
+
+</body>
+</html>
+```
+* #### External CSS
+An external CSS style sheet is used to define style for many HTML Pages. **With an external style sheet, we can change the look of an entire web site, by changing one file!** To use it, we need the add the link to the style sheet in the `<head>` section.
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<h1>This is a heading</h1>
+<p>This is a paragraph.</p>
+
+</body>
+</html>
+```
+An external style sheet can be written in any text editor. The file must not contain any HTML code, and must be saved with a .css extension. Example of how "styles.css" looks:
+```css
+body {
+    background-color: powderblue;
+}
+h1 {
+    color: blue;
+}
+p {
+    color: red;
+}
+```
+
+___
+___
