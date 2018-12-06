@@ -3,7 +3,7 @@ Source (http://www.w3schools.com/html/)
 
 ## Navigation
 ___
-<table>
+<table style="text-align:center;">
 <tr>
 <td><a href="#ch1">HTML Basics</a></td>
 <td><a href="#ch11">HTML Elements</a></td>
@@ -19,6 +19,10 @@ ___
 <td><a href="#ch8">HTML Colors</a></td>
 <td><a href="#ch9">HTML CSS</a></td>
 <td><a href="#ch10">HTML Links</a></td>
+</tr>
+<tr>
+<td><a href="#ch13">HTML Images</a></td>
+<td><a href="#ch14">HTML Tables</a></td>
 </tr>
 </table>
 
@@ -773,3 +777,81 @@ ___
 <p id = "ch13"></p>
 
 ## HTML Images
+
+HTML images are defined by the `<img>` tag. It is an empty tag which consists of only attributes and no closing tags.
+* The `src` attribute specified the URL web address of the image.
+* The `alt` attribute specifies what to show if the image is not available.
+* The `style` attribute can be used to specify the width and height of the image or we can directly use `width` and `height` attribute. Using the style attribute is suggested.
+* We can load image from another server eg: `<img src="https://www.w3schools.com/images/w3schools_green.jpg" alt="W3Schools.com">` or we can load image from another folder eg:`<img src="/images/html5.gif" alt="HTML5 Icon" style="width:128px;height:128px;">`.
+* We can also use **animated images** in our web pages.
+
+#### Image as Link
+
+To use images as links we have to use `<a>` tag followed by an `img` tag. Example:
+
+```html
+<a href="default.asp">
+  <img src="smiley.gif" alt="HTML tutorial" style="width:42px;height:42px;border:0;">
+</a>
+```
+here, we have to assign image border with value 0, because some internet browsers show image image borders when the link is active.
+
+#### Image Floating
+
+We can use CSS `float` property to let the image float to the right or to the left of a text. Example
+
+```html
+<p><img src="smiley.gif" alt="Smiley face" style="float:right;width:42px;height:42px;">
+The image will float to the right of the text.</p>
+
+<p><img src="smiley.gif" alt="Smiley face" style="float:left;width:42px;height:42px;">
+The image will float to the left of the text.</p>
+```
+#### Image Maps
+By using the `<map>` tag, we can map clickable areas on am image. Example:
+
+```html
+<img src="workplace.jpg" alt="Workplace" usemap="#workmap">
+
+<map name="workmap">
+  <area shape="rect" coords="34,44,270,350" alt="Computer" href="computer.htm">
+  <area shape="rect" coords="290,172,333,250" alt="Phone" href="phone.htm">
+  <area shape="circle" coords="337,300,44" alt="Coffee" href="coffee.htm">
+</map>
+```
+<img src="https://www.w3schools.com/html/workplace.jpg" alt="Workplace" usemap="#workmap">
+
+<map name="workmap">
+  <area shape="rect" coords="34,44,270,350" alt="Computer" href="https://www.w3schools.com/html/computer.htm">
+  <area shape="rect" coords="290,172,333,250" alt="Phone" href="https://www.w3schools.com/html/phone.htm">
+  <area shape="circle" coords="337,300,44" alt="Coffee" href="https://www.w3schools.com/html/coffee.htm">
+</map>
+
+#### The \<picture> Element
+
+HTML5 introduced the `<picture>` element to add more flexibility when specifying image resources. It contains a number of `<source>` elements, each referring to different image sources. **This way the browser can choose the image that best fits the current view and/or device.**
+
+Each `<source>` element have attributes describing when their image is the most suitable. The browser will use the first `<source>` element with matching attribute values, and ignore any following `<source>` elements.
+
+```html
+<picture>
+  <source media="(min-width: 650px)" srcset="img_pink_flowers.jpg">
+  <source media="(min-width: 465px)" srcset="img_white_flower.jpg">
+  <img src="img_orange_flowers.jpg" alt="Flowers" style="width:auto;">
+</picture>
+```
+
+<picture>
+  <source media="(min-width: 650px)" srcset="https://www.w3schools.com/html/img_pink_flowers.jpg">
+  <source media="(min-width: 465px)" srcset="https://www.w3schools.com/html/img_white_flower.jpg">
+  <img src="https://www.w3schools.com/html/img_orange_flowers.jpg" alt="Flowers" style="width:auto;">
+</picture>
+
+**Note:** Always specify an `<img>` element as the last child element of the `<picture>` element. The `<img>` element is used by browsers that do not support the `<picture>` element, or if none of the `<source>` tags matched.
+
+___
+___
+
+<p id = "ch14"></p>
+
+## HTML Tables
