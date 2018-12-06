@@ -1,5 +1,9 @@
 # HTML Note
 Source (http://www.w3schools.com/html/)
+
+##Navigation
+___
+<a href="#ch">HTML Links</a>
 ___
 ##HTML Basics
 ---
@@ -593,3 +597,106 @@ p {
 
 ___
 ___
+<p id = "ch"></p>
+
+## HTML Links
+Links allow users to click their way from one page to another. HTML links are **hyperlinks**.
+#### HyperLink vs link
+<blockquote cite="https://www.quora.com/What-is-the-difference-between-Link-Hyperlink-and-URL?share=1">On the practical side, another difference is that a hyperlink control navigates directly to a target URL when a user clicks on it, instead of posting the form on the server. So if there is no work to be done in the server side, we can use hyperlink.
+
+Using a link posts that form right to the server first, before going to the URL. Therefore, a link is the better choice for those who need to complete some server-side processing before heading to the final URL destination.
+
+So for hyperlink, we will be directly hitting the URL
+
+For link, the job is done in the server side first.</blockquote>
+A HTML link does not have to be text. It can be an image or any other HTML element. HTML links are defined with `<a>` tag:
+```html
+<a href="url">link text</a>
+```
+Example:
+```html
+<a href="https://www.w3schools.com/html/">Visit our HTML tutorial</a>
+```
+The example above used an absolute URL (a full web address).
+
+A **local link** (link to the same web site) is specified with a relative URL (without https://www....).
+Example:
+```html
+<a href="html_images.asp">HTML Images</a>
+```
+___
+
+#### HTML Link Colors
+By default a link is colored in the following way in all browsers:
+* An unvisited link is underlined and blue
+* A visited link is underlined and purple
+* An active link is underlined and red
+The style can be changed by CSS:
+```css
+a:link {
+    color: green; 
+    background-color: transparent; 
+    text-decoration: none;
+}
+
+a:visited {
+    color: pink;
+    background-color: transparent;
+    text-decoration: none;
+}
+
+a:hover {
+    color: red;
+    background-color: transparent;
+    text-decoration: underline;
+}
+
+a:active {
+    color: yellow;
+    background-color: transparent;
+    text-decoration: underline;
+}
+```
+___
+
+#### The target Attribute
+
+The target attribute specifies where to open the linked document.
+Template:
+```html
+<a href="url" target="value">Visit Document!</a>
+```
+The target attribute can have one of the following values:
+
+* `_blank` - Opens the linked document in a new window or tab
+* `_self` - Opens the linked document in the same window/tab as it was clicked (this is default)
+* `_parent` - Opens the linked document in the parent frame
+* `_top` - Opens the linked document in the full body of the window
+* `framename` - Opens the linked document in a named frame
+If our webpage is locked in a frame, we can use `_top` to break out the frame.
+
+___
+#### Create Bookmark
+HTML bookmarks are used to allow readers to **jump to specific parts of a Web page**. Bookmarks can be useful if the webpage is very long.
+
+To make a bookmark, first create the bookmark, and then add a link to it.
+
+When the link is clicked, the page will scroll to the location with the bookmark.
+Example:
+First create bookmark with id attribute:
+```html
+<h2 id = "c4">Chapter 4</h2>
+```
+Then add a link to the bookmark (jump to Chapter 4), from within the same page:
+```html
+<a href="#c4">Jump to Chapter 4</a>
+```
+<a href="#c4">Jump to Chapter 4</a>
+<h3 id = "c1">Chapter 1</h3>
+<h3 id = "c2">Chapter 2</h3>
+<h3 id = "c3">Chapter 3</h3>
+<h3 id = "c4">Chapter 4</h3>
+Or, add a link to the bookmark from another page:
+```html
+<a href="html_demo.html#C4">Jump to Chapter 4</a>
+```
