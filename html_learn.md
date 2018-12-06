@@ -24,10 +24,13 @@ ___
 
 ___
 <p id = "ch1"></p>
+
 ## HTML Basics
 ---
 ### Basic Structure
+
 Simple HTML code
+
 ```html
 <!DOCTYPE html>
 <html>
@@ -154,7 +157,9 @@ The `<h1>` and `<p>` elements are nested inside `<body>` element and it is intur
 ___
 ___
 <p id = "ch12"></p>
+
 ## HTML Attributes
+
 * All HTML elements can have attributes.
 * Attributes provide **additional information** about an element.
 * Attributes are always specified in **the start tag**.
@@ -174,7 +179,9 @@ A list of all HTML attributes is given [here](https://www.w3schools.com/tags/ref
 ___
 ___
 <p id = "ch2"></p>
+
 ## HTML Headings
+
 Search engines use the heading to index the structure and content of an web page.
 Example of different headings:
 ```html
@@ -264,6 +271,7 @@ ___
 ___
 ___
 <p id = "ch3"></p>
+
 ## HTML Paragraphs
 The HTML `<p>` defines a paragraph. Browsers automatically add some white space (a margin) before and after a paragraph.
 ```html
@@ -335,6 +343,7 @@ ___
 ___
 ___
 <p id = "ch4"></p>
+
 ## HTML Styles
 The `style` attribute sets the style of the HTML elements. It has the following syntax:
 ```html
@@ -375,7 +384,9 @@ The **Property** is a CSS property and the **Value* is a CSS value. Basically we
 ___
 ___
 <p id = "ch5"></p>
+
 ## HTML Formatting
+
 HTML also defines special elements for defining text with a special meaning. HTML uses elements like `<b>` and `<i>` for formatting output, like bold or italic text. Formatting elements were designed to display special types of text.
 Example template:
 ```html
@@ -443,7 +454,9 @@ The following table shows all the formatting commands and their outputs:
 ___
 ___
 <p id = "ch6"></p>
+
 ## HTML Quotation & Citation
+
 The HTML quotation and citation provides a way to insert quoted texts and citations inside paragraphs.
 Example template:
 ```html
@@ -505,7 +518,9 @@ close to 5 million globally.
 ___
 ___
 <p id = "ch7"></p>
+
 ## HTML Comments
+
 Comment tags are used to insert comments in the HTML source code. We can add comments to our HTML source code by using the following syntax:
 ```html
 <! Comment here,.. -->
@@ -529,7 +544,9 @@ ___
 ___
 
 <p id = "ch8"></p>
+
 ## HTML Colors
+
 HTML colors are specified using predefined color names, or RGB, HEX, HSL, RGBA, HSLA values. HTML Supports [140 standard color names](https://www.w3schools.com/colors/colors_names.asp).
 
 ___
@@ -565,6 +582,7 @@ ___
 ___
 
 <p id = "ch9"></p>
+
 ## HTML CSS
 CSS stands for Cascading Style Sheets. CSS describes how HTML elements are to be displayed on screen, paper, or in other media. CSS saves a lot of work. It can control the layout of multiple web pages all at once.
 
