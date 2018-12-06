@@ -133,11 +133,15 @@ ___
 <p id = "ch11"></p>
 
 ## HTML Elements
+
 An HTML element is everything from the start tag to the end tag.
-| Start tag | Element Content | End tag |
+
+
+|Start tag|Element Content|End tag|
 |-----------|:---------------:|--------:|
 |`<h1>`|My First Heading|`</h1>`|
 |`<p>`|My First Paragraph|`</p>`|
+
 ___
 ###Nested HTML Elements
 HTML elements can be nested. All HTML documents consists of nested HTML elements.
@@ -738,11 +742,34 @@ Then add a link to the bookmark (jump to Chapter 4), from within the same page:
 <a href="#c4">Jump to Chapter 4</a>
 ```
 <a href="#c4">Jump to Chapter 4</a>
-<h3 id = "c1">Chapter 1</h3>
-<h3 id = "c2">Chapter 2</h3>
-<h3 id = "c3">Chapter 3</h3>
-<h3 id = "c4">Chapter 4</h3>
+<h6 id = "c1">Chapter 1</h6>
+<h6 id = "c2">Chapter 2</h6>
+<h6 id = "c3">Chapter 3</h6>
+<h6 id = "c4">Chapter 4</h6>
+
 Or, add a link to the bookmark from another page:
+
 ```html
 <a href="html_demo.html#C4">Jump to Chapter 4</a>
 ```
+
+___
+
+
+#### External Paths
+
+External pages can be referenced with a full URL or with a path relative to the current web page.
+Example:
+
+```html
+<a href="https://www.w3schools.com/html/default.asp">HTML tutorial</a>
+<a href="/html/default.asp">HTML tutorial</a>
+<a href="default.asp">HTML tutorial</a>
+```
+Read more about file paths in [HTML File Paths](https://www.w3schools.com/html/html_filepaths.asp)
+
+___
+___
+<p id = "ch13"></p>
+
+## HTML Images
