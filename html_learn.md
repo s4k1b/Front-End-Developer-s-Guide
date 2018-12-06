@@ -1,11 +1,30 @@
 # HTML Note
 Source (http://www.w3schools.com/html/)
 
-##Navigation
+## Navigation
 ___
-<a href="#ch">HTML Links</a>
+<table>
+<tr>
+<td><a href="#ch1">HTML Basics</a></td>
+<td><a href="#ch11">HTML Elements</a></td>
+<td><a href="#ch12">HTML Attributes</a></td>
+<td><a href="#ch2">HTML Headings</a></td>
+<td><a href="#ch3">HTML Paragraphs</a></td>
+<td><a href="#ch4">HTML Styles</a></td>
+</tr>
+<tr>
+<td><a href="#ch5">HTML Formatting</a></td>
+<td><a href="#ch6">HTML Quotation & Citation</a></td>
+<td><a href="#ch7">HTML Comments</a></td>
+<td><a href="#ch8">HTML Colors</a></td>
+<td><a href="#ch9">HTML CSS</a></td>
+<td><a href="#ch10">HTML Links</a></td>
+</tr>
+</table>
+
 ___
-##HTML Basics
+<p id = "ch1"></p>
+## HTML Basics
 ---
 ### Basic Structure
 Simple HTML code
@@ -108,6 +127,7 @@ HTML lists are defined with the `<ul>` (unordered/bullet list) or the `<ol>` (or
 
 ___
 ___
+<p id = "ch11"></p>
 
 ## HTML Elements
 An HTML element is everything from the start tag to the end tag.
@@ -133,6 +153,7 @@ The `<h1>` and `<p>` elements are nested inside `<body>` element and it is intur
 
 ___
 ___
+<p id = "ch12"></p>
 ## HTML Attributes
 * All HTML elements can have attributes.
 * Attributes provide **additional information** about an element.
@@ -152,6 +173,7 @@ A list of all HTML attributes is given [here](https://www.w3schools.com/tags/ref
 
 ___
 ___
+<p id = "ch2"></p>
 ## HTML Headings
 Search engines use the heading to index the structure and content of an web page.
 Example of different headings:
@@ -241,6 +263,7 @@ ___
 
 ___
 ___
+<p id = "ch3"></p>
 ## HTML Paragraphs
 The HTML `<p>` defines a paragraph. Browsers automatically add some white space (a margin) before and after a paragraph.
 ```html
@@ -311,6 +334,7 @@ ___
 
 ___
 ___
+<p id = "ch4"></p>
 ## HTML Styles
 The `style` attribute sets the style of the HTML elements. It has the following syntax:
 ```html
@@ -350,6 +374,7 @@ The **Property** is a CSS property and the **Value* is a CSS value. Basically we
 
 ___
 ___
+<p id = "ch5"></p>
 ## HTML Formatting
 HTML also defines special elements for defining text with a special meaning. HTML uses elements like `<b>` and `<i>` for formatting output, like bold or italic text. Formatting elements were designed to display special types of text.
 Example template:
@@ -417,7 +442,8 @@ The following table shows all the formatting commands and their outputs:
 
 ___
 ___
-##HTML Quotation & Citation
+<p id = "ch6"></p>
+## HTML Quotation & Citation
 The HTML quotation and citation provides a way to insert quoted texts and citations inside paragraphs.
 Example template:
 ```html
@@ -478,8 +504,8 @@ close to 5 million globally.
 
 ___
 ___
-
-##HTML Comments
+<p id = "ch7"></p>
+## HTML Comments
 Comment tags are used to insert comments in the HTML source code. We can add comments to our HTML source code by using the following syntax:
 ```html
 <! Comment here,.. -->
@@ -502,6 +528,7 @@ Comments are also great for debugging HTML, because we can comment out HTML line
 ___
 ___
 
+<p id = "ch8"></p>
 ## HTML Colors
 HTML colors are specified using predefined color names, or RGB, HEX, HSL, RGBA, HSLA values. HTML Supports [140 standard color names](https://www.w3schools.com/colors/colors_names.asp).
 
@@ -537,6 +564,7 @@ We can define color values in the following formats:
 ___
 ___
 
+<p id = "ch9"></p>
 ## HTML CSS
 CSS stands for Cascading Style Sheets. CSS describes how HTML elements are to be displayed on screen, paper, or in other media. CSS saves a lot of work. It can control the layout of multiple web pages all at once.
 
@@ -597,7 +625,7 @@ p {
 
 ___
 ___
-<p id = "ch"></p>
+<p id = "ch10"></p>
 
 ## HTML Links
 Links allow users to click their way from one page to another. HTML links are **hyperlinks**.
