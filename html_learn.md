@@ -3,7 +3,7 @@ Source (http://www.w3schools.com/html/)
 
 ## Navigation
 ___
-<table style="text-align:center;">
+<table style="text-align:center;background-color:#f0f0f0;">
 <tr>
 <td><a href="#ch1">HTML Basics</a></td>
 <td><a href="#ch11">HTML Elements</a></td>
@@ -23,8 +23,23 @@ ___
 <tr>
 <td><a href="#ch13">HTML Images</a></td>
 <td><a href="#ch14">HTML Tables</a></td>
+<td><a href="#ch15">HTML Lists</a></td>
+<td><a href="#ch16">HTML Block and Inline Elements</a></td>
+<td><a href="#ch17">HTML Classes and IDs</a></td>
+<td><a href="#ch18">HTML Iframes</a></td>
+</tr>
+<tr>
+<td><a href="#ch19">HTML Head</a></td>
+<td style='background-color:#0099CC'><a href="#ch20" style = "color:white;">HTML Entities</a></td>
+<td style='background-color:MediumSeaGreen'><a href="#ch21" style = "color:white;">HTML Symbols</a></td>
 </tr>
 </table>
+<a href = "https://www.w3schools.com/html/html_scripts.asp">HTML JavaScript</a><br>
+<a href = "https://www.w3schools.com/html/html_filepaths.asp">HTML File Paths</a>
+<p style="color:red;"> Learn about the best way to implement different html layouts in <a href = "https://www.w3schools.com/html/html_layout.asp"> HTML Layouts</a></p>
+<p style="color:red;"> Learn about how to make the web pager resposive in <a href = "https://www.w3schools.com/html/html_responsive.asp"> HTML Responsive Web Design</a></p>
+<p style="color:teal;">Know how to insert <strong>code</strong> elements in html and also insert <strong>sample outputs, keyboard input</strong> and <strong>variables </strong><a href = "https://www.w3schools.com/html/html_computercode_elements.asp">here.</a></p>
+<p > Also checkout <a style = "color:green;" href = "https://www.w3schools.com/html/html_charset.asp"> HTML Charset</a> , <a style = "color:Blue;" href = "https://www.w3schools.com/html/html_urlencode.asp"> HTML URL Encode </a> <strong>and</strong> <a style = "color:Orange;" href = "https://www.w3schools.com/html/html_xhtml.asp"> XHTML </a>.</p>
 
 ___
 <p id = "ch1"></p>
@@ -855,3 +870,972 @@ ___
 <p id = "ch14"></p>
 
 ## HTML Tables
+
+An HTML table is defined with the `<table>` tag. Rows are define with the `<tr>` tag and headers are defined with `<th>` tag. A cell is defined with `<td>` tag.
+Example:
+```html
+<table style="width:100%">
+  <tr>
+    <th>Firstname</th>
+    <th>Lastname</th> 
+    <th>Age</th>
+  </tr>
+  <tr>
+    <td>Jill</td>
+    <td>Smith</td> 
+    <td>50</td>
+  </tr>
+  <tr>
+    <td>Eve</td>
+    <td>Jackson</td> 
+    <td>94</td>
+  </tr>
+</table>
+```
+<table style="width:100%">
+  <tr>
+    <th>Firstname</th>
+    <th>Lastname</th> 
+    <th>Age</th>
+  </tr>
+  <tr>
+    <td>Jill</td>
+    <td>Smith</td> 
+    <td>50</td>
+  </tr>
+  <tr>
+    <td>Eve</td>
+    <td>Jackson</td> 
+    <td>94</td>
+  </tr>
+</table>
+
+* We can use CSS `border` property to customize table borders
+
+```css
+table, th, td {
+    border: 1px solid black;
+}
+```
+
+We should remember to define borders for both the table and table cells.
+* If we want to collapse the multiple borders (borders of the table and cells) into one border we should use `border-collabpse` borders.
+
+```css
+table, th, td {
+    border: 1px solid black;
+    border-collapse: collapse;
+}
+```
+* We can modify the space between the cells using `border-spacing` property:
+
+```css
+table {
+    border-spacing: 5px;
+}
+```
+* We can make a cell span more than one collumn using the `colspan` attribute.
+
+```html
+<table style="width:100%">
+  <tr>
+    <th>Name</th>
+    <th colspan="2">Telephone</th>
+  </tr>
+  <tr>
+    <td>Bill Gates</td>
+    <td>55577854</td>
+    <td>55577855</td>
+  </tr>
+</table>
+```
+<table style="width:100%">
+  <tr>
+    <th>Name</th>
+    <th colspan="2">Telephone</th>
+  </tr>
+  <tr>
+    <td>Bill Gates</td>
+    <td>55577854</td>
+    <td>55577855</td>
+  </tr>
+</table>
+
+* Similerly we can span a cell into multiple rows by using `rowspan` attrubute:
+
+```html
+<table style="width:100%">
+  <tr>
+    <th>Name:</th>
+    <td>Bill Gates</td>
+  </tr>
+  <tr>
+    <th rowspan="2">Telephone:</th>
+    <td>55577854</td>
+  </tr>
+  <tr>
+    <td>55577855</td>
+  </tr>
+</table>
+```
+<table style="width:100%">
+  <tr>
+    <th>Name:</th>
+    <td>Bill Gates</td>
+  </tr>
+  <tr>
+    <th rowspan="2">Telephone:</th>
+    <td>55577854</td>
+  </tr>
+  <tr>
+    <td>55577855</td>
+  </tr>
+</table>
+
+* We can add a table caption using `<caption>` tag. The `<caption>` tag must be inserted immediately after the `<table>` tag.
+#### Summery
+
+<table class="w3-table-all notranslate">
+<tbody><tr>
+<th>Tag</th>
+<th>Description</th>
+</tr>
+<tr>
+<td><a href="https://www.w3schools.com/tags/tag_table.asp">&lt;table&gt;</a></td>
+<td>Defines a table</td>
+</tr>
+<tr>
+<td><a href="https://www.w3schools.com/tags/tag_th.asp">&lt;th&gt;</a></td>
+<td>Defines a header cell in a table</td>
+</tr>
+<tr>
+<td><a href="https://www.w3schools.com/tags/tag_tr.asp">&lt;tr&gt;</a></td>
+<td>Defines a row in a table</td>
+</tr>
+<tr>
+<td><a href="https://www.w3schools.com/tags/tag_td.asp">&lt;td&gt;</a></td>
+<td>Defines a cell in a table</td>
+</tr>
+<tr>
+<td><a href="https://www.w3schools.com/tags/tag_caption.asp">&lt;caption&gt;</a></td>
+<td>Defines a table caption</td>
+</tr>
+<tr>
+<td><a href="https://www.w3schools.com/tags/tag_colgroup.asp">&lt;colgroup&gt;</a></td>
+<td>Specifies a group of one or more columns in a table for formatting</td>
+</tr>
+<tr>
+<td><a href="https://www.w3schools.com/tags/tag_col.asp">&lt;col&gt;</a></td>
+<td>Specifies column properties for each column within a &lt;colgroup&gt; element</td>
+</tr>
+<tr>
+<td><a href="https://www.w3schools.com/tags/tag_thead.asp">&lt;thead&gt;</a></td>
+<td>Groups the header content in a table</td>
+</tr>
+<tr>
+<td><a href="https://www.w3schools.com/tags/tag_tbody.asp">&lt;tbody&gt;</a></td>
+<td>Groups the body content in a table</td>
+</tr>
+<tr>
+<td><a href="https://www.w3schools.com/tags/tag_tfoot.asp">&lt;tfoot&gt;</a></td>
+<td>Groups the footer content in a table</td>
+</tr>
+</tbody></table>
+
+___
+___
+
+<p id = "ch15"></p>
+
+## HTML Lists
+
+There are mainly two types of lists.
+* Unordered list
+* Ordered list
+
+#### Unordered HTML List
+They are marked with `<ul>` tag. Each list item is defined by `<li>` tag. Items are marked with bullets by default.
+Example:
+```html
+<ul>
+  <li>Coffee</li>
+  <li>Tea</li>
+  <li>Milk</li>
+</ul>
+```
+<ul>
+  <li>Coffee</li>
+  <li>Tea</li>
+  <li>Milk</li>
+</ul>
+
+##### UL- Choose List Item Marker
+The CSS `list-style-type` property can by used to define markers of the items. It can take the following values:
+
+<table class="w3-table-all notranslate">
+<tbody><tr>
+<th>Value</th>
+<th>Description</th>
+</tr>
+<tr>
+<td>disc</td>
+<td>Sets the list item marker to a bullet (default)</td>
+</tr>
+<tr>
+<td>circle</td>
+<td>Sets the list item marker to a circle</td>
+</tr>
+<tr>
+<td>square</td>
+<td>Sets the list item marker to a square</td>
+</tr>
+<tr>
+<td>none</td>
+<td>The list items will not be marked</td>
+</tr>
+</tbody></table>
+
+Example:
+```html
+<ul style="list-style-type:square">
+  <li>Coffee</li>
+  <li>Tea</li>
+  <li>Milk</li>
+</ul>
+```
+
+#### Ordered HTML List
+
+An ordered list starts with the `<ol>` tag. Each list item starts with the `<li>` tag. The list items will be marked with numbers by default:
+Exaple:
+```html
+<ol>
+  <li>Coffee</li>
+  <li>Tea</li>
+  <li>Milk</li>
+</ol>
+```
+<ol>
+  <li>Coffee</li>
+  <li>Tea</li>
+  <li>Milk</li>
+</ol>
+
+##### OL- The Type Attribute
+
+The `type` attributes of the `<ol>` tag, defines the type of the list item marker:
+```html
+<ol type="A">
+  <li>Coffee</li>
+  <li>Tea</li>
+  <li>Milk</li>
+</ol>
+```
+
+<table class="w3-table-all notranslate">
+<tbody><tr>
+<th>Type</th>
+<th>Description</th>
+</tr>
+<tr>
+<td>type="1"</td>
+<td>The list items will be numbered with numbers (default)</td>
+</tr>
+<tr>
+<td>type="A"</td>
+<td>The list items will be numbered with uppercase letters</td>
+</tr>
+<tr>
+<td>type="a"</td>
+<td>The list items will be numbered with lowercase letters</td>
+</tr>
+<tr>
+<td>type="I"</td>
+<td>The list items will be numbered with uppercase roman numbers</td>
+</tr>
+<tr>
+<td>type="i"</td>
+<td>The list items will be numbered with lowercase roman numbers</td>
+</tr>
+</tbody></table>
+
+#### HTML Description Lists
+HTML also supports description lists. A description list is a list of terms, with a description of each term. The `<dl>` tag defines the description list, the `<dt>` tag defines the term (name), and the `<dd>` tag describes each term:
+Example:
+```html
+<dl>
+  <dt>Coffee</dt>
+  <dd>- black hot drink</dd>
+  <dt>Milk</dt>
+  <dd>- white cold drink</dd>
+</dl>
+```
+<dl>
+  <dt>Coffee</dt>
+  <dd>- black hot drink</dd>
+  <dt>Milk</dt>
+  <dd>- white cold drink</dd>
+</dl>
+
+#### Nested HTML Lists
+
+List can be nested (lists inside lists):
+
+```html
+<ul>
+  <li>Coffee</li>
+  <li>Tea
+    <ul>
+      <li>Black tea</li>
+      <li>Green tea</li>
+    </ul>
+  </li>
+  <li>Milk</li>
+</ul>
+```
+<ul>
+  <li>Coffee</li>
+  <li>Tea
+    <ul>
+      <li>Black tea</li>
+      <li>Green tea</li>
+    </ul>
+  </li>
+  <li>Milk</li>
+</ul>
+
+**Note:** List items can contain new list, and other HTML elements, like images and links, etc.
+
+#### Control List Counting
+
+By default Ordered list counting starts from one. We can use the `start` attribute to start counting from a specific number:
+
+```html
+<ol start="50">
+  <li>Coffee</li>
+  <li>Tea</li>
+  <li>Milk</li>
+</ol>
+```
+<ol start="50">
+  <li>Coffee</li>
+  <li>Tea</li>
+  <li>Milk</li>
+</ol>
+
+#### Horizontal List
+
+We have to use CSS to style a list horizontally. The `float` property of `<li>` can be changed to 'left` to align the list horizontally form left.
+
+___
+___
+<p id = "ch16"></p>
+
+## HTML Block and Inline Elements
+Every HTML element has a default display value depending on what type of element it is. The default display value for most elements is block or inline.
+#### Block-level Elements
+A block-level element always starts on a new line and takes up the full width available (stretches out to the left and right as far as it can).
+Block level elements in HTML:
+<div class="w3-row htmlHigh" style="line-height:25px;font-family:Consolas,'Courier New', Courier, monospace;xfont-size:16px;">
+  <div class="mylist"><a href="http://www.w3schools.com/tags/tag_address.asp"><span style="color:brown"><span style="color:mediumblue">&lt;</span>address<span style="color:mediumblue">&gt;</span></span></a></div>
+  <div class="mylist"><a href="http://www.w3schools.com/tags/tag_article.asp"><span style="color:brown"><span style="color:mediumblue">&lt;</span>article<span style="color:mediumblue">&gt;</span></span></a></div>
+  <div class="mylist"><a href="http://www.w3schools.com/tags/tag_aside.asp"><span style="color:brown"><span style="color:mediumblue">&lt;</span>aside<span style="color:mediumblue">&gt;</span></span></a></div>
+  <div class="mylist"><a href="http://www.w3schools.com/tags/tag_blockquote.asp"><span style="color:brown"><span style="color:mediumblue">&lt;</span>blockquote<span style="color:mediumblue">&gt;</span></span></a></div>
+  <div class="mylist"><a href="http://www.w3schools.com/tags/tag_canvas.asp"><span style="color:brown"><span style="color:mediumblue">&lt;</span>canvas<span style="color:mediumblue">&gt;</span></span></a></div>
+  <div class="mylist"><a href="http://www.w3schools.com/tags/tag_dd.asp"><span style="color:brown"><span style="color:mediumblue">&lt;</span>dd<span style="color:mediumblue">&gt;</span></span></a></div>
+  <div class="mylist"><a href="http://www.w3schools.com/tags/tag_div.asp"><span style="color:brown"><span style="color:mediumblue">&lt;</span>div<span style="color:mediumblue">&gt;</span></span></a></div>
+  <div class="mylist"><a href="http://www.w3schools.com/tags/tag_dl.asp"><span style="color:brown"><span style="color:mediumblue">&lt;</span>dl<span style="color:mediumblue">&gt;</span></span></a></div>
+  <div class="mylist"><a href="http://www.w3schools.com/tags/tag_dt.asp"><span style="color:brown"><span style="color:mediumblue">&lt;</span>dt<span style="color:mediumblue">&gt;</span></span></a></div>
+  <div class="mylist"><a href="http://www.w3schools.com/tags/tag_fieldset.asp"><span style="color:brown"><span style="color:mediumblue">&lt;</span>fieldset<span style="color:mediumblue">&gt;</span></span></a></div>
+  <div class="mylist"><a href="http://www.w3schools.com/tags/tag_figcaption.asp"><span style="color:brown"><span style="color:mediumblue">&lt;</span>figcaption<span style="color:mediumblue">&gt;</span></span></a></div>
+  <div class="mylist"><a href="http://www.w3schools.com/tags/tag_figure.asp"><span style="color:brown"><span style="color:mediumblue">&lt;</span>figure<span style="color:mediumblue">&gt;</span></span></a></div>
+  <div class="mylist"><a href="http://www.w3schools.com/tags/tag_footer.asp"><span style="color:brown"><span style="color:mediumblue">&lt;</span>footer<span style="color:mediumblue">&gt;</span></span></a></div>
+  <div class="mylist"><a href="http://www.w3schools.com/tags/tag_form.asp"><span style="color:brown"><span style="color:mediumblue">&lt;</span>form<span style="color:mediumblue">&gt;</span></span></a></div>
+  <div class="mylist"><a href="http://www.w3schools.com/tags/tag_hn.asp"><span style="color:brown"><span style="color:mediumblue">&lt;</span>h1<span style="color:mediumblue">&gt;</span></span>-<span style="color:brown"><span style="color:mediumblue">&lt;</span>h6<span style="color:mediumblue">&gt;</span></span></a></div>
+  <div class="mylist"><a href="http://www.w3schools.com/tags/tag_header.asp"><span style="color:brown"><span style="color:mediumblue">&lt;</span>header<span style="color:mediumblue">&gt;</span></span></a></div>
+  <div class="mylist"><a href="http://www.w3schools.com/tags/tag_hr.asp"><span style="color:brown"><span style="color:mediumblue">&lt;</span>hr<span style="color:mediumblue">&gt;</span></span></a></div>
+  <div class="mylist"><a href="http://www.w3schools.com/tags/tag_li.asp"><span style="color:brown"><span style="color:mediumblue">&lt;</span>li<span style="color:mediumblue">&gt;</span></span></a></div>
+  <div class="mylist"><a href="http://www.w3schools.com/tags/tag_main.asp"><span style="color:brown"><span style="color:mediumblue">&lt;</span>main<span style="color:mediumblue">&gt;</span></span></a></div>
+  <div class="mylist"><a href="http://www.w3schools.com/tags/tag_nav.asp"><span style="color:brown"><span style="color:mediumblue">&lt;</span>nav<span style="color:mediumblue">&gt;</span></span></a></div>
+  <div class="mylist"><a href="http://www.w3schools.com/tags/tag_noscript.asp"><span style="color:brown"><span style="color:mediumblue">&lt;</span>noscript<span style="color:mediumblue">&gt;</span></span></a></div>
+  <div class="mylist"><a href="http://www.w3schools.com/tags/tag_ol.asp"><span style="color:brown"><span style="color:mediumblue">&lt;</span>ol<span style="color:mediumblue">&gt;</span></span></a></div>
+  <div class="mylist"><a href="http://www.w3schools.com/tags/tag_output.asp"><span style="color:brown"><span style="color:mediumblue">&lt;</span>output<span style="color:mediumblue">&gt;</span></span></a></div>
+  <div class="mylist"><a href="http://www.w3schools.com/tags/tag_p.asp"><span style="color:brown"><span style="color:mediumblue">&lt;</span>p<span style="color:mediumblue">&gt;</span></span></a></div>
+  <div class="mylist"><a href="http://www.w3schools.com/tags/tag_pre.asp"><span style="color:brown"><span style="color:mediumblue">&lt;</span>pre<span style="color:mediumblue">&gt;</span></span></a></div>
+  <div class="mylist"><a href="http://www.w3schools.com/tags/tag_section.asp"><span style="color:brown"><span style="color:mediumblue">&lt;</span>section<span style="color:mediumblue">&gt;</span></span></a></div>
+  <div class="mylist"><a href="http://www.w3schools.com/tags/tag_table.asp"><span style="color:brown"><span style="color:mediumblue">&lt;</span>table<span style="color:mediumblue">&gt;</span></span></a></div>
+  <div class="mylist"><a href="http://www.w3schools.com/tags/tag_tfoot.asp"><span style="color:brown"><span style="color:mediumblue">&lt;</span>tfoot<span style="color:mediumblue">&gt;</span></span></a></div>
+  <div class="mylist"><a href="http://www.w3schools.com/tags/tag_ul.asp"><span style="color:brown"><span style="color:mediumblue">&lt;</span>ul<span style="color:mediumblue">&gt;</span></span></a></div>
+  <div class="mylist"><a href="http://www.w3schools.com/tags/tag_video.asp"><span style="color:brown"><span style="color:mediumblue">&lt;</span>video<span style="color:mediumblue">&gt;</span></span></a></div>
+ </div>
+
+ #### Inline Elements
+
+ An inline element does not start on a new line and only takes up as much width as necessary.
+ List of Inline elements in HTML
+ <div class="w3-row htmlHigh" style="line-height:25px;font-family:Consolas,'Courier New', Courier, monospace;xfont-size:16px;">
+  <div class="mylist"><a href="http://www.w3schools.com/tags/tag_a.asp"><span style="color:brown"><span style="color:mediumblue">&lt;</span>a<span style="color:mediumblue">&gt;</span></span></a></div>
+  <div class="mylist"><a href="http://www.w3schools.com/tags/tag_abbr.asp"><span style="color:brown"><span style="color:mediumblue">&lt;</span>abbr<span style="color:mediumblue">&gt;</span></span></a></div>
+  <div class="mylist"><a href="http://www.w3schools.com/tags/tag_acronym.asp"><span style="color:brown"><span style="color:mediumblue">&lt;</span>acronym<span style="color:mediumblue">&gt;</span></span></a></div>
+  <div class="mylist"><a href="http://www.w3schools.com/tags/tag_b.asp"><span style="color:brown"><span style="color:mediumblue">&lt;</span>b<span style="color:mediumblue">&gt;</span></span></a></div>
+  <div class="mylist"><a href="http://www.w3schools.com/tags/tag_bdo.asp"><span style="color:brown"><span style="color:mediumblue">&lt;</span>bdo<span style="color:mediumblue">&gt;</span></span></a></div>
+  <div class="mylist"><a href="http://www.w3schools.com/tags/tag_big.asp"><span style="color:brown"><span style="color:mediumblue">&lt;</span>big<span style="color:mediumblue">&gt;</span></span></a></div>
+  <div class="mylist"><a href="http://www.w3schools.com/tags/tag_br.asp"><span style="color:brown"><span style="color:mediumblue">&lt;</span>br<span style="color:mediumblue">&gt;</span></span></a></div>
+  <div class="mylist"><a href="http://www.w3schools.com/tags/tag_button.asp"><span style="color:brown"><span style="color:mediumblue">&lt;</span>button<span style="color:mediumblue">&gt;</span></span></a></div>
+  <div class="mylist"><a href="http://www.w3schools.com/tags/tag_cite.asp"><span style="color:brown"><span style="color:mediumblue">&lt;</span>cite<span style="color:mediumblue">&gt;</span></span></a></div>
+  <div class="mylist"><a href="http://www.w3schools.com/tags/tag_code.asp"><span style="color:brown"><span style="color:mediumblue">&lt;</span>code<span style="color:mediumblue">&gt;</span></span></a></div>
+  <div class="mylist"><a href="http://www.w3schools.com/tags/tag_dfn.asp"><span style="color:brown"><span style="color:mediumblue">&lt;</span>dfn<span style="color:mediumblue">&gt;</span></span></a></div>
+  <div class="mylist"><a href="http://www.w3schools.com/tags/tag_em.asp"><span style="color:brown"><span style="color:mediumblue">&lt;</span>em<span style="color:mediumblue">&gt;</span></span></a></div>
+  <div class="mylist"><a href="http://www.w3schools.com/tags/tag_i.asp"><span style="color:brown"><span style="color:mediumblue">&lt;</span>i<span style="color:mediumblue">&gt;</span></span></a></div>
+  <div class="mylist"><a href="http://www.w3schools.com/tags/tag_img.asp"><span style="color:brown"><span style="color:mediumblue">&lt;</span>img<span style="color:mediumblue">&gt;</span></span></a></div>
+  <div class="mylist"><a href="http://www.w3schools.com/tags/tag_input.asp"><span style="color:brown"><span style="color:mediumblue">&lt;</span>input<span style="color:mediumblue">&gt;</span></span></a></div>
+  <div class="mylist"><a href="http://www.w3schools.com/tags/tag_kbd.asp"><span style="color:brown"><span style="color:mediumblue">&lt;</span>kbd<span style="color:mediumblue">&gt;</span></span></a></div>
+  <div class="mylist"><a href="http://www.w3schools.com/tags/tag_label.asp"><span style="color:brown"><span style="color:mediumblue">&lt;</span>label<span style="color:mediumblue">&gt;</span></span></a></div>
+  <div class="mylist"><a href="http://www.w3schools.com/tags/tag_map.asp"><span style="color:brown"><span style="color:mediumblue">&lt;</span>map<span style="color:mediumblue">&gt;</span></span></a></div>
+  <div class="mylist"><a href="http://www.w3schools.com/tags/tag_object.asp"><span style="color:brown"><span style="color:mediumblue">&lt;</span>object<span style="color:mediumblue">&gt;</span></span></a></div>
+  <div class="mylist"><a href="http://www.w3schools.com/tags/tag_q.asp"><span style="color:brown"><span style="color:mediumblue">&lt;</span>q<span style="color:mediumblue">&gt;</span></span></a></div>
+  <div class="mylist"><a href="http://www.w3schools.com/tags/tag_samp.asp"><span style="color:brown"><span style="color:mediumblue">&lt;</span>samp<span style="color:mediumblue">&gt;</span></span></a></div>
+  <div class="mylist"><a href="http://www.w3schools.com/tags/tag_script.asp"><span style="color:brown"><span style="color:mediumblue">&lt;</span>script<span style="color:mediumblue">&gt;</span></span></a></div>
+  <div class="mylist"><a href="http://www.w3schools.com/tags/tag_select.asp"><span style="color:brown"><span style="color:mediumblue">&lt;</span>select<span style="color:mediumblue">&gt;</span></span></a></div>
+  <div class="mylist"><a href="http://www.w3schools.com/tags/tag_small.asp"><span style="color:brown"><span style="color:mediumblue">&lt;</span>small<span style="color:mediumblue">&gt;</span></span></a></div>
+  <div class="mylist"><a href="http://www.w3schools.com/tags/tag_span.asp"><span style="color:brown"><span style="color:mediumblue">&lt;</span>span<span style="color:mediumblue">&gt;</span></span></a></div>
+  <div class="mylist"><a href="http://www.w3schools.com/tags/tag_strong.asp"><span style="color:brown"><span style="color:mediumblue">&lt;</span>strong<span style="color:mediumblue">&gt;</span></span></a></div>
+  <div class="mylist"><a href="http://www.w3schools.com/tags/tag_sub.asp"><span style="color:brown"><span style="color:mediumblue">&lt;</span>sub<span style="color:mediumblue">&gt;</span></span></a></div>
+  <div class="mylist"><a href="http://www.w3schools.com/tags/tag_sup.asp"><span style="color:brown"><span style="color:mediumblue">&lt;</span>sup<span style="color:mediumblue">&gt;</span></span></a></div>
+  <div class="mylist"><a href="http://www.w3schools.com/tags/tag_textarea.asp"><span style="color:brown"><span style="color:mediumblue">&lt;</span>textarea<span style="color:mediumblue">&gt;</span></span></a></div>
+  <div class="mylist"><a href="http://www.w3schools.com/tags/tag_time.asp"><span style="color:brown"><span style="color:mediumblue">&lt;</span>time<span style="color:mediumblue">&gt;</span></span></a></div>
+  <div class="mylist"><a href="http://www.w3schools.com/tags/tag_tt.asp"><span style="color:brown"><span style="color:mediumblue">&lt;</span>tt<span style="color:mediumblue">&gt;</span></span></a></div>
+  <div class="mylist"><a href="http://www.w3schools.com/tags/tag_var.asp"><span style="color:brown"><span style="color:mediumblue">&lt;</span>var<span style="color:mediumblue">&gt;</span></span></a></div>
+ </div>
+
+#### HTML Grouping Tags
+
+<table class="w3-table-all notranslate">
+<tbody><tr>
+<th>Tag</th>
+<th>Description</th>
+</tr>
+<tr>
+<td><a href="http://www.w3schools.com/tags/tag_div.asp">&lt;div&gt;</a></td>
+<td>Defines a section in a document (block-level)</td>
+</tr>
+<tr>
+<td><a href="http://www.w3schools.com/tags/tag_span.asp">&lt;span&gt;</a></td>
+<td>Defines a section in a document (inline)</td>
+</tr>
+</tbody></table>
+
+Both the `<div>` and the `<span>` elements can be given common attributes `style`, `class` and `id` .
+
+___
+___
+
+<p id = "ch17"></p>
+
+## HTML Classes and IDs
+The Class and ID attributes are mainly used to isolate a single element or a group of similer elemts.
+
+#### HTML Classes
+
+The HTML `class` attribute is used to define equal styles for elements with the same class name. So, all HTML elements with the same `class` attribute will have the same format and style.
+
+**Tip:** The class attribute can be used on any HTML element.
+
+**Note:** The class name is case sensitive!
+
+* In CSS, to select elements with a specific class, write a period (.) character, followed by the name of the class:
+
+```css
+.city {
+    background-color: tomato;
+    color: white;
+    padding: 10px;
+} 
+```
+
+* HTML elements can have more than one class name, each class name must be separated by a space.
+
+```html
+
+<h2 class="city main">London</h2>
+<h2 class="city">Paris</h2>
+<h2 class="city">Tokyo</h2>
+
+```
+* Different tags, like `<h2>` and `<p>`, can have the same class name and thereby share the same style:
+```html
+<h2 class="city">Paris</h2>
+<p class="city">Paris is the capital of France</p>
+```
+
+* The class name can also be used by JavaScript to perform certain tasks for elements with the specified class name.
+
+#### HTML IDs
+The id attribute specifies a unique id for an HTML element (the value must be unique within the HTML document).
+
+The id value can be used by CSS and JavaScript to perform certain tasks for a unique element with the specified id value.
+
+In CSS, to select an element with a specific id, write a hash (#) character, followed by the id of the element:
+```css
+#myHeader {
+    background-color: lightblue;
+    color: black;
+    padding: 40px;
+    text-align: center;
+} 
+```
+**Tip:** The id attribute can be used on any HTML element.
+
+**Note:** The id value is case-sensitive.
+
+**Note:** The id value must contain at least one character, and must not contain whitespace (spaces, tabs, etc.).
+
+**Note:** An ID can not be shared.
+
+* ID can be used for Bookmarking.
+* ID can be used by JavaScript by using `getElementById()` method.
+
+___
+___
+
+<p id = 'ch18'></p>
+
+## HTML Iframes
+
+An iframe is used to display a webpage within a web page. It is defined with the `<iframe>` tag. Syntax: `<iframe src="URL"></iframe>`. The `src` attribute specifies the web address of the inline frame page.
+* The `height` and  `width` attributes are used to set the height and width of the frame.
+* The `border` property of `style` attribute can be used to remove the borders of the frame.
+
+#### Iframe- Target for a Link
+
+An iframe can be used as a target frame for a link. When the link is clicked, it will open inside the iframe.
+The `target` attribute of the link must refer to the `name` attribute of the iframe:
+```html
+<iframe src = "http://github.com" name="iframe_a"></iframe>
+<p><a href="https://www.w3schools.com" target="iframe_a"></a>
+```
+See [Sample](https://www.w3schools.com/html/tryit.asp?filename=tryhtml_iframe_target) for more understanding.
+
+___
+___
+
+<p id = 'ch19'></p>
+
+## HTML Head
+
+The `<head>` element is a container for metadata (data about data) and is placed between the `<html>` tag and the `<body>` tag.
+
+HTML metadata is data about the HTML document. Metadata is not displayed.
+
+Metadata typically define the document title, character set, styles, links, scripts, and other meta information.
+
+<table class="w3-table-all notranslate">
+<tbody><tr>
+<th style="width:20%">Tag</th>
+<th>Description</th>
+</tr>
+<tr>
+<td><a href="https://www.w3schools.com/tags/tag_head.asp">&lt;head&gt;</a></td>
+<td> Defines information about the document</td>
+</tr>
+<tr>
+<td><a href="https://www.w3schools.com/tags/tag_title.asp">&lt;title&gt;</a></td>
+<td>Defines the title of a document</td>
+</tr>
+<tr>
+<td><a href="https://www.w3schools.com/tags/tag_base.asp">&lt;base&gt;</a></td>
+<td>Defines a default address or a default target for all links on a page</td>
+</tr>
+<tr>
+<td><a href="https://www.w3schools.com/tags/tag_link.asp">&lt;link&gt;</a></td>
+<td>Defines the relationship between a document and an external resource</td>
+</tr>
+<tr style="background-color:DodgerBlue;color:white;">
+<td><a href="https://www.w3schools.com/tags/tag_meta.asp" style="color:white;">&lt;meta&gt;</a></td>
+<td>Defines metadata about an HTML document</td>
+</tr>
+<tr>
+<td><a href="https://www.w3schools.com/tags/tag_script.asp">&lt;script&gt;</a></td>
+<td>Defines a client-side script</td>
+</tr>
+<tr>
+<td><a href="https://www.w3schools.com/tags/tag_style.asp">&lt;style&gt;</a></td>
+<td>Defines style information for a document</td>
+</tr>
+</tbody></table>
+
+___
+___
+
+<p id = 'ch20'></p>
+
+## HTML Entities
+
+Reserved characters in HTML must be replaced with character entities. Characters that are not present on our keyboard can also be replaced by entities.
+
+#### Some Useful HTML Character Entities
+
+<table class="w3-table-all notranslate">
+    <tbody><tr>
+      <th>Result</th>
+      <th>Description</th>
+      <th>Entity Name</th>
+      <th>Entity Number</th>
+    </tr>
+    <tr>
+      <td style="height: 29px"></td>
+      <td style="height: 29px">non-breaking space</td>
+      <td style="height: 29px">&amp;nbsp;</td>
+      <td style="height: 29px">&amp;#160;</td>
+    </tr>
+    <tr>
+      <td>&lt;</td>
+      <td>less than</td>
+      <td>&amp;lt;</td>
+      <td>&amp;#60;</td>
+    </tr>
+    <tr>
+      <td>&gt;</td>
+      <td>greater than</td>
+      <td>&amp;gt;</td>
+      <td>&amp;#62;</td>
+    </tr>
+    <tr>
+      <td>&amp;</td>
+      <td>ampersand</td>
+      <td>&amp;amp;</td>
+      <td>&amp;#38;</td>
+    </tr>
+    <tr>
+      <td>"</td>
+      <td>double quotation mark </td>
+      <td>&amp;quot;</td>
+      <td>&amp;#34;</td>
+    </tr>
+    <tr>
+      <td>'</td>
+      <td>single quotation mark (apostrophe) </td>
+      <td>&amp;apos;</td>
+      <td>&amp;#39;</td>
+    </tr>
+    <tr>
+      <td>¢</td>
+      <td>cent</td>
+      <td>&amp;cent;</td>
+      <td>&amp;#162;</td>
+    </tr>
+    <tr>
+      <td>£</td>
+      <td>pound</td>
+      <td>&amp;pound;</td>
+      <td>&amp;#163;</td>
+    </tr>
+    <tr>
+      <td>¥</td>
+      <td>yen</td>
+      <td>&amp;yen;</td>
+      <td>&amp;#165;</td>
+    </tr>
+    <tr>
+      <td>€</td>
+      <td>euro</td>
+      <td>&amp;euro;</td>
+      <td>&amp;#8364;</td>
+    </tr>
+    <tr>
+      <td>©</td>
+      <td>copyright</td>
+      <td>&amp;copy;</td>
+      <td>&amp;#169;</td>
+    </tr>
+    <tr>
+      <td>®</td>
+      <td>registered trademark</td>
+      <td>&amp;reg;</td>
+      <td>&amp;#174;</td>
+    </tr>
+    </tbody></table>
+
+#### Combining Diacritical Marks
+
+A diacritical mark is a "glyph" added to a letter.
+Here are some examples:
+
+<table class="w3-table-all notranslate">
+<tbody><tr>
+<th>Mark</th>
+<th>Character</th>
+<th>Construct</th>
+<th>Result</th>
+</tr>
+<tr>
+      <td>&nbsp;̀</td>
+      <td>a</td>
+      <td>a&amp;#768;</td>
+      <td>à</td>
+</tr>
+<tr>
+      <td>&nbsp;́</td>
+      <td>a</td>
+      <td>a&amp;#769;</td>
+      <td>á</td>
+</tr>
+<tr>
+      <td>̂</td>
+      <td>a</td>
+      <td>a&amp;#770;</td>
+      <td>â</td>
+</tr>
+<tr>
+      <td>&nbsp;̃</td>
+      <td>a</td>
+      <td>a&amp;#771;</td>
+      <td>ã</td>
+</tr>
+<tr>
+      <td>&nbsp;̀</td>
+      <td>O</td>
+      <td>O&amp;#768;</td>
+      <td>Ò</td>
+</tr>
+<tr>
+      <td>&nbsp;́</td>
+      <td>O</td>
+      <td>O&amp;#769;</td>
+      <td>Ó</td>
+</tr>
+<tr>
+      <td>̂</td>
+      <td>O</td>
+      <td>O&amp;#770;</td>
+      <td>Ô</td>
+</tr>
+<tr>
+      <td>&nbsp;̃</td>
+      <td>O</td>
+      <td>O&amp;#771;</td>
+      <td>Õ</td>
+</tr>
+</tbody></table>
+
+___
+___
+
+<p id = "ch21"></p>
+
+## HTML Symbols
+
+Many mathematical, technical, and currency symbols, are not present on a normal keyboard. To add such symbols to an HTML page, we can use an HTML entity name. If no entity name exists, we can use an entity number, a decimal, or hexadecimal reference.
+
+#### Some mathematical symbols
+
+<table class="w3-table-all notranslate">
+<tbody><tr>
+<th style="width:10%">Char</th>
+<th style="width:10%">Number</th>
+<th style="width:15%">Entity</th>
+<th>Description</th>
+</tr>
+<tr>
+<td>∀</td>
+<td>&amp;#8704;</td>
+<td>&amp;forall;</td>
+<td>FOR ALL</td>
+</tr>
+<tr>
+<td>∂</td>
+<td>&amp;#8706;</td>
+<td>&amp;part;</td>
+<td>PARTIAL DIFFERENTIAL</td>
+</tr>
+<tr>
+<td>∃</td>
+<td>&amp;#8707;</td>
+<td>&amp;exist;</td>
+<td>THERE EXISTS</td>
+</tr>
+<tr>
+<td>∅</td>
+<td>&amp;#8709;</td>
+<td>&amp;empty;</td>
+<td>EMPTY SETS</td>
+</tr>
+<tr>
+<td>∇</td>
+<td>&amp;#8711;</td>
+<td>&amp;nabla;</td>
+<td>NABLA</td>
+</tr>
+<tr>
+<td>∈</td>
+<td>&amp;#8712;</td>
+<td>&amp;isin;</td>
+<td>ELEMENT OF</td>
+</tr>
+<tr>
+<td>∉</td>
+<td>&amp;#8713;</td>
+<td>&amp;notin;</td>
+<td>NOT AN ELEMENT OF</td>
+</tr>
+<tr>
+<td>∋</td>
+<td>&amp;#8715;</td>
+<td>&amp;ni;</td>
+<td>CONTAINS AS MEMBER</td>
+</tr>
+<tr>
+<td>∏</td>
+<td>&amp;#8719;</td>
+<td>&amp;prod;</td>
+<td>N-ARY PRODUCT</td>
+</tr>
+<tr>
+<td>∑</td>
+<td>&amp;#8721;</td>
+<td>&amp;sum;</td>
+<td>N-ARY SUMMATION</td>
+</tr>
+</tbody></table>
+
+[Full Math Symbol Reference](https://www.w3schools.com/charsets/ref_utf_math.asp)
+
+#### Some Greek Letter Supported by HTML
+
+<table class="w3-table-all notranslate">
+<tbody><tr>
+<th style="width:10%">Char</th>
+<th style="width:10%">Number</th>
+<th style="width:15%">Entity</th>
+<th>Description</th>
+</tr>
+<tr>
+<td>Α</td>
+<td>&amp;#913;</td>
+<td>&amp;Alpha;</td>
+<td>GREEK CAPITAL LETTER ALPHA</td>
+</tr>
+<tr>
+<td>Β</td>
+<td>&amp;#914;</td>
+<td>&amp;Beta;</td>
+<td>GREEK CAPITAL LETTER BETA</td>
+</tr>
+<tr>
+<td>Γ</td>
+<td>&amp;#915;</td>
+<td>&amp;Gamma;</td>
+<td>GREEK CAPITAL LETTER GAMMA</td>
+</tr>
+<tr>
+<td>Δ</td>
+<td>&amp;#916;</td>
+<td>&amp;Delta;</td>
+<td>GREEK CAPITAL LETTER DELTA</td>
+</tr>
+<tr>
+<td>Ε</td>
+<td>&amp;#917;</td>
+<td>&amp;Epsilon;</td>
+<td>GREEK CAPITAL LETTER EPSILON</td>
+</tr>
+<tr>
+<td>Ζ</td>
+<td>&amp;#918;</td>
+<td>&amp;Zeta;</td>
+<td>GREEK CAPITAL LETTER ZETA</td>
+</tr>
+</tbody></table>
+
+[Full Greek Reference](https://www.w3schools.com/charsets/ref_utf_greek.asp)
+
+#### Some Other Entities Supported by HTML
+
+<table class="w3-table-all notranslate">
+<tbody><tr>
+<th style="width:10%">Char</th>
+<th style="width:10%">Number</th>
+<th style="width:15%">Entity</th>
+<th>Description</th>
+</tr>
+<tr>
+<td>©</td>
+<td>&amp;#169;</td>
+<td>&amp;copy;</td>
+<td>COPYRIGHT SIGN</td>
+</tr>
+<tr>
+<td>®</td>
+<td>&amp;#174;</td>
+<td>&amp;reg;</td>
+<td>REGISTERED SIGN</td>
+</tr>
+<tr>
+<td>€</td>
+<td>&amp;#8364;</td>
+<td>&amp;euro;</td>
+<td>EURO SIGN</td>
+</tr>
+<tr>
+<td>™</td>
+<td>&amp;#8482;</td>
+<td>&amp;trade;</td>
+<td>TRADEMARK</td>
+</tr>
+<tr>
+<td>←</td>
+<td>&amp;#8592;</td>
+<td>&amp;larr;</td>
+<td>LEFTWARDS ARROW</td>
+</tr>
+<tr>
+<td>↑</td>
+<td>&amp;#8593;</td>
+<td>&amp;uarr;</td>
+<td>UPWARDS ARROW</td>
+</tr>
+<tr>
+<td>→</td>
+<td>&amp;#8594;</td>
+<td>&amp;rarr;</td>
+<td>RIGHTWARDS ARROW</td>
+</tr>
+<tr>
+<td>↓</td>
+<td>&amp;#8595;</td>
+<td>&amp;darr;</td>
+<td>DOWNWARDS ARROW</td>
+</tr>
+<tr>
+<td>♠</td>
+<td>&amp;#9824;</td>
+<td>&amp;spades;</td>
+<td>BLACK SPADE SUIT</td>
+</tr>
+<tr>
+<td>♣</td>
+<td>&amp;#9827;</td>
+<td>&amp;clubs;</td>
+<td>BLACK CLUB SUIT</td>
+</tr>
+<tr>
+<td>♥</td>
+<td>&amp;#9829;</td>
+<td>&amp;hearts;</td>
+<td>BLACK HEART SUIT</td>
+</tr>
+<tr>
+<td>♦</td>
+<td>&amp;#9830;</td>
+<td>&amp;diams;</td>
+<td>BLACK DIAMOND SUIT</td>
+</tr>     
+</tbody></table>
+
+[Full Currency Reference](https://www.w3schools.com/charsets/ref_utf_currency.asp)
+[Full Arrows Reference](https://www.w3schools.com/charsets/ref_utf_arrows.asp)
+[Full Symbols Reference](https://www.w3schools.com/charsets/ref_utf_symbols.asp)
+
+___
+___
+
