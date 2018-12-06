@@ -542,3 +542,12 @@ We can change color of three HTML elements:
 ```
 <h3 style="border:2px solid Tomato;">Hello World</h3>
 <h3 style="border:2px solid DodgerBlue;">Hello World</h3>
+
+___
+### Color Values
+We can define color values in the following formats:
+* **RGB Value:** `rgb(red, green, blue)`
+* **HEX Value:** `#rrggbb`
+* **HSL Value:** `hsl(hue, saturation%, lightness%)`
+* **RGBA Value:** `rgb(red, green, blue, opacity(0-1))`
+* **HSLA Value:** `hsl(hue, saturation%, lightness%, ,opacity(0~1))`
