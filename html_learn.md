@@ -500,20 +500,6 @@ ___
 
 ## HTML Colors
 HTML colors are specified using predefined color names, or RGB, HEX, HSL, RGBA, HSLA values. HTML Supports [140 standard color names](https://www.w3schools.com/colors/colors_names.asp).
-<div class="w3-row w3-center" style="margin:0 -16px;line-height:80px;color:white;">
-  <div class="w3-col l3 m6 w3-padding">
-    <div style="background-color:tomato;">Tomato</div>
-  </div>
-  <div class="w3-col l3 m6 w3-padding">
-    <div style="background-color:orange;">Orange</div>
-  </div>
-  <div class="w3-col l3 m6 w3-padding">
-    <div style="background-color:dodgerblue;">DodgerBlue</div>
-  </div>
-  <div class="w3-col l3 m6 w3-padding">
-    <div style="background-color:mediumseagreen;">MediumSeaGreen</div>
-  </div>
-</div>
 
 ___
 We can change color of three HTML elements:
@@ -522,26 +508,18 @@ We can change color of three HTML elements:
 <h4 style = "backgorund-color:DodgerBlue;">Hello World</h4>
 <p style="background-color:Tomato;">Lorem ipsum...</p>
 ```
-<h4 style = "background-color:DodgerBlue;">Hello World</h4>
-<p style="background-color:Tomato;">Lorem ipsum...</p>
-
 * #### Text Color
 ```html
 <h4 style="color:Tomato;">Hello World</h4>
 <p style="color:DodgerBlue;">Lorem ipsum...</p>
 <p style="color:MediumSeaGreen;">Ut wisi enim...</p>
 ```
-<h4 style="color:Tomato;">Hello World</h4>
-<p style="color:DodgerBlue;">Lorem ipsum...</p>
-<p style="color:MediumSeaGreen;">Ut wisi enim...</p>
 
 * #### Border Color
 ```html
 <h3 style="border:2px solid Tomato;">Hello World</h3>
 <h3 style="border:2px solid DodgerBlue;">Hello World</h3>
 ```
-<h3 style="border:2px solid Tomato;">Hello World</h3>
-<h3 style="border:2px solid DodgerBlue;">Hello World</h3>
 
 ___
 ### Color Values
