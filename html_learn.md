@@ -1983,6 +1983,5 @@ The `list` attribute of the `<input>` element, **must refer** to the id attribut
 ```
 
 ___
-
-
+___
 
