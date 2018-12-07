@@ -32,6 +32,8 @@ ___
 <td><a href="#ch19">HTML Head</a></td>
 <td style='background-color:#0099CC'><a href="#ch20" style = "color:white;">HTML Entities</a></td>
 <td style='background-color:MediumSeaGreen'><a href="#ch21" style = "color:white;">HTML Symbols</a></td>
+<td><a href="#ch22">DOM (Document Object Model)</a></td>
+<td><a href="#ch23">HTML Forms</a></td>
 </tr>
 </table>
 <a href = "https://www.w3schools.com/html/html_scripts.asp">HTML JavaScript</a><br>
@@ -41,10 +43,14 @@ ___
 <p style="color:teal;">Know how to insert <strong>code</strong> elements in html and also insert <strong>sample outputs, keyboard input</strong> and <strong>variables </strong><a href = "https://www.w3schools.com/html/html_computercode_elements.asp">here.</a></p>
 <p > Also checkout <a style = "color:green;" href = "https://www.w3schools.com/html/html_charset.asp"> HTML Charset</a> , <a style = "color:Blue;" href = "https://www.w3schools.com/html/html_urlencode.asp"> HTML URL Encode </a> <strong>and</strong> <a style = "color:Orange;" href = "https://www.w3schools.com/html/html_xhtml.asp"> XHTML </a>.</p>
 
+<a href = "https://www.w3schools.com/graphics/canvas_intro.asp" style = "color:#0088ff;">HTML Canvas Tutorial</a>
 ___
 <p id = "ch1"></p>
 
 ## HTML Basics
+
+HTML is the skeleton of every single web page. It is the raw element of a web page. 
+
 ---
 ### Basic Structure
 
@@ -65,7 +71,7 @@ Simple HTML code
 </html>
 ```
 We can see that basic HTML documents consists of the following basic elements,
-* The `<!DOCTYPE html>` declaration defines this document is HTML5
+* The `<!DOCTYPE html>` declaration defines this document is HTML5. It defines which version of HTML this doc is written in.
 * The `<html>` element is the root element of an HTML page
 *The `<head>` element is contains *meta information* ( Metadata and meta tags refer to the title and description of a web page that are encoded into the page but not actually displayed on the screen with the page. ) about the document
 * The `<title>` element specifies a title for the document
@@ -94,6 +100,7 @@ HTML heading are defined with the `<h1>` to `<h6>` tags. `<h1>` defines the most
 <h2>This is heading 2</h2>
 <h3>This is heading 3</h3>
 
+* `<h1>` headers are parsed by the search engines. It should be used only onece for every page.
 ___
 
 ### HTML Paragraphs
@@ -993,6 +1000,9 @@ table {
 </table>
 
 * We can add a table caption using `<caption>` tag. The `<caption>` tag must be inserted immediately after the `<table>` tag.
+<br>
+
+* We can use `cellpadding` attribute to controll to spacing inside the cell and we can use `cellspacing` to control the spacing outside the cell.
 #### Summery
 
 <table class="w3-table-all notranslate">
@@ -1425,10 +1435,6 @@ ___
 
 The `<head>` element is a container for metadata (data about data) and is placed between the `<html>` tag and the `<body>` tag.
 
-HTML metadata is data about the HTML document. Metadata is not displayed.
-
-Metadata typically define the document title, character set, styles, links, scripts, and other meta information.
-
 <table class="w3-table-all notranslate">
 <tbody><tr>
 <th style="width:20%">Tag</th>
@@ -1448,7 +1454,7 @@ Metadata typically define the document title, character set, styles, links, scri
 </tr>
 <tr>
 <td><a href="https://www.w3schools.com/tags/tag_link.asp">&lt;link&gt;</a></td>
-<td>Defines the relationship between a document and an external resource</td>
+<td>Defines the relationship between a document and an external resource. Can be used to assign icon <strong>(Favicon)</strong> to the page.</td>
 </tr>
 <tr style="background-color:DodgerBlue;color:white;">
 <td><a href="https://www.w3schools.com/tags/tag_meta.asp" style="color:white;">&lt;meta&gt;</a></td>
@@ -1463,6 +1469,12 @@ Metadata typically define the document title, character set, styles, links, scri
 <td>Defines style information for a document</td>
 </tr>
 </tbody></table>
+
+* `<title>` is useful to make the website more searchable. It is the first thing that occurs about an web page when it is shown as a result in searches. It is also used for bookmarking the page.
+* `<link>` can be used to assign an icon to the page.
+* `<meta>` is used to denote data about data. It denotes information about the website, such as: what related, what does it contain, author information, description, <strong>keywords</strong> etc. These meta tags are not seen by the user but are parsed by the search engines and they help the search engines to find the web page more accurately. They are also useful for <strong>Web Crawlers</strong>.
+
+[Complete List of HTML Meta Tags](https://gist.github.com/lancejpollard/1978404)
 
 ___
 ___
@@ -1833,9 +1845,144 @@ Many mathematical, technical, and currency symbols, are not present on a normal 
 </tbody></table>
 
 [Full Currency Reference](https://www.w3schools.com/charsets/ref_utf_currency.asp)
+
 [Full Arrows Reference](https://www.w3schools.com/charsets/ref_utf_arrows.asp)
+
 [Full Symbols Reference](https://www.w3schools.com/charsets/ref_utf_symbols.asp)
 
 ___
 ___
+
+<p id = "ch22"></p>
+
+## DOM (Document Object Model)
+
+Very usefull for traversing through the document (the web page). Used heavily in JavaScript.
+The DOM defines:
+* HTML elements as objects
+* The properties of HTML elements (attributes)
+* The events(`onclick`, `onsubmit`) for all of the elements (JavaScript)
+* Methods (`queryselector`, `getelementbyid`, `getelementbyclass`) of access of every element.
+The DOM and JS work closely together, but the DOM is made of HTML.
+DOM is provided by browser which provides functions to travers through the HTML documents and provide methods for accessing elements and their properties.
+
+___
+___
+
+<p id = "ch23"></p>
+
+## HTML Forms
+
+`<form>` element defines a form that is used to collect user input:
+```html
+<form>
+.
+form elements
+.
+</form>
+```
+All HTML form contains:
+* Different Form Elements
+* Different Input Types
+* Different Input Attributes
+
+____
+
+### HTML Form Elements
+
+There are several HTML Form elements. They are described below:
+
+#### The \<input> Element
+
+The most important form element is the `<input>` element. It can be of several types based on `type` attribute. If the `type` attribute is omitted, then the input field gets the default type: "text".
+```html
+<input name="firstname" type="text">
+```
+<br>
+
+There can be many other input types such as: <strong>email, password, submit, reset, color, date, file</strong> etc. Ream more about [<b>HTML Input Types</b>](https://www.w3schools.com/html/html_form_input_types.asp).
+
+<br>
+
+These Input Element can have different attributes such `value`, `readonly`, `disabled` etc. Read more about [<b>HTML Input Attributes</b>](https://www.w3schools.com/html/html_form_attributes.asp)
+
+<br>
+
+#### The \<select> Element
+
+The `<select>` element defines a **drop-down list:**
+
+```html
+<select name="cars">
+  <option value="volvo">Volvo</option>
+  <option value="saab">Saab</option>
+  <option value="fiat">Fiat</option>
+  <option value="audi">Audi</option>
+</select>
+```
+The `<options>` element defines an option that can be selected. By default the first option is selected. To define a pre-selected option, add the `selected` attrubute to the option:
+```html
+<option value="fiat" selected>Fiat</option>
+```
+The `size` attrubute specifies the number of visible values:
+```html
+<select name="cars" size="3">
+  <option value="volvo">Volvo</option>
+  <option value="saab">Saab</option>
+  <option value="fiat">Fiat</option>
+  <option value="audi">Audi</option>
+</select>
+```
+We can use `multiple` attribute to allow user to select multiple values:
+```html
+<select name="cars" size="4" multiple>
+  <option value="volvo">Volvo</option>
+  <option value="saab">Saab</option>
+  <option value="fiat">Fiat</option>
+  <option value="audi">Audi</option>
+</select>
+```
+
+#### The \<textarea> Element
+
+The `<textarea>` element defines a multi-line input field:
+```html
+<textarea name="message" rows="10" cols="30">
+The cat was playing in the garden.
+</textarea>
+```
+<textarea name="message" rows="10" cols="30">
+The cat was playing in the garden.
+</textarea>
+
+The `rows` attribute specifies the visible number of lines in the text area. The `cols` attribute specifies the visible width of the text area.
+The width and height can also be defined using CSS.
+
+#### The \<button> Element
+The `<button>` element defines a clickable button:
+```html
+<button type="button" onclick="alert('hello world!')">Click Me!</button>
+```
+Always specify the type attribute for the button element. Different browsers may use different default types for the button element.
+
+#### The \<datalist> Element
+
+The `<datalist>` element specifies a list of predefined options for an `<input>` element. Users will see a drop-down list of the pre-defined options as they input data.
+
+The `list` attribute of the `<input>` element, **must refer** to the id attribute of the `<datalist>` element.
+
+```html
+<form action = "action_page.php">
+  <input list = "browsers">
+  <datalist id = "browsers">
+    <option value = "Internet Explorer">
+    <option value = "Chrome">
+    <option value = "Mozilla Firefox">
+  </dataset>
+</form>
+```
+
+___
+
+
 
