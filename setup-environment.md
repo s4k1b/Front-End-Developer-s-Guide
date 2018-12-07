@@ -1,0 +1,1 @@
+* Istall `VSCode` and set it up for development. [An overview of Visual Studio Code for front-end developers](https://medium.freecodecamp.org/an-overview-of-visual-studio-code-for-front-end-developers-49a4aa0771fb)
