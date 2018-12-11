@@ -14,6 +14,7 @@ ___
 <td><a href = "#ch1">Chapter 1</a></td>
 <td><a href = "#ch2">Chapter 2</a></td>
 <td><a href = "#ch3">Chapter 3</a></td>
+<td><a href = "#ch4">Chapter 4</a></td>
 
 </tr>
 
@@ -707,15 +708,15 @@ color: #333;
 * To repeat background along y axis: `background-repeat: repeat-y;`
 * We can position the background image by using the `background-postion` property. It can take the following values:
 
-   * `top left`
-   * `top center`
-   * `top right`
-   * `center left`
-   * `center center`
-   * `center right`
-   * `bottom left`
-   * `bottom center`
-   * `bottom right`
+  * `top left`
+  * `top center`
+  * `top right`
+  * `center left`
+  * `center center`
+  * `center right`
+  * `bottom left`
+  * `bottom center`
+  * `bottom right`
 
 * We can use percentage values to accurately position the background image. This approach is particularly useful in a layout where other page elements are specified in percentages, so that they resize in accordance with the user’s screen resolution and dimensions. This becomes particularly important when creating responsive designs:
 
@@ -944,3 +945,389 @@ It’s important to note that when using transforms the rest of the content will
 
 ___
 ___
+
+<h1 id = 'ch4'>Chapter 4</h1>
+<a href = "#index" style = "border:2px solid #0099cc; border-radius:5px; padding:5px;color:white;background-color:#0099cc;float:right;">Go to INDEX </a>
+
+## Navigation
+
+___
+
+Navigation menu is essentially a list of places to visit. We can create is using html list `<ul><li>` elements and appropriately adding CSS to it.
+
+```html
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta charset="utf-8" />
+      <title>Chapter 4: List navigation</title>
+      <link rel="stylesheet" href="chapter1.css" />
+      120 The CSS3 Anthology
+      Download from Wow! eBook <www.wowebook.com>
+   </head>
+   <body>
+      <div class="wrapper">
+         <ul class="nav">
+            <li><a href="">Wine</a></li>
+            <li><a href="">Fruit</a></li>
+            <li><a href="">Spreads</a></li>
+            <li><a href="">Biscuits</a></li>
+         </ul>
+      </div>
+   </body>
+</html>
+```
+
+CSS:
+
+```css
+.nav {
+   list-style-type: none;
+   margin: none;
+   padding: 0;
+   width: 200px;
+}
+
+.nav li {
+   border-left: 10px solid rgb(144, 154, 181);
+   border-bottom: 10px solid rgb(144, 154, 181);
+}
+
+.nav li a:link, .nav li a:visited {
+   background-color: rgb(192, 202, 229);
+   color: rgb(49, 52, 61);
+   padding: 0.5em;
+   display: block;
+   text-decoration: none;
+   border-left: 5px solid rgb(239, 213, 252);
+}
+
+.nav li:first-child {
+   border-top: 10px solid rgb(144, 154, 181);
+}
+```
+
+Because the link is an inline element and by default doesn’t take up the full area of the `li` —so it’s not a nice easy target to click. To make it block element we need to explicitly declare it in the CSS using the `display` property.
+
+We can use the `hover` pseudo class selector to achieve rollover effect in navigation.
+
+```css
+.nav li a:hover {
+background-color: rgb(144,154,181);
+color: rgb(255,255,255);
+border-left: 5px solid rgb(250,136,234);
+}
+```
+
+## Subnavigation
+
+We can create list within a list. Let's create a multilevel navigation:
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>Chapter 4: List navigation</title>
+<link rel="stylesheet" href="listnav-nested.css" />
+</head>
+<body>
+<div class="wrapper">
+<ul class="nav">
+<li><a href="">Wine</a>
+<ul>
+<li><a href="">Red</a></li>
+<li><a href="">White</a></li>
+<li><a href="">Ros&eacute;</a></li>
+</ul>
+</li>
+<li><a href="">Fruit</a></li>
+<li><a href="">Spreads</a></li>
+<li><a href="">Biscuits</a></li>
+</ul>
+</div>
+</body>
+</html>
+```
+
+CSS
+
+```css
+body {
+background-color: #fff;
+color: #000;
+margin: 0;
+padding: 0;
+font: 0.75em/1.3 "Lucida Grande", "Lucida Sans Unicode",
+"Lucida Sans", Verdana, Tahoma, sans-serif;
+}
+.wrapper {
+width: 80%;
+margin: 20px auto 40px auto;
+}
+.nav {
+list-style: none;
+margin: 0;
+padding: 0;
+width: 200px;
+}
+.nav li {
+border-left: 10px solid rgb(144,154,181);
+border-bottom: 1px solid rgb(144,154,181);
+}
+.nav li a:link,
+.nav li a:visited {
+background-color: rgb(192,202,229);
+color: rgb(49,52,61);
+padding: 0.5em;
+display: block;
+text-decoration: none;
+border-left: 5px solid rgb(239,213,252);
+}
+.nav li a:hover {
+background-color: rgb(144,154,181);
+color: rgb(255,255,255);
+border-left: 5px solid rgb(250,136,234);
+}
+.nav ul {
+list-style: none;
+margin: 0;
+padding: 0;
+border: 0;
+}
+.nav ul li {
+border: 0;
+}
+.nav ul li a:link,
+.nav ul li a:visited {
+background-color: rgb(237,241,252);
+color: rgb(49,52,61);
+padding: 0.5em 0.5em 0.5em 1em;
+display: block;
+text-decoration: none;
+border-left: 5px solid rgb(239,213,252);
+}
+.nav ul li a:hover {
+background-color: rgb(255,255,255);
+color: rgb(49,52,61);
+border-left: 5px solid rgb(250,136,234);
+}
+```
+
+* `.nav ul` selector is needed to remove the default styling of the sublist element. It is not covered by styling only the `.nav` element.
+* To select the nested links we have to use `.nav ul li a` selector.
+
+### Horizontal Menu
+
+The HTML Code is similer to normal menu, we only have to change the CSS to make it horizontal.
+There are two approaches:
+
+* Using the `display` property:
+  We can change the display of the list items from `block` to `inline-block`.
+
+  ```css
+  .nav li {
+  display: inline-block;
+  min-width: 8em;
+  margin-right: 0.5em;
+  text-align: center;
+  }
+  ```
+
+* Using the `float` property:
+  
+  ```css
+  .nav li {
+   float: left;
+   min-width: 8em;
+   margin-right: 0.5em;
+   text-align: center;
+   }
+   ```
+
+### Tabbed Navigation Menu
+
+* The HTML is similer to previous, We just need to add the `selected` class:
+
+  ```html
+   <ul class="nav">
+   <li><a href="">Wine</a></li>
+   <li><a href="">Fruit</a></li>
+   140 The CSS3 Anthology
+   <li class="selected"><a href="">Spreads</a></li>
+   <li><a href="">Biscuits</a></li>
+   </ul>
+   ```
+
+* Then we need to style the selected tab by using the `selected` class:
+
+  ```css
+  .nav li.selected a:link,
+  .nav li.selected a:visited {
+  background-color: rgb(255,255,255);
+  }
+  .nav li a:hover {
+  background-color: rgba(255,255,255,0.8);
+  }
+  ```
+
+### Additional Information in Navigation Bar
+
+The section titles are in the same a elements as their descriptions, but also within strong elements set to display as blocks:
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>Chapter 4: Horizontal navigation</title>
+<link rel="stylesheet" href="horizontal2.css" />
+</head>
+<body>
+<div class="wrapper">
+<ul class="nav">
+<li><a href=""><strong>Wine</strong>
+<small>Cheese &amp; wine parties - a classic!</small>
+</a></li>
+<li><a href=""><strong>Fruit</strong>
+<small>Grapes, apples - get your 5 a day while eating
+cheese.</small>
+</a></li>
+<li><a href=""><strong>Spreads</strong>
+<small>Pickles, chutneys, roasted garlic and more.</small>
+</a></li>
+<li><a href=""><strong>Biscuits</strong>
+<small>Put your cheese onto Bath Ovals, digestives and water
+biscuits.</small>
+</a></li>
+</ul>
+</div>
+</body>
+</html>
+```
+
+CSS
+
+```css
+.nav {
+list-style: none;
+margin: 0;
+padding: 0;
+}
+.nav li {
+float: left;
+width: 130px;
+margin-right: 20px;
+}
+.nav li a:link strong,
+.nav li a:visited strong {
+font-size: 157.1%;
+display: block;
+font-weight: normal;
+color: rgb(119,126,134);
+font-style: normal;
+}
+.nav li a:link,
+.nav li a:visited {
+text-decoration: none;
+color: rgb(93,78,72);
+font-style: italic;
+}
+.nav li a:hover, .nav li a:hover strong {
+color: rgb(0,0,0);
+}
+```
+
+### Add Icons to Links
+
+We can use an attrubute selector that looks for `href` attributes containing a value starting with `http:` and add background image:
+
+```html
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta charset="utf-8" />
+      <title>Chapter 4: Showing external links</title>
+      <link rel="stylesheet" href="external-links.css" />
+   </head>
+   <body>
+      <div class="wrapper">
+         <p>You can search for more delicious cheese recipes using
+         <a href="http://google.com">Google</a> or view more recipes on
+         <a href="/recipes">this site</a>.</p>
+      </div>
+   </body>
+</html>
+```
+
+CSS
+
+```css
+a[href^="http:"] {
+  padding-left: 20px;
+  background-image: url("bullet.png");
+  background-repeat: no-repeat;
+  background-position: top left;
+  background-size: 1em;
+}
+```
+
+* **`href^="http:"` matches all elements with `href` starting with `http:`.**
+* **`href$=".pdf"` matches all elements with `href` ending with `.pdf` extension.**
+
+### Create A Rollover Images in Navigation
+
+* We can achieve this moving the background image when the link is focused or not focused:
+
+  ```css
+  .intouch li.twitter a:link, .intouch li.twitter a:visited {
+      background-position: 0 -30px;
+   }
+   .intouch li.rss a:link, .intouch li.rss a:visited {
+      background-position: 0 -30px;
+   }
+   .intouch li.email a:link, .intouch li.email a:visited {
+      background-position: 0 -60px;
+   }
+
+  .intouch li.twitter a:hover {
+      background-position: 0 0px;
+      color: rgb(105,210,231);
+   }
+
+   .intouch li.rss a:hover {
+      background-position: 0 0px;
+      color: rgb(243,134,48);
+   }
+   .intouch li.email a:hover {
+      background-position: 0 0px;
+      color: rgb(56,55,54);
+   }
+   ```
+
+   Here, we first chose the `background-position` of the image somewhere out of view and then when the item is focused we repositioned the image to original location.
+
+* We can also achieve this by using the `opacity` property. Initially we can set the `opacity` of the background image as `.5` and then when the item is focused we can change it to `1`
+
+   ```css
+   .intouch li.twitter a:link, .intouch li.twitter a:visited {
+      background-position: 0 0px;
+      color: rgb(105,210,231);
+      opacity: 0.5;
+   }
+   .intouch li.rss a:link, .intouch li.rss a:visited {
+      background-position: 0 0px;
+      color: rgb(243,134,48);
+      opacity: 0.5;
+   }
+   .intouch li.email a:link, .intouch li.email a:visited {
+      background-position: 0 0px;
+      color: rgb(56,55,54);
+      opacity: 0.5;
+   }
+   .intouch li.twitter a:hover,
+   .intouch li.rss a:hover,
+   .intouch li.email a:hover {
+      opacity: 1;
+   }
+   ```
