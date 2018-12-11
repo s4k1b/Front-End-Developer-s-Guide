@@ -1,3 +1,11 @@
-ul {
-   list-style-type: decimal-leading-zero;
+html {
+   background-image: url(bullet.png);
+   background-position: center center;
+   background-attachment: fixed;
+   -webkit-background-size: cover;
+   -moz-background-size: cover;
+   -o-background-size: cover;
+   background-size: cover;
+   color: #fff;
+   background-color: #000;
 }

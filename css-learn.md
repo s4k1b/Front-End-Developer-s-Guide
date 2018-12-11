@@ -732,3 +732,215 @@ color: #333;
    ```
 
    As with percentages, the first of the specified values dictates the horizontal position, while the second dictates the vertical. But unlike percentages, the measurements directly control the position of the top-left corner of the background image.
+
+* We can fix the background image so that it does not move when scrolling by using the `background-attachment` property.
+
+   ```css
+   background-attachment: fixed;
+   ```
+
+### Background Gradients
+
+We can set the background of a page as gradient using `background-image: linear-gradient(top, #color1, #color2` property. we need to repeat this line using the different syntaxes expected by various browsers and the relevant vendor-specific extensions:
+
+```css
+background-image: -webkit-gradient(linear, 0% 0%, 0% 100%,
+from(#000), to(#666));
+background-image: -webkit-linear-gradient(top, #000, #666);
+background-image: -moz-linear-gradient(top, #000, #666);
+background-image: -ms-linear-gradient(top, #000, #666);
+background-image: -o-linear-gradient(top, #000, #666);
+background-image: linear-gradient(top, #000, #666);
+```
+
+This does not work with internet explorer 9. So, in order to create gradient background effect for IE9 we can:
+
+* Create a gradient image and save it as 'gradient.png`.
+* Combine the CSS gradients with the fallback image by loading the image first and then adding the gradients:
+
+   ```css
+   background-image: url(gradient.png);
+   background-repeat: repeat-x;
+   background-image: -webkit-gradient(linear, 0% 0%, 0% 100%,
+   from(#000), to(#666));
+   background-image: -webkit-linear-gradient(top, #000, #666);
+   background-image: -moz-linear-gradient(top, #000, #666);
+   background-image: -ms-linear-gradient(top, #000, #666);
+   background-image: -o-linear-gradient(top, #000, #666);
+   background-image: linear-gradient(top, #000, #666);
+   ```
+
+### Background Image that Scales with Browser Window
+
+We can use the `background-size` property to scale the image to the size of the browser:
+
+```css
+html {
+background-image: url(ballet-background.jpg);
+background-repeat: no-repeat;
+background-position: center center;
+background-attachment: fixed;
+-webkit-background-size: cover;
+-moz-background-size: cover;
+-o-background-size: cover;
+background-size: cover;
+color: #fff;
+background-color: #000;
+}
+```
+
+This technique works in current browsers, including Internet Explorer 9. Browsers failing to support the property will display the background image centered, but not scaled down or up.
+
+### Add More than One Background Image
+
+CSS3 support adding more than one background image. We can simply declare multiple background images and separating them using commas:
+
+```css
+.box {
+height: 200px;
+width: 200px;
+border: 3px solid #333;
+background: url(gear.png) top right no-repeat,
+url(gear2.png) top left no-repeat,
+url(gear3.png) bottom left no-repeat,
+url(gear4.png) bottom right no-repeat;
+}
+```
+
+The background is rendered from top to bottom. At first the top image is set as background and the rest of them follow sequentially.
+
+### Make Element Transparent so that Background Shows Through
+
+The use of opacity can add subtle effect on our design. There are two different ways to achieve this:
+
+* **Using `opacity` property:**
+   This takes value between 0 and 1, where 0 is fully transparent and 1 is fully opaque:
+
+      ```css
+      h1 {
+      width: 40%;
+      padding: 0.6em 0.6em 0.6em 2em;
+      margin: 40px 0 0 0;
+      font-size: 127.6%;
+      background-color: #fff;
+      color: #000;
+      opacity: 0.5;
+      }
+      .content {
+      width: 60%;
+      padding: 0.6em 0.6em 0.6em 2em;
+      margin: 40px 0 0 0;
+      background-color: #fff;
+      color: #000;
+      opacity: 0.5;
+      }
+      ```
+
+* **Using RGBA or HSLA:**
+   We can use RGBA when specifying the `background-color` of the box. RGBA adds a fourth field which specifies the opacity of the box's background:
+
+   ```css
+   h1 {
+   width: 40%;
+   padding: 0.6em 0.6em 0.6em 2em;
+   margin: 40px 0 0 0;
+   font-size: 127.6%;
+   background-color: rgba(255,255,255,0.5);
+   color: #000;
+   }
+   .content {
+   width: 60%;
+   padding: 0.6em 0.6em 0.6em 2em;
+   margin: 40px 0 0 0;
+   background-color: rgba(255,255,255,0.5);
+   color: #000;
+   }
+   ```
+
+**There is a difference between the two methods.** Using `opacity` property we make the element and all it's children (including the texts) transparent, on the other hand, using RGBA, we will only make the background color of the element transparent.
+
+### Adding Drop Down Shadow to an Element
+
+We can use `box-shadow` to create a shadow on the main container of a layout:
+
+```css
+box-shadow: 3px 3px 10px 8px rgba(0, 0, 0, 0.4);
+```
+
+The values are as follows:
+
+|Value|Description|
+|-----|-----------|
+|**Horizontal offset value**|This can be positive or negatinve value. If positive, the shadow will be on the right side of the box; a negative value positions it to the left.|
+|**Vertical offset value**|This can also be positive or negative, with positive placing the shadow below the box and negative above it.|
+|**Blur radius**|A low value here means the shadow will be sharper, while a higher value makes it more blurred. This value must be 0 or a psitive value; negative vlaues aren't allowed.|
+|**Spread**|Positive values cause the shadow shape to spread in all directions, while negativfe vclaues cause the shadow to contract.|
+|**Color**|This may be RGBA, as used in this example, or hex.
+
+We can also add a keyword of `inset` at the beginning of the list of values, which will create an inner shadow:
+
+```css
+box-shadow: inset 3px 3px 10px 8px rgba(0, 0, 0, 0.4);
+```
+
+### Rounding Corners of an Element
+
+To create rounded corners on an element we can use `border-radius` property. We can round different edges differently:
+
+```css
+.wrapper {
+width: 80%;
+margin: 20px auto 40px auto;
+background-color: #fff;
+color: #333;
+background-image: url(brushed_alu.png);
+-webkit-box-shadow: 3px 3px 10px 8px rgba(0, 0, 0, 0.4);
+-moz-box-shadow: 3px 3px 10px 8px rgba(0, 0, 0, 0.4);
+box-shadow: 3px 3px 10px 8px rgba(0, 0, 0, 0.4);
+-webkit-border-radius: 10px;
+-moz-border-radius: 10px;
+border-radius: 10px;
+}
+```
+
+### Rotate Image without Image Editing Software
+
+In CSS3 there is an exciting feature called CSS Transform. It enables us to manipulate elements on the page using just CSS.
+We can use `transform` property to rotate an image. This command varies for different vendors:
+
+```css
+.recipe img {
+float: right;
+width: 200px;
+margin: 0 0 1em 1em;
+-webkit-box-shadow: 3px 3px 5px 3px rgba(0, 0, 0, 0.4);
+-moz-box-shadow: 3px 3px 5px 3px rgba(0, 0, 0, 0.4);
+box-shadow: 3px 3px 5px 3px rgba(0, 0, 0, 0.4);
+-webkit-transform: rotate(5deg);
+-moz-transform: rotate(5deg);
+-o-transform: rotate(5deg);
+-ms-transform: rotate(5deg);
+transform: rotate(5deg);
+}
+```
+
+In addition to rotating, `transform` can be used to:
+
+* scale an element, making it larger or smaller than it really is.
+* "translate" and element, which is moving it along the x and y axis.
+* skew an element, which skews the image and makes it slant along the x and y axis.
+
+It’s important to note that when using transforms the rest of the content will not reflow to make room for the changed element. Therefore, when using rotate, you need to ensure that your rotated image won’t obscure any text.
+
+### Important Notes Regarding Choosing Colors
+
+* Set background color when using background images
+* Always set both the background and the foreground color.
+* Use sensible fallback colors when using RGBA as background or foreground color.
+* Check color contrast
+  * Background and Foreground should have a contrast ration of 4.5:1.
+  * Use [Luminosity Colour Contrast Ratio Analyser](http://juicystudio.com/services/luminositycontrastratio.php) to check the contrast ratio.
+* Background should only be decorative.
+
+___
+___
