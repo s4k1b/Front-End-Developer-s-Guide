@@ -1,0 +1,12 @@
+table {
+  caption-sie: bottom;
+}
+
+.datatable {
+  border: 1px solid #338bac;
+  border-collapse: collapse; /*remove space between cells*/
+}
+
+.datatable td, .datatable th {
+  border: 1px solid #73c0d4
+}

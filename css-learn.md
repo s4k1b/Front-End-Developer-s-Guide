@@ -16,6 +16,7 @@ ___
 <td><a href = "#ch3">Chapter 3</a></td>
 <td><a href = "#ch4">Chapter 4</a></td>
 <td><a href = "#ch5">Chapter 5</a></td>
+<td><a href = "#ch6">Chapter 6</a></td>
 
 </tr>
 
@@ -1495,3 +1496,416 @@ ___
 ___
 
 **Tabular data** is information that’s displayed in a table, and which may be logically arranged into columns and rows.
+
+### Make Tabular Data Accessible
+
+At first add the caption element:
+
+```html
+<caption>
+Yearly Income 2008 - 2011
+</caption>
+```
+
+The caption element adds a caption to the table. By default, browsers generally display the caption above the table; however, we can manually set the position of the caption in relation to the table using the `caption-side` CSS property:
+
+```css
+caption-side: bottom;
+```
+
+Using a caption instead of a heading for a table ensures that the caption is tied to the table.
+
+The `th` element identifies data that's a row or a column heading. We use `scope` attribute to the `th` tag for identifying row or column headings:
+
+```html
+<th scope="row">Grants</th>
+```
+
+```html
+<th scope="col">2011</th>
+```
+
+Before we begin styling tables, it is recomended to check the accessibility of the values. We should make a habit to keeping accessibility in mind as we design, we will find that it becomes a second nature and adds very little to a project's development time.
+
+### Add Border to the Table
+
+We can add borders to tables just as we did with other HTML elements.
+
+```css
+.datatable {
+   border: 1px solid #338ba6
+}
+```
+
+We can also add borders to individual cells:
+
+```css
+.datatable td, .datatable th {
+  border: 1px solid #73c0d4
+}
+```
+
+In place of `solid` there can also be:
+
+![Replacements](solid.png)
+
+### Remove the space between Cells after Adding Borders
+
+We can remove the spaces between the cells by setting the value of the `border-collapse` property to `collapse`:
+
+```css
+.datatable {
+   border: 1px solid #338ba6;
+   border-collapse: collapse; /*remove space between cells*/
+}
+.datatable td, .datatable th {
+   border: 1px solid #73c0d4;
+}
+```
+
+### Alternate Color between Rows or Collumns
+
+* To alternate color between rows we need to use `nth-child` pseudo class selector:
+
+  ```css
+  .datatable tr:nth-child(odd) {
+      background-color: #dfe7f2;
+      color: #000;
+   }
+   ```
+
+* To alternate color between columns we need to use the `col` element and `colgroup` element and also use `nth-child` to alternate color between them:
+
+  ```html
+  <table class="datatable">
+   <colgroup>
+      <col />
+      <col />
+   </colgroup>
+   <colgroup>
+      <col />
+      <col />
+   </colgroup>
+   <tr>
+      <th>Pool A</th>
+      <th>Pool B</th>
+      <th>Pool C</th>
+      <th>Pool D</th>
+   </tr
+   ```
+
+   Here are the styles that are applied to the colgroup element rather than col:
+
+   ```css
+   .datatable colgroup: nth-child(odd) {
+      background-color: #80c9ff;
+      color: #000;
+   }
+   .datatable colgroup: nth-child(even) {
+      background-color: #bfe4ff;
+      color: #000;
+   }
+   ```
+
+___
+___
+
+<h1 id = 'ch6'>Chapter 6</h1>
+<a href = "#index" style = "border:2px solid #0099cc; border-radius:5px; padding:5px;color:white;background-color:#0099cc;float:right;">Go to INDEX </a>
+
+## Forms and User Interfaces
+
+___
+
+CSS gives us plenty of options with which to style our forms; however, forms are unlike the other HTML elements that we’ve encountered so far. Form elements—for example, fields, buttons, and any other input element—are included as a “replaced element” in the spec. Replaced elements are those whose appearance is defined by an external source. In the case of form elements, this is the browser or operating system UI. Due to this, user agents can provide interface controls that best suit the environment they’re running in; for example, a browser on a phone may deal with a select list in a different way from a desktop browser. This is helpful in terms of usability, in that a user grows used to the control offered by the device they’re using; however, it can be frustrating to web designers who feel they should have more control over these interface elements.
+
+Simple Example:
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="stylesheet" href="fui.css" />
+  <title>Forms and User Interface</title>
+</head>
+<body>
+  <div class="wrapper">
+    <form method="post" action="/contact" id="contact-form">
+      <div>
+        <label for="fName">Name</label>
+        <input type="text" name="fName" id="fName" required=
+        "required" />
+      </div>
+      <div>
+        <label for="fEmail">Email address</label>
+        <input type="text" name="fEmail" id="fEmail" />
+      </div>
+      <div>
+        <label for="fQuestion">Question / Comments</label>
+        <textarea name="fQuestion" id="fQuestion" rows="10"
+        cols="30"></textarea>
+      </div>
+      <div class="submit">
+        <input type="submit" name="contact-submit"
+        id="contact-submit" value="Submit" />
+      </div>
+    </form>
+  </div>
+</body>
+</html>
+```
+
+CSS
+
+```css
+form {
+  width: 400px;
+}
+form div {
+  float: left;
+  width: 400px;
+  padding: 0 0 0.75em 0;
+}
+form label {
+  float: left;
+  width: 120px;
+}
+form textarea, form input {
+  float: right;
+  width: 250px;
+  border-top: 1px solid #999;
+  border-right: 1px solid #ccc;
+  border-bottom: 1px solid #cfcfcf;
+  230 The CSS3 Anthology
+  border-left: 1px solid #cfcfcf;
+  -webkit-box-shadow: inset -2px 1px 2px 2px rgba(0, 0, 0, 0.1);
+  -moz-box-shadow: inset -2px 1px 2px 2px rgba(0, 0, 0, 0.1);
+  box-shadow: inset -2px 1px 2px 2px rgba(0, 0, 0, 0.1);
+  padding: 4px;
+}
+form input[type="submit"] {
+  float: none;
+  width: auto;
+  padding: 0.25em;
+  -webkit-box-shadow: -2px 1px 2px 2px rgba(0, 0, 0, 0.1);
+  -moz-box-shadow: -2px 1px 2px 2px rgba(0, 0, 0, 0.1);
+  box-shadow: -2px 1px 2px 2px rgba(0, 0, 0, 0.1);
+  font-size: 125%;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+}
+form div.submit {
+  text-align: right;
+}
+```
+
+### Highlight a Field When A User Tabs Into or Clicks on It
+
+This can be achieved by using the `:focus` pseudo class selector:
+
+```css
+form input:focus, textarea:focus {
+  background-color: #fbef8e;
+}
+```
+
+### HTML Form Input Types
+
+![HTML FORM ELEMENTS](html_form_elements.png)
+![Example](html_form_ex.png)
+
+### Style Form Elements Based On Their Validity
+
+The CSS3 Basic User Interface Module outlines several dynamic pseudo-classes that we can use to detect the various states of a field as it’s interacted with by the user:
+
+* `:default`
+* `:valid`
+* `:invalid`
+* `:in-range`
+* `:out-of-range`
+* `:required`
+* `:optional`
+* `:read-only`
+* `:read-write`
+
+```css
+input:focus:required:invalid {
+  background-color: rgb(255, 0, 0, .5);
+}
+
+input:focus:required:valid {
+  background-color: rgba(96, 236, 96, 0.5);
+}
+```
+
+The first slightly long-winded selector selects input elements that are focused (the user has tabbed or clicked into them), set to required, and invalid. This means that the invalid icon won’t show when the user first arrives at the form—only once they start completing an input.
+
+The second targets any input element that’s required and valid. I’ve chosen not to set these to only show on focus. This is because it’s comforting to see the confirmation that your input is correct, so they’ll stay after the user clicks out of the field once it’s completed it correctly.
+
+### Group Related Fields
+
+We can group from fields logically using a `fieldset`, and then style the fieldset element to make the end result more attractive.
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="stylesheet" href="fui.css" />
+  <title>Forms and User Interface</title>
+</head>
+<body>
+  <div class="wrapper">
+    <form method="post" action="/contact" id="contact-form">
+      <p class="help">Please complete the form to register.
+          Required fields are indicated by a <em>*</em>.</p>
+      <fieldset>
+        <legend>Create an account</legend>
+        <div>
+          <label for="fName">Name <em>*</em></label>
+          <input type="text" name="fName" id="fName"
+          required="required" />
+          </div>
+          <div>
+          <label for="fEmail">Email address <em>*</em></label>
+          <input type="email" name="fEmail" id="fEmail"
+          required="required" placeholder="name@example.com" />
+          </div>
+          <div>
+          <label for="fPassword">Password <em>*</em></label>
+          <input type="text" name="fPassword" id="fPassword"
+          required="required" />
+          </div>
+          <div>
+          <label for="fPassword2">Confirm password <em>*</em>
+          </label>
+          <input type="text" name="fPassword2" id="fPassword2"
+          required="required" />
+        </div>
+      </fieldset>
+      <fieldset>
+        <legend>Your Address</legend>
+        <div>
+          <label for="fAddress1">Address Line 1 <em>*</em>
+          </label>
+          <input type="text" name="fAddress1" id="fAddress1"
+          required="required" />
+          </div>
+          <div>
+          <label for="fAddress2">Address Line 2</label>
+          <input type="text" name="fAddress2" id="fAddress2" />
+          </div>
+          <div>
+          <label for="fCity">Town / City <em>*</em></label>
+          <input type="text" name="fCity" id="fCity"
+          required="required" />
+          </div>
+          <div>
+          <label for="fPostalCode">Zip / Post Code <em>*</em>
+          </label>
+          <input type="text" name="fPostalCode" id="fPostalCode"
+          required="required" />
+        </div>
+      </fieldset>
+      <div class="submit">
+        <input type="submit" name="contact-submit"
+        id="contact-submit" value="Submit" />
+      </div>
+    </form>
+  </div>
+</body>
+</html>
+```
+
+CSS
+
+```css
+form {
+  background-color: rgb(244,252,232);
+  width: 500px;
+  padding: 1em;
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  border-radius: 10px;
+}
+fieldset {
+  background-color: rgba(126,208,214,0.3);
+  border: 3px solid rgb(255,255,255);
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  border-radius: 10px;
+  margin: 0 0 1em 0;
+}
+fieldset:hover {
+  background-color: rgba(126,208,214,0.5);
+}
+legend {
+  font-size: 133%;
+}
+form div {
+  float: left;
+  width: 100%;
+  padding: 0 0 0.75em 0;
+  position: relative;
+}
+form p.help {
+  font-style: italic;
+  padding: 0 1em 1em 1em;
+}
+form p.help em {
+  color: red;
+}
+form fieldset div:first-of-type {
+  padding-top: 1em;
+}
+form label {
+  float: left;
+  width: 30%;
+  font-size: 116.7%;
+}
+form div label em {
+  position: absolute;
+  color: red;
+  right: 0;
+}
+form input {
+  width: 65%;
+  font-size: 133%;
+  border: 0;
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  border-radius: 10px;
+  padding: 0.25em;
+}
+div.submit {
+  float: none;
+  background-color: rgba(126,208,214,0.3);
+  border: 3px solid rgb(255,255,255);
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  border-radius: 10px;
+  margin: 0 0 1em 0;
+  padding: 0.5em 0 0.5em 0;
+  text-align: center;
+}
+form input[type="submit"] {
+  width: auto;
+  border: 3px solid rgb(126,208,214);
+  background-color: rgba(78,150,137,0.5);
+  color: rgb(255,255,255);
+}
+
+form input[type="submit"]:hover {
+  background-color: rgb(78,150,137);
+}
+```
+
+___
+___
+
