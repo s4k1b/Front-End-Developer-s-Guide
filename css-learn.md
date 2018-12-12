@@ -20,6 +20,12 @@ ___
 
 </tr>
 
+<tr>
+
+<td><a href = "#ch9">Chapter 9</a></td>
+
+</tr>
+
 <table>
 
 ___
@@ -1909,3 +1915,355 @@ form input[type="submit"]:hover {
 ___
 ___
 
+<h1 id = 'ch9'>Chapter 6</h1>
+<a href = "#index" style = "border:2px solid #0099cc; border-radius:5px; padding:5px;color:white;background-color:#0099cc;float:right;">Go to INDEX </a>
+
+## CSS for Layout
+
+___
+
+### Create a Two Column Layout
+
+Our initial page HTML
+
+```html
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8" />
+  <title>Chapter 9: 2 Column Layout - positioning</title>
+  <link rel="stylesheet" href="tcl.css" />
+  </head>
+  <body>
+  <div class="wrapper">
+    <div class="header">
+      <h1>Recipe <span>for</span> Success</h1>
+    </div>
+    <div class="main">
+      <div class="article">
+        <h1>Baked Garlic</h1>
+        <p>Garlic may be known for being a little bit stinky, but
+        baked it is absolutely delicious and as long as you feed
+        it to all of your guests no-one will complain about the
+        smell! Once baked the garlic becomes creamy and sweet
+        making an ideal spread to accompany cheese.</p>
+        <p>To make your own baked garlic, you will need:</p>
+        <ul class="ingredients">
+          <li>Whole heads of garlic</li>
+          <li>Salt</li>
+          <li>Olive Oil</li>
+          <li>Foil</li>
+        </ul>
+        <h2>Instructions</h2>
+        <ol>
+          <li>Cut the tops and bottoms off the garlic heads with a
+          sharp knife, keeping the head intact, then snip the
+          tops of the cloves so you can see the garlic inside.
+          </li>
+          <li>In a large ovenproof dish use foil to make a 'nest'
+          large enough to hold all of your garlic. If you are
+          doing a lot of garlic you could put them into several
+          nests.</li>
+          <li>Add a few tablespoons of water to the nest then add
+          the garlic heads.</li>
+          <li>Pour over a tablespoon of olive oil per garlic,
+          season with salt and tightly wrap up the top of the
+          foil nest to seal in the garlic.</li>
+          <li>Bake for 30 minutes at 200C, open the nest and baste
+          the garlic in the juices, then cover and bake for
+          CSS for Layout 339
+          Download from Wow! eBook <www.wowebook.com>
+          another 30 minutes.</li>
+          <li>Enjoy!</li>
+        </ol>
+      </div>
+      <div class="aside">
+        <h2>More from this site</h2>
+        <ul class="nav">
+          <li><a href="">More garlic recipes</a></li>
+          <li><a href="">The Recipe for Success index</a></li>
+          <li><a href="">Cookery School</a></li>
+        </ul>
+        <div class="box">
+          <h3>Did you know?</h3>
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing
+          elit. Pellentesque lacinia ligula eu risus egestas ut
+          laoreet ipsum aliquet. Aenean laoreet, metus ut dapibus
+          auctor, dui arcu pretium elit, bibendum ornare urna diam
+          sed lacus. Suspendisse potenti. Cras tincidunt erat a
+          enim mattis pretium ut non orci.</p>
+        </div>
+        <div class="box">
+          <h3>Submit your recipes</h3>
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing
+          elit. Pellentesque lacinia ligula eu risus egestas ut
+          laoreet ipsum aliquet. Aenean laoreet, metus ut dapibus
+          auctor, dui arcu pretium elit, bibendum ornare urna diam
+          sed lacus. </p>
+          <p><a href="">Send it to us here!</a></p>
+        </div>
+      </div>
+    </div>
+  </div>
+  </body>
+</html>
+```
+
+Initial CSS
+
+```css
+body {
+  background-color: rgb(255,255,255);
+  color: rgb(59,67,68);
+  margin: 0;
+  padding: 0;
+  font: 1em/1.4 "Lucida Grande", "Lucida Sans Unicode","Lucida Sans", Verdana, Tahoma, sans-serif;
+}
+
+h1, h2, h3 {
+  margin: 0;
+  padding: 0 0 1em 0;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+}
+
+ul, ol, p {
+  margin:0;
+  padding: 0 0 1em 0;
+}
+
+h1 {
+  font-size: 137.5%;
+  color: rgb(241,47,93);
+}
+
+h2 {
+  font-size: 125%;
+  color: rgb(241,47,93);
+}
+
+h3 {
+  font-size: 100%;
+}
+
+a:link, a:visited {
+  color: rgba(241,47,93,0.8);
+}
+a:hover {
+  color: rgb(241,47,93);
+  text-decoration: none;
+}
+
+.nav {
+  list-style-type: none;
+  padding: 0;
+}
+
+.nav a:link, .nav a:visited {
+  text-decoration: none;
+  display: block;
+  border-top: 1px solid rgb(232,243,248);
+  padding: 0.5em 0 0.5em 0;
+  color: rgb(66,148,182);
+}
+.nav a:hover {
+  background-color: rgba(232,243,248,0.3);
+}
+
+.box {
+  border-top: 1px solid rgb(219,230,236);
+  padding: 1em 0 1em 0;
+}
+```
+
+Our first task is to fix the width of the layout area and center it within the browser viewport:
+
+```css
+.wrapper {
+  width: 940px;
+  margin: 0 auto 0 auto;
+}
+```
+
+Now we style the header:
+
+```css
+.header {
+  text-align: right;
+  padding: 40px 0 0 0;
+  border-bottom: 8px solid rgb(59, 67, 68);
+  margin-bottom: 40px;
+}
+
+.header h1 {
+  font-size: 187.5%;
+  border-bottom: 1px solid rgb(59,67,68);
+  margin-bottom: 2px;
+  padding-bottom: 10px;
+  color: rgb(59,67,68);
+}
+
+.header h1 span {
+  font-style: italic;
+  color: rgb(241,47,93);
+}
+```
+
+To arrange two columns using absolute postioning, we have at first make the container div `main` relatively positioned:
+
+```css
+.main {
+   position: relative;
+}
+```
+
+Now, we simply postion two columns within this container.
+
+```css
+.article {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 540px;
+}
+
+.aside {
+  width: 300px;
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+```
+
+### Two Column Layout with Footer
+
+Our simple positioned layout has a weakness, and we can discover what it is by adding a footer to the layout. As our items are positioned, they’re removed from the document flow, so the footer acts as if they’re not there at all, displaying across the content rather than below the two columns.
+
+To allow footers that will sit below the columns we need to use `float` instead of `absolute`.
+
+First we need to add the footer inside the wrapper:
+
+```html
+<div class="footer cf">
+<p class="copy">Copyright &copy; Recipe for Success 2012</p>
+<div class="vcard">
+   <h3>Contact Us</h3>
+   <p class="fn org">Recipe for Success</p>
+   <div class="adr">
+      <div class="street-address">1 The Avenue</div>
+      350 The CSS3 Anthology
+      <div class="Locality">Mytown</div>
+      <div class="postal-code">SR4 4TT</div>
+      <div class="country-name">United Kingdom</div>
+      <div><a class="email" href="mailto:test@example.com">
+      test@example.com</a></div>
+      <div class="tel value">+44&nbsp;(0)&nbsp;1234 56789</div>
+   </div>
+</div>
+</div>
+```
+
+Then add it's CSS:
+
+```css
+.footer {
+  clear: both;
+  background-color: rgb(59,67,68);
+  color: rgb(255,255,255);
+  padding: 20px;
+  overflow:auto;
+}
+.footer .copy {
+  float: left;
+  width: 520px;
+}
+.footer .vcard {
+  float: right;
+  width: 280px;
+}
+.footer a:link, .footer a:visited {
+  color: rgb(255,255,255);
+}
+```
+
+While the `float` property takes elements out of the normal document flow and changes the way they relate to other elements, it also enables them to be cleared.
+
+To display our columns using `float` rather than position simply involves removing the `position`, `top`, `left`, and `right` properties; instead, we use `float` set to `left` and `right`, respectively:
+
+```css
+.article {
+  float: left;
+  width: 540px;
+}
+
+.aside {
+  float: right;
+  width: 300px;
+}
+```
+
+We can set the `clear` property on our `footer`:
+
+```css
+.footer {
+  clear: both;
+  background-color: rgb(59,67,68);
+  color: rgb(255,255,255);
+  padding: 20px;
+  overflow:auto;
+}
+```
+
+**We have to clear the container every time floats are used.** In the first container which is the wrapper we cleared it using the footer. But, in the footer we need to clear it using something else.
+
+#### Clearing Inside Containers
+
+We are now encountering one of the most discussed and troubling issues of layout using `float`: how to self clear a page.
+
+* ##### Another Div
+   An obvious sollution is to add another `div` at the end and set its style to `clear:both`. This will clear the container but it's an ineligant approach.
+* ##### Floating Outer Container
+   If we float an element or elements within a wrapping element that is itself floated, that wrapping element will then safely contain the inner floated elements, and all our floated elements will display according to plan.
+
+   ```css
+   .footer {
+      clear: both;
+      background-color: rgb(59,67,68);
+      color: rgb(255,255,255);
+      padding: 20px;
+
+      float: left;
+   }
+   ```
+
+   The main problem with floating a containing element in this manner is that, when floating an element, we need to give it an explicit width, and this may not always be preferable or possible. Even in situations where it is, declaring widths on internal elements of our pages makes them less flexible if they’re used elsewhere across the site.
+* ##### Setting Overflow
+   Another trick is to use `overflow` property of the container to neetly contain the floated elements.
+   
+   * If `overflow: auto` then a scrollbar will show if the elements inside are too long.
+   * If `overflow: hidden` then the long elements will simply be hidden from view.
+* ##### Clearfix Hack
+   Another technique we may come across is known as the clearfix hack. It is recomended to avoid using it in our work, though, as the previous two methods suffice in most situations. There are a few versions of the clearfix hack, but they use generated content to add markup that clears the container. The example we’ve used in this case is explained on [Nicolas Gallagher’s site:](http://nicolasgallagher.com/micro-clearfix-hack/)
+
+   ```css
+   /* For modern browsers */
+   .cf:before,
+   .cf:after {
+      content:"";
+      display: table;
+   }
+   .cf:after {
+      clear: both;
+   }
+   /* For IE 6/7 (trigger hasLayout) */
+   .cf {
+      zoom:1;
+   }
+   ```
+
+   In our layout, we’d add the class `cf` to the footer, like this:
+
+   ```html
+   <div class="footer cf">
+   ```
+
+   The float would then self-clear.
