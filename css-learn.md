@@ -15,6 +15,7 @@ ___
 <td><a href = "#ch2">Chapter 2</a></td>
 <td><a href = "#ch3">Chapter 3</a></td>
 <td><a href = "#ch4">Chapter 4</a></td>
+<td><a href = "#ch5">Chapter 5</a></td>
 
 </tr>
 
@@ -1331,3 +1332,166 @@ a[href^="http:"] {
       opacity: 1;
    }
    ```
+
+### Create Drop Down Menu
+
+The original drop down menus were dropped because for being inaccessible and bloated. They required JavaScript to work and if the computer did not have any JavaScript support then the menu would not be shown. More recently, developers realized that the support of the `:hover` dynamic pseudo class on elements other than links enabled us to create CSS-only dropdown menus without needing any JavaScript.
+
+At first, we start with writing HTML for nested lists:
+
+```html
+<body>
+  <div class="wrapper">
+    <ul class="nav">
+      <li><a href="">Home</a></li>
+      <li><a href="">About us</a>
+        <ul>
+          <li><a href="">Directors</a></li>
+          <li><a href="">History</a></li>
+        </ul>
+      </li>
+      <li><a href="">Products</a></li>
+      <li><a href="">Ordering</a>
+        <ul>
+          <li><a href="">Our shops</a></li>
+          <li><a href="">Other stocklist</a></li>
+        </ul>
+      </li>
+      <li><a href="">Contact us</a></li>
+    </ul>
+  </div>
+</body>
+```
+
+The problem with CSS menus is that they can be very difficult to use. The menus are generally inaccessible for the users using only keyboard to navigate, and can be fiddly to click on when using a mouse. So, it is recomended to **create menus using CSS but use JavaScript to enhance their usability**.
+
+Now, we use CSS to display our list as a horizontal menu:
+
+```CSS
+.nav {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  font-size: 114.3%;
+}
+
+.nav > li {
+  float: left;
+  width: 130px;
+  margin-right: 20px;
+  position: relative;
+}
+
+.nav li a:link, .nav li a:visited {
+  display: block;
+  text-decoration: none;
+  color: rgb(122, 106, 83);
+}
+
+.nav li a:hover {
+  color: rgb(153, 178, 183);
+}
+```
+
+Next we will style our drop-downs:
+
+```css
+.nav ul {
+  list-style-type: none;
+  position: absolute;
+  background-color: rgb(213, 222, 217);
+  border: 5px solid rgb(153, 178, 183);
+
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  border-radius: 10px;
+
+  padding: 0.5em;
+  margin: 0.5em 0 0 0;
+
+  -webkit-box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, 0.2);
+  -moz-box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, 0.2);
+  box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, 0.2);
+
+  font-size: 85.7%;
+  width: 8em;
+  line-height: 1.8;
+}
+
+.nav ul li a:link, .nav ul li a:visited {
+  color: rgb(0, 0, 0);
+}
+
+.nav ul li a:hover {
+  color: rgb(122, 106, 83);
+}
+```
+
+Now, we hide the menus by setting the left margin on the menu `.nav ul` to a large negative value, throwing it off the side of the screed:
+
+```css
+.nav ul {
+   margin: 0.5em 0 0 -9999px;
+}
+```
+
+We could also set the menus to `display:none` to hide them but this can cause the browser not letting the user to navigate to the hidden items when shown.
+
+To bring the sub menu back on the screen we will modify the `:hover` pseudo class selector for the parent `<li>` element:
+
+```css
+.nav li:hover ul {
+   margin-left: 0;
+}
+```
+
+There is still a small problem. When navigating to the dropdown menu we have to fast, otherwise it disappears. Moreover, while using tab to the links using the keyboard, we'll find that the browser does tab to the hidden items but because they are hidden, they stay invisible. To deal with these issues we have to add some JavaScript. We will use a jQuery plugin called [Superfish](http://users.tpg.com.au/j_birch/plugins/superfish/). This plugin simply enhances the CSS menu.
+
+The only change required is the need to add an extra selector to the rule where we set our margin on hover:
+
+```css
+.nav li:hover ul, .nav li:sfHover ul {
+   margin-left: 0;
+}
+```
+
+Then we need to download [Superfish](http://users.tpg.com.au/j_birch/plugins/superfish/) and add the **superfish.js** file to our site and finally add the JavaScript to the head of our document:
+
+```html
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Drop Down Menu</title>
+
+  <link rel="stylesheet" href="dd.css" />
+
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/
+  ➥jquery.min.js" type="text/javascript"></script>
+  <script src="superfish.js" type="text/javascript"></script>
+  <script>
+    $(document).ready(function() {
+      $('ul.nav').superfish({
+        delay: 1000,
+        animation: {opacity:'show',height:'show'},
+        speed: 'fast',
+        autoArrows: false,
+        dropShadows: false
+      });
+    });
+  </script>
+
+</head>
+```
+
+___
+___
+
+<h1 id = 'ch5'>Chapter 5</h1>
+<a href = "#index" style = "border:2px solid #0099cc; border-radius:5px; padding:5px;color:white;background-color:#0099cc;float:right;">Go to INDEX </a>
+
+## Tabular Data
+
+___
+
+**Tabular data** is information that’s displayed in a table, and which may be logically arranged into columns and rows.
