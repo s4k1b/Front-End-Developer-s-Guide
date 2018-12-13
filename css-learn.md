@@ -1915,7 +1915,7 @@ form input[type="submit"]:hover {
 ___
 ___
 
-<h1 id = 'ch9'>Chapter 6</h1>
+<h1 id = 'ch9'>Chapter 9</h1>
 <a href = "#index" style = "border:2px solid #0099cc; border-radius:5px; padding:5px;color:white;background-color:#0099cc;float:right;">Go to INDEX </a>
 
 ## CSS for Layout
@@ -2433,3 +2433,281 @@ The problem with liquid layouts becomes obvious at large screen resolutions with
 
 The best solution for supporting a wide range of devices is using **resposive design**. It involves flexible design methods that respond to a user's behavior and preferences when viewing websites.
 
+The majority of our stylesheet remains the same. We want to display all our text styling in the top part of the document regardless of the user's device.
+
+We change the rule for the `wrapper`, removing the fixed width of 940 pixel with a value of 90%:
+
+```css
+.wrapper {
+  width: 90%;
+  margin: 0 auto 0 auto;
+}
+```
+
+Now we need to create our set of **media queries**. Media queries are part of the CSS3 specification and enable us to target devices by certain properties, such as their screen width. We can use media queries within a stylesheet as well as in our HTML documnet.
+
+We are going to target three width related breakpoints:
+
+* First, we'll have a default stylesheet that will be used by all devices.
+* Then, we'll use a media query to check if the browser window is wider than 768 pixel. If it is, we'll arrange the content into two columns.
+* Finally, we're also going to check for desktop width by looking for screens wider than 992 pixels, in which the layout will display over three columns.
+
+The media queries are as follows:
+
+```css
+@media only screen and (min-width: 768px) {
+/* css for 768 pixel width devices and wider goes here */
+}
+@media only screen and (min-width: 992px) {
+/* css for 992 pixel width devices and wider goes here */
+}
+```
+
+Now we need to calculate new percentage of width for the `.subnav`, `article` and `.aside`. As the width of the `.wrapper` containing all these is 90% of screen size, it is between (691~892) pixels for screen size between (768~991). The calculation that we need to remember is:
+\[target/container=percentage\]
+
+So, our wrapper is 700 pixels wide and our `.subnav` is 220 pixels wide. We also want to leave a 20-pixel gutter between `.subnav` and `.article`; therefore, `.article` will be 460 pixels wide if we float these columns left and right respectively. We calculate the percentage width of `.subnav` as follows: 220/700 = 31.42857%.
+We then calculate `.article`: 460/700 = 65.71428%. We can now enter these values as the column widths into our CSS. We also need to set our `.aside` to a width of 100%, and give it a rule of `clear: both` so that it drops underneath these first two columns:
+
+```css
+@media only screen and (min-width: 768px) {
+.subnav {
+  width: 31.42857%; /* 220/700 */
+  float: left;
+  }
+.article {
+  float: right;
+  width: 65.71428%; /* 460/700 */
+  }
+.aside {
+  width: 100%;
+  CSS for Layout 373
+  clear: both;
+  }
+}
+```
+
+To tidy up this screen width, we can use the same width calculations to arrange
+the two chunks of footer content into two columns as we have had in previous examples. Our final media query for min-width: 768px is as follows:
+
+```css
+@media only screen and (min-width: 768px) {
+  .subnav {
+    width: 31.42857%; /* 220/700 */
+    float: left;
+  }
+  .article {
+    float: right;
+    width: 65.71428%; /* 460/700 */
+  }
+  .aside {
+    width: 100%;
+    clear: both;
+  }
+  .footer .copy {
+    float: left;
+    width: 31.42857%; /* 220/700 */
+  }
+  .footer .vcard {
+    float: right;
+    width: 31.42857%; /* 220/700 */
+  }
+}
+```
+
+Similerly we can create a **three collumn** version for screen size of 992 pixel or higher for desktop users:
+
+```css
+@media only screen and (min-width: 992px) {
+  .wrapper {
+    max-width: 1180px;
+  }
+  .subnav {
+    width: 23.404255%; /* 220/940 */
+    margin-right: 2.1276596%; /* 20/940 */
+  }
+  .article {
+    float: left;
+    width: 46.808511%; /* 440/940 */
+  }
+  .aside {
+    width: 23.404255%; /* 220/940 */
+    float: right;
+    clear: none; /* to counteract the clearing of the previous
+    breakpoint */
+  }
+  .footer .copy {
+    width: 23.404255%; /* 220/940 */
+  }
+  .footer .vcard {
+    width: 23.404255%; /* 220/940 */
+  }
+}
+```
+
+Here, `.wrapper` is given `max-widht: 1180px`. This stops the layout from being any wider than 1,180 pixels, so that users avoid the problem of content being laid out too widely to be readable.
+
+#### Adding Some Device Specific Fixes
+
+There are a couple of lines we will want to add to our HTML document if we're creating a responsive design. The first is a meta tag:
+
+```html
+<meta name="viewport" content="width=device-width,
+target-densitydpi=160dpi, initial-scale=1.0" />
+```
+
+This meta tag means that mobile browsers will set the width of the browser viewport equal to the width of the device. As we’ve gone to the effort of creating a customized smartphone version of our layout, we want mobile browsers to display it zoomed in, and this meta tag will ensure this happens.
+
+### Create A Print Stylesheet
+
+We should consider users who will want to print content displayed on the page. Fortunately we can create print specific stylesheet for our website.
+
+The first action is to set the `media` attribute on the `link` to our original stylesheet to screen. The means that the main stylesheet (**3col-responsive.css**) will only be used when the site is displayed onscreen. We then add a second `link` tag pointing to our print-specific stylesheet; this has a `media` attribute of `print`. Browsers will use this stylesheet to render the document ready to be printed out.
+
+```html
+<link rel="stylesheet" href="3col-responsive.css" media="screen" />
+⋮
+<link rel="stylesheet" href="3col-responsive-print.css"
+media="print" />
+```
+
+We can now set some basic CSS for the print-view text. Our first task is to go through the stylesheet and set any element on the page that we don’t want users to print to `display: none`:
+
+```css
+.subnav {
+  display: none;
+}
+.aside {
+  display: none;
+}
+.footer .vcard {
+  display: none;
+}
+```
+
+We can then go and tweak other styles to suit a printed copy of our web page; for instance, eliminating the `color` and `text-shadow` properties on our `h1`s, `h2`s, and `h3`s, and deleting our `a:hover` selector altogether. We’ll test in our browser’s print preview facility until we’re happy with the result. The finished CSS looks like this:
+
+```css
+body {
+  background-color: rgb(255,255,255);
+  color: rgb(0,0,0);
+  padding: 20px;
+  font: 1em/1.4 "Lucida Grande", "Lucida Sans Unicode",
+  "Lucida Sans", Verdana, Tahoma, sans-serif;
+}
+h1, h2, h3 {
+  margin: 0;
+  padding: 0 0 1em 0;
+}
+p {
+  margin:0;
+  padding: 0 0 1em 0;
+}
+ul, ol {
+  margin:0;
+  padding: 0 0 1em 1em;
+}
+h1 {
+  font-size: 137.5%;
+}
+h2 {
+  font-size: 125%;
+}
+h3 {
+  font-size: 100%;
+}
+a:link, a:visited {
+  color: rgb(0,0,0);
+}
+.header {
+  text-align: right;
+  padding: 20px 0 0 0;
+  border-bottom: 8px solid rgb(0,0,0);
+  margin-bottom: 40px;
+}
+.header h1 {
+  font-size: 187.5%;
+  padding-bottom: 10px;
+}
+.header .inner {
+  border-bottom: 1px solid rgb(0,0,0);
+  margin-bottom: 2px;
+}
+.header h1 span {
+  font-style: italic;
+}
+.footer {
+  border-top: 1px solid rgb(0,0,0);
+  padding: 20px 0 20px 0;
+  overflow: auto;
+}
+.wrapper {
+  width: 90%;
+  margin: 0 auto 0 auto;
+}
+.subnav {
+  display: none;
+}
+.aside {
+  display: none;
+}
+.footer .vcard {
+  display: none;
+}
+```
+
+### Older Browser and Resposive Design
+
+ Internet Explorer below IE9 doesn’t support media queries. If a user is viewing our previous example sites in Internet Explorer 6, 7, or 8, they’ll be presented with the view rendered by our basic, mobile-specific stylesheet. These CSS for Layout 401 browsers will completely ignore the media queries we inserted into our CSS, as well as the separate stylesheets we created and linked to in our HTML document.
+
+ There are twp possible solutions:
+
+* The first is to use a JavaScript polyfill called **Respond.js** that causes these older browsers to load the CSS rules within the media queries. A polyfill is simply a piece of code or plugin that takes care of functionality we would expect a browser to perform natively.
+* The second solution is not to try to serve media queries to old versions of Internet Explorer at all. Instead, add a separate stylesheet (or stylesheets) that sets Internet Explorer to display the site at a fixed width as in the CSS below:
+  
+  ```html
+  <!--[if (lt IE 9) & (!IEMobile)]>
+    <link rel="stylesheet" href="responsive-ie-old.css" />
+  <![endif]-->
+  ```
+
+  ```css
+  .wrapper {
+    width: 940px;
+  }
+  .header .nav {
+    position: absolute;
+    top: 20px;
+    right: 0;
+    list-style-type: none;
+  }
+  .header h1 {
+    padding: 20px 0 20px 0;
+    font-size: 175%;
+  }
+  .header .nav li {
+    font-size: 175%;
+  }
+  .feature img {
+    width: 940px;
+  }
+  .gallery {
+    overflow: hidden;
+    clear: both;
+    width: 960px;
+    margin-left: -20px;
+  }
+  .gallery li {
+    float: left;
+    width: 220px;
+    margin: 0 0 20px 20px;
+  }
+  .gallery li img {
+    display: block;
+    height: 220px;
+    width: 220px;
+  }
+  ```
+
+___
+___
