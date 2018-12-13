@@ -153,27 +153,27 @@ a:hover {
 }
 
 @media only screen and (min-width: 992px) {
-.wrapper {
-  max-width: 1180px;
-}
-.subnav {
-  width: 23.404255%; /* 220/940 */
-  margin-right: 2.1276596%; /* 20/940 */
-}
-.article {
-  float: left;
-  width: 46.808511%; /* 440/940 */
-}
-.aside {
-  width: 23.404255%; /* 220/940 */
-  float: right;
-  clear: none; /* to counteract the clearing of the previous
-  breakpoint */
-}
-.footer .copy {
-  width: 23.404255%; /* 220/940 */
-}
-.footer .vcard {
-  width: 23.404255%; /* 220/940 */
-}
+  .wrapper {
+    max-width: 1180px;
+  }
+  .subnav {
+    width: 23.404255%; /* 220/940 */
+    margin-right: 2.1276596%; /* 20/940 */
+  }
+  .article {
+    float: left;
+    width: 46.808511%; /* 440/940 */
+  }
+  .aside {
+    width: 23.404255%; /* 220/940 */
+    float: right;
+    clear: none; /* to counteract the clearing of the previous
+    breakpoint */
+  }
+  .footer .copy {
+    width: 23.404255%; /* 220/940 */
+  }
+  .footer .vcard {
+    width: 23.404255%; /* 220/940 */
+  }
 }
