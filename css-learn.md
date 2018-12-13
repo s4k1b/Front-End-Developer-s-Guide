@@ -2267,3 +2267,169 @@ We are now encountering one of the most discussed and troubling issues of layout
    ```
 
    The float would then self-clear.
+
+### Three Column Layout
+
+We can add a third column by creating a div `subnav` and floating it left:
+
+```html
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Chapter 9: 3 Column Layout - floats</title>
+    <link rel="stylesheet" href="3col-float.css" />
+  </head>
+  <body>
+  <div class="wrapper">
+    <div class="header">
+      <h1>Recipe <span>for</span> Success</h1>
+    </div>
+    <div class="subnav">
+      <h2>Recipes for...</h2>
+      <ul class="nav">
+        <li><a href="">Breakfast</a></li>
+        <li><a href="">Lunch</a></li>
+        <li><a href="">Dinner</a></li>
+        <li><a href="">Entertaining</a></li>
+        <li><a href="">Cakes &amp; Biscuits</a></li>
+        <li><a href="">Bread</a></li>
+        <li><a href="">Gluten Free</a></li>
+      </ul>
+    </div>
+    <div class="article">
+      <h1>Baked Garlic</h1>
+      <p>
+        .
+        .
+        .
+      </p>
+    </div>
+    <div class="aside">
+      .
+      .
+      .
+    </div>
+    <div class="footer">
+    <p>
+      .
+      .
+      .
+    </p>
+    </div>
+  </div>
+  </body>
+</html>
+```
+
+Corresponding CSS is :
+
+```css
+.subnav {
+  width: 220px;
+  float: left;
+  margin-right: 20px;`
+}
+.article {
+  float: left;
+  width: 440px;
+}
+.aside {
+  width: 220px;
+  float: right;
+}
+```
+
+When we add an extra column to your layout, we need to ensure that all your width calculations are correct. In our two-column layout, we could just float our `.article` and `.aside` elements left and right; because the total width of the two combined was less than the 940-pixel total width of the wrapper, a natural gap was left between them.
+
+### Create a Fixed Width Layout with Full Width Header & Footer
+
+The layout that we have been working on so far is completely contained within a 940-pixel wrapper. This means that the dark-gray header and footer bars stop at 940 pixels wide.
+
+To create this effect, we simply reuse our `wrapper` div. This is the element that creates our centered layout. In our earlier layouts, the `wrapper` div was wrapped around the entire layout. To create the full-width header and footer effect, we need to reuse this `wrapper` div inside the header and footer, in addition to wrapping the main content with it.
+
+```html
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Chapter 9: 3 Column Layout - floats, wide footer</title>
+    <link rel="stylesheet" href="3col-wide-footer.css" />
+  </head>
+  <body>
+  <div class="header">
+
+    <div class="inner">           <!-- New thing -->
+    <div class="wrapper">
+
+      <h1>Recipe <span>for</span> Success</h1>
+
+    </div>
+    </div>
+  </div>
+  <div class="wrapper">
+    <div class="subnav">
+      <h2>Recipes for...</h2>
+      ⋮
+    </div>
+    <div class="article">
+      <h1>Baked Garlic</h1>
+    </div>
+    <div class="aside">
+      <h2>More from this site</h2>
+      ⋮
+    </div>
+  </div>
+  <div class="footer">
+    <div class="wrapper">           <!-- New thing -->
+      <p class="copy">Copyright &copy; Recipe for Success 2012</p>
+      <div class="vcard">
+        ⋮
+      </div>
+    </div>
+  </div>
+  </body>
+</html>
+```
+
+And add the following CSS:
+
+```css
+/* remove the bottom border from the h1 and add to the new .inner */
+.header h1 {
+  font-size: 187.5%;
+  padding-bottom: 10px;
+  color: rgb(59,67,68);
+}
+.header .inner {                              /*New thing*/
+  border-bottom: 1px solid rgb(59,67,68);
+  margin-bottom: 2px;
+}
+/* remove the left and right padding on footer and add back to
+internal columns */
+.footer {
+  clear: both;
+  background-color: rgb(59,67,68);
+  color: rgb(255,255,255);
+  overflow: auto;
+  padding: 20px 0 20px 0;                              /*New thing*/
+}
+.footer .copy {
+  float: left;
+  width: 220px;                              /*New thing*/
+}
+.footer .vcard {
+  float: right;
+  width: 220px;                              /*New thing*/
+}
+```
+
+### Creating a Design That Works Well on Mobile Devices
+
+Fixed-width layouts work well for desktop and are fairly easy to implement. We can calculate our widths in units of measurement that are easy to understand, work out our gutter widths, and achieve a pleasing design aesthetic.
+
+Up untill now, we have been implementing fixed-width layout. There is another kind of layout called **liquid layout** which uses percentage for column measurements.
+
+The problem with liquid layouts becomes obvious at large screen resolutions with the browser maximized: lines become very long and text hard to read. These layouts also struggle when viewed on mobile devices, as the columns then become tiny, often with a single word on each line.
+
+The best solution for supporting a wide range of devices is using **resposive design**. It involves flexible design methods that respond to a user's behavior and preferences when viewing websites.
+

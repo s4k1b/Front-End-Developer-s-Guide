@@ -115,13 +115,16 @@ a:hover {
 
 .article {
   float: left;
-  width: 540px;
-
-  border: 1px solid blue;
+  width: 440px;
 }
 
 .aside {
   float: right;
-  width: 300px;
-  border: 1px solid blue;
+  width: 220px;
+}
+
+.subnav {
+  width: 220px;
+  float:left;
+  margin-right: 20px;
 }
