@@ -15,7 +15,7 @@
 * To concatenate string use `+` operator.
 * New line can be included without typing `\n` if the string is enclosed inside backticks (`).
 * Backticks (\`) can also be used to embed other values:
-Using `${}` inside string enclosed by backticks will produse embedded result of the operation mesioned inside `${}`.
+  Using `${}` inside string enclosed by backticks will produse embedded result of the operation mesioned inside `${}`.
 
 ### Unary Operators
 
@@ -192,7 +192,7 @@ ___
   } while(!yourName);
   console.log(youName);
   ```
-  
+
   This program will force you to enter a name. It will ask again and again until it gets something that is not an empty string. Applying the `!` operator will convert a value to Boolean type before negating it, and all strings except "" convert to `true`. This means the loop continues going round until it is provided a non-empty name.
 
 ### For Loops
@@ -306,7 +306,9 @@ function square (x) {
   }
   return result;
   };
+
   ```
+
   * The arrow points out that these values produce that value.
   * If there is only one parameter, there is no need for parenthesis.
   * Similerly is the body is a single expression, it can be without parenthesis.
@@ -415,6 +417,423 @@ We can see that the binding `local` is re-created everytime the function is acce
 
   console.log(findFor(24));
   ```
+
+___
+___
+
+## Data Sructures: Objects and Arrays
+
+### Data Sets
+
+* JavaScript porvides a data type specifically for storing sequences of values. It is called an **array** and is written as a list of values between square brackets, separated by commas.
+
+  ```javascript
+  let listOfNumbers = [2, 3, 5, 7, 11];
+  console.log(listOfNumbers);
+  // -> 5
+  console.log(listOfNumbers[0]);
+  // -> 2
+  console.log(listOfNumbers[2-1]);\
+  // -> 3
+  ```
+
+* We can access properties by using the dot `.` operator or the `[]` square brackets. Numbers are accessed by the square bracketrs while other properties are accessed by dot. eg: `array.length`.
+* Both `string` and `array` objects have in addition to `length`, a number of propertires that hold function values.
+  * `toUpperCase` is a property of a `string` that converts the value of the string to all uppercase letters.
+  * `push` and `pop` are properties of `array` which provide the basic `stack` operations.
+
+### Objects
+
+* Values of the type **object** are arbirary collections of properties. One way to create an object is by using braces as an expression:
+
+  ```javascript
+  let day1 = {
+    squirrel: false,
+    events: ["work", "touched tree", "pizza", "running"]
+  };
+  
+  console.log(day1.squirrel);
+  // -> false
+  console.log(day1.wolf);
+  // -> undefined
+  day1.wolf = false;
+  console.log(day1.wolf);
+  // -> false
+  ```
+
+* Inside the braces there are a list of properties separated by commas `,`. Each property has a name followed by a colon `:` and a value.
+* Property names that aren't valid binding names or valid numbers have to be quoted:
+
+  ```javascript
+  let descriptions = {
+    work: "went to work",
+    "touched tree": "Touched a tree"
+  };
+  ```
+
+* Reading properties that are not defined will give `undefined` as result.
+* It is possible to assign a value to a property expression with the `=` operator. This will replace the porperty's value if it already existed or create a new property on the object if it didn't.
+* It is possible to delete a property using the `delete` operation:
+
+  ```javascript
+  let anObject = {left: 1, right: 2};
+  console.log(anObject.left);
+  // → 1
+  delete anObject.left;
+  console.log(anObject.left);
+  // → undefined
+  console.log("left" in anObject);
+  // → false
+  console.log("right" in anObject);
+  // → true
+  ```
+
+* The binary `in` operator , when applied to a string and an object, tells us whether that object has a property with that name.
+* The difference between setting a property value to `undefined` and deleting it is that in the first case the object still has that property whereas in the second case the property is no longer present and `in` will return `false`.
+* To find out all the properties of an object we can use `Object.keys` function. We pass the object as it's parameter and it returns the string of properties:
+
+  ```javascript
+  console.log(Object.keys({x: 0, y: 0, z: 2}));
+  // → ["x", "y", "z"]
+  ```
+
+* `Object.assign` function copies all the properties from one object into another:
+
+  ```javascript
+  lef objectA = {a: 1, b: 2};
+  Object.assign(objectA, {b: 3, c: 4});
+  console.log(objectA);
+  // -> {a: 1, b:3, c:4}
+
+* We can create an array of objects:
+
+  ```javascript
+
+  let journal = [
+    {events: ["work", "touched tree", "pizza",
+    "running", "television"],
+    squirrel: false},
+    {events: ["work", "ice cream", "cauliflower",
+    "lasagna", "touched tree", "brushed teeth"],
+    squirrel: false},
+    {events: ["weekend", "cycling", "break", "peanuts",
+    "beer"],
+    squirrel: true},
+    /* and so on... */
+  ];
+
+  ```
+
+* We can create a funciton to push objects into that array:
+
+  ```javascript
+
+  let journal = [];
+  function addEntry(events, squirrel) {
+    journal.push({events, squirrel});
+  }
+
+  ```
+
+  Here we did not use notations like `journal.push({events: events, squirrel: squirrel});` because it is the same thing. If a property name in brace notation isn’t followed by a value, it's value is taken from the binding with the same name.
+
+### Mutability
+
+```javascript
+
+let object1 = {value: 10};
+let object2 = object1;
+let object3 = {value: 10};
+console.log(object1 == object2);
+// → true
+console.log(object1 == object3);
+// → false
+object1.value = 15;
+console.log(object2.value);
+// → 15
+console.log(object3.value);
+// → 10
+
+```
+
+* The `object1` and `object2` bindings grasp the same object, which is why changing `object1` also changes the value of `object2`. They are said to have the same **identity**. The binding `object3` points to a different object, which initially contains the same properties as `object1` but lives a separate life.
+* Bindings can also be changeable or constant. `const` binding t an object can itself not be changed and will continue to point at the same object. **The contents of that object might change.**
+
+  ```javascript
+
+  const score = {visitors: 0, home: 0};
+  score.visitors = 1; //this is okay (contents of the object can be changed)
+  score = {visitors: 1, home: 1}; //this is not allowed, because score is constant and it can not point to other objects
+
+  ```
+
+* Objects can be compared using the `==` operator, it conpares by *identity*: it will produce `ture` only if both objects are precisely the same value. Comparing different objects produce `false`, even if they have identical properties. There is no deep comparison between objects build in, we have to define them.
+
+  ```javascript
+
+  let objectA = {a: 1, b: 2};
+  let objectB = objectA;
+  let objectC = {a: 1, b: 2};
+
+  console.log((objectA == objectB));
+  // -> true
+  console.log((objectA == objectC));
+  // -> false
+
+  ```
+
+### Array Loops
+
+* General `for` loop structure to iterate over an array:
+
+  ```javascript
+
+  for (let i = 0; i < JOURNAL.length; i++) {
+    let entry = JOURNAL[i];
+    // do something with the entry
+  }
+
+  ```
+
+* Simpler loop to iterate over array elements:
+
+  ```javascript
+
+  for (let entry of JOURNAL) {
+    console.log(`${entry.events.length} events.`);
+  }
+
+  ```
+
+  When a for loop looks like this, with the word of after a variable definition, it will loop over the elements of the value given after of. This works not only for arrays but also for strings and some other data structures.
+
+### Further Arrayology
+
+* Use `push` & `pop` to add or remove elements at the end of an array.
+* Use `ushift` & `shift` to add and remove elements at the start of an array.
+* A simple queuing example:
+
+  ```javascript
+  let todoList = [];
+  function remember(task) {
+    todoList.push(task);
+  }
+  function getTask() {
+    return todoList.shift();
+  }
+  function rememberUrgently(task) {
+    todoList.ushift(task);
+  }
+
+  ```
+
+* To search a specific value in an array from start use `indexOf` method. It will return the index of the value in the array otherwise `-1` if it is not found in the array.
+* To search from end to start use `lastIndexOf` method.
+
+  ```javascript
+
+  console.log([1, 2, 3, 2, 1].indexOf(2));
+  // -> 1
+  console.log([1, 2, 3, 2, 1].lastIndexOf(2));
+  // -> 3
+
+  ```
+
+* Both `indexOf` and `lastIndexOf` have optional argument that indicates where to start searching
+* Use `slice` to extract a range of elements from an array:
+
+  ```javascript
+
+  console.log([0, 1, 2, 3, 4].slice(2, 4));
+  // -> [2, 3]
+  console.log([0, 1, 2, 3, 4].slice(2));
+  // -> [0, 1, 2];
+
+  ```
+
+  When last index is not given `slice` will take all of the elements after the start index. We can also omit the start index to copy the entire array.
+
+* We can use `concat` method to glue two arrays together similer to `+` operator for strings.
+
+### Strings & Their Properties
+
+* Values of type string, number  and Boolean are not objects and we can not add custom properties to them.
+* `slice` and `indexOf` are similer methods just like arrays. The difference is we can work with substrings not only characters:
+
+  ```javascript
+
+  console.log("coconut".slice(4,7));
+  // -> nut
+  console.log("coconut".indexOf(u));
+  // -> 5
+
+  console.log("I am Sakib".indexOf("kib"));
+  // -> 7
+
+  ```
+
+* The `trim` method removes whitespaces (spaces, newline, tabs and similer characters) from the start and end of a string.
+
+  ```javascript
+
+  console.log("   okay  \n ".trim());
+  // -> okay
+
+  ```
+
+* The `padStart` and `padEnd` method takes a desired length and padding characters as arguments and padds the character at the start or end of the string:
+
+  ```javascript
+
+  console.log(String(6).padStart(3, "0"));
+  // → 006
+
+  ```
+
+* We can split a string on every occurance of another substring with `split` and joit it agan with `join`:
+
+  ```javascript
+
+  let sentence = "I am Sakib";
+  let words = sentence.split(" ");
+  console.log(words);
+  // -> ["I", "am", "Sakib"]
+  console.log(words.join(". "));
+  // -> I. am. Sakib
+
+  ```
+
+* A string can be repeated multiple times by the `repeat` method which created a new string:
+
+  ```javascript
+
+  console.log("LA".repeat(3));
+  // -> LALALA
+
+  ```
+
+* We can access individual characters in a string similer to array:
+
+  ```javascript
+
+  let string = "abs";
+  console.log(string[1]);
+  // -> b
+
+  ```
+
+### REST Parameters
+
+It can be useful for a function to accept any number of arguments. To write such a function we need to put three dots before the function's last parameter, like this:
+
+```javascript
+
+function max(...numbers) {
+  let result = -Infinity;
+  for (let number of numbers) {
+    if(number > result) {
+      result = number;
+    }
+  }
+  return result
+}
+console.log(max(4, 1, 2, 9));
+// -> 9
+
+```
+
+* **The Rest parameters must be declared at the end of the function parameters.**
+* We can use a similer three dot notation to call a function with an array of arguments.
+
+  ```javascript
+
+  let numebrs = [5, 1, 7];
+  console.log(max(...numbers));
+  // -> 7
+
+  ```
+
+  This spreads out the array into the function call, passing it's elements as separate arguments. It is possible to include an array like that along wiht other arguments, as in `max(9, ...numbers, 2)`.
+
+* Square bracket array notation allows the triple-dot operator to spread another array into the new array.
+
+  ```javascript
+
+  let words = ["never", "fully"];
+  console.log(["will", ..words, "understand"]);
+  // -> ["will", "never", "fully", "understand"]
+
+  ```
+
+### The Math Object
+
+* It is used as a container to group a bunch of related functionality.
+* `Math` object contains number related utility function: `Math.max`(maximum), `Math.min`(minimum), `Math.sqrt`(square root).
+* If we need to do Trigonometry, `Math` can help. It contains `cos`(cosine), `sin`(sine), `tan`(tangent), as well as their inverse `acos`, `asin`, `atan`, respectively. The constant `π` (pi) can be found from `Math.PI`.
+* `Math.random` returns a new pseudorandom number between zero (inclusive) and one (exclusive) every time we call it.
+* `Math.round` - Rounds to the nearest whole number.
+* `Math.floor` - Rounds down to the nearest whole number.
+* `Math.ceil` - Rounds up to the nearest whole number.
+
+### Destructuring
+
+We prefer to have bindings for the elements of the array, that is `let n00 = table[0]` and so on. Fortunately there is a way:
+
+``` javascript
+
+function phi([n00, n01, n10, n11]) {
+  return (n11 * n00 - n10 * n01) /
+  Math.sqrt((n10 + n11) * (n00 + n01) *
+  (n01 + n11) * (n00 + n10));
+}
+
+```
+
+This also works for bindings created with `let`, `var`, or `const`. If we know the value we are binding is an array, we can use square brackets to “look inside” of the value, binding its contents.
+
+* A similer trick works for objects using braces instead of square brackets:
+
+  ```javascript
+
+  let {name} = {name: "Faraji", are: 23};
+  console.log(name);
+  // -> Faraji
+
+  ```
+
+### JSON
+
+If we want to save data in file for later or sent it to another computer over the network we can use the JSON file format.
+
+* JSON(JavaScript Object Notation) is popular data `serialization` format.
+* It is widely used as a data storage and communication format on the Web, even in languages other than JavaScript.
+* JSON looks similer to JavaScript way of writing arrays and objects, with a few restrictions.
+  * All property names must be surrounded by double quotes
+  * Only simple data expressions are allowed - no function calls, bindings, or anything that involves actual computation.
+  * Comments are not allowed.
+
+  ```json
+
+  {
+    "squirrel": false,
+    "events": ["work", "touched tree", "pizza", "running"]
+  }
+
+  ```
+
+* `JSON.stringify` - takes JavaScript value and returns a JSON-encoded string.
+* `JSON.parse` - takes JSON-encoded string and converts it to the value it encoded.
+
+```javascript
+
+let string = JSON.stringify({squirrel: false,
+events: ["weekend"]});
+console.log(string);
+// → {"squirrel":false,"events":["weekend"]}
+console.log(JSON.parse(string).events);
+// → ["weekend"]
+
+```
 
 ___
 ___
