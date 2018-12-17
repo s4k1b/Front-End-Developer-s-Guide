@@ -470,6 +470,17 @@ ___
     "touched tree": "Touched a tree"
   };
   ```
+* We can read the value of a property by using a dot `.` operator: `descriptions.word`.
+* If the property name is stored in a variable then:
+
+  ```javascript
+
+  let obj1 = {name: "sakib", age: 10};
+  ar = ["name", "age"];
+  console.log(obj1[ar[0]]);
+  // -> sakib
+
+  ```
 
 * Reading properties that are not defined will give `undefined` as result.
 * It is possible to assign a value to a property expression with the `=` operator. This will replace the porperty's value if it already existed or create a new property on the object if it didn't.
@@ -837,3 +848,50 @@ console.log(JSON.parse(string).events);
 
 ___
 ___
+
+## Higher-Order Functions
+
+### Abstracting Repetition
+
+It is common for a program to do something a given number of times. We can write a `for` loop for that and write the action in the for loop.
+* If we want various actions to be performed a various number of times, we can creaete a new funciton and pass the number of times and the action as it's parameter:
+
+  ```javascript
+
+  function repeat(n, action) {
+    for (let i = 0; i < n ; i++) {
+      action(i);
+    }
+  }
+
+  ```
+
+  now the action can be defined in a function which takes paremeter `i`. It can be declared inline or previously on top:
+
+  ```javascript
+
+  let func = i => {
+    console.log(i)
+  };
+
+  repeat(5, func);
+  // -> 0
+  // -> 1
+  // -> 2
+  // -> 3
+  // -> 4
+
+  ```
+  or
+
+  ```javascript
+
+  repeat(3, i => {
+    console.log(i*i);
+  });
+  // -> 0
+  // -> 1
+  // -> 4
+
+  ```
+
