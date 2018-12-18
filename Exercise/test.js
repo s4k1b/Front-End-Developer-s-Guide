@@ -1,6 +1,14 @@
-function restTest(s, n, ...numbers) {
-  console.log(s);
-  console.log(numbers);
+class Rabbit {
+  constructor(type) {
+    this.type = type;
+  }
+  speak(line) {
+    console.log(`The ${this.type} rabbit says '${line}'`);
+  }
 }
 
-restTest("haha", 3, 4, 5, 5);
+whiteRabbit = new Rabbit('white');
+blackRabbit = new Rabbit('black');
+
+whiteRabbit.speak(`HI! I am ${whiteRabbit.type}.`);
+blackRabbit.speak(`HI! I am ${blackRabbit.type}.`);

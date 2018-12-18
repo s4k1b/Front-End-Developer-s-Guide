@@ -895,3 +895,503 @@ It is common for a program to do something a given number of times. We can write
 
   ```
 
+### Higher Order Functions
+
+Functions that operate on other functions, either by taking them as arguments or by returning them, are called **higher-prder* functions. It allows us to abstract over actions, not just values. They come in several forms:
+
+* We can have functions to create new functions:
+
+  ```javascript
+
+  function greaterThan(n) {
+    return m => m>n;
+  }
+  let greaterThan10 = greaterThan(10);
+  console.log(greaterThan10(11));
+  // -> true
+
+  ```
+
+  here, a value is passed to return a function, which can be called later.
+
+* We can have functions that change other functions:
+
+  ```javascript
+
+  function noisy(f) {
+    return (...args) => {
+      console.log("calling with", args);
+      let result = f(...args);
+      console.log("called witth", args, ", returned", result);
+      return result;
+    };
+  }
+  noisy(Math.min)(3, 2, 1);
+  // -> calling with [3, 2, 1]
+  // -> called with [3, 2, 1], returned 1
+  
+  ```
+
+  here, we passed a function as argument and retured a function with modifies this function or something !!!!!!!????
+
+* We can even write functions that provide new types of control flow.
+
+  ```javascript
+
+  function unless(test, then) {
+    if(!test) then();
+  }
+
+  repeat(3, n => {
+    unless(n%2 == 1, () => {
+      console.log(n, "is even");
+    });
+  });
+  // -> 0 is even
+  // -> 2 in even
+
+  ```
+
+* There is a built in array method, `forEach`, that provides something like a for/of loop as a higher-order function:
+
+  ```javascript
+
+  ["A", "B"].forEach(l => console.log(l));
+  // -> A
+  // -> B
+
+  ```
+
+### Filtering Arrays
+
+We can filter an array based on a `test` method that we will provide like this:
+
+```javascript
+
+function filter(array, test) {
+  let passed = [];
+  for(let element of array) {
+    if(test(element)) {
+      passed.push(element);
+    }
+  }
+  return passed;
+}
+
+console.log(filter(SCRIPTS, script => script.living));
+// [{name: "Adlam", ...}, ...]
+
+```
+
+* Like `forEach` , `filter` is a standart array method. The above function just describes how it works:
+
+  ```javascript
+
+  console.log(SCRIPTS.filter(script => script.living));
+
+  ```
+
+### Transforming with Map
+
+The `map` method transforms an array by applying a function to all of it's elements and building a new array from the returned values. The new array have the same length as the input array, but it's content will have been 'mapped' to a new form by the function.
+
+```javascript
+
+function map(array, transform) {
+  let mapped = [];
+  for(let element of array) {
+    mapped.push(transform(element));
+  }
+  return mapped;
+}
+
+let rtlScripts = SCRIPTS.filter( s => s.direction == "rtl");
+console.log(map(rtlScripts, s => s.name));
+// → ["Adlam", "Arabic", "Imperial Aramaic", …]
+
+```
+
+* Like `forEach` and `filter`, `map` is also a standart array method.
+
+### Summerizing with Reduce
+
+Another common thing to do with arrays is to compute a single value from them. Our recurring example, summing a collection of numbers, is an instance of this. Another example is finding the script with the most characters.
+
+A higher order function that represents this operation is called `reduce` (also knows as `fold`). It builds value by repeatedly taking a single element from the array and combining it with the current value.
+
+The paramenters to `reduce` are, apart form the array, a combining function and a start value.
+
+```javascript
+
+function reduce(array, combine, start) {
+  let current = start;
+  for( let element of array) {
+    current = combine(current, element);
+  }
+  return current;
+}
+
+console.log(reduce([1, 2, 3, 4], (a,b) => a+b, 0));
+// -> 10
+
+```
+
+* The standart array method `reduce`, which of course corresponds to this function, has an added convenience. If the array has atleast one element we can leave out the start field. It will automatically set the first element of the array as starting element and start reducing from the second:
+
+  ```javascript
+
+  console.log([1, 2, 3, 4].reduce((a, b) => a+b));
+
+  ```
+
+* To use reduce **twice** to find the script with the most characters, we can write something like:
+
+  ```javascript
+
+  function characterCount(script) {
+    return script.ranges.reduce((count, [from, to]) => {
+      return count+(to-from);
+    }, 0);
+  }
+
+  console.log(SCRIPTS.reduce((a,b) => {
+    return characterCount(a) < characterCount(b) ? b : a;
+  }));
+  // -> {name: "Han", ...}
+
+  ```
+
+### Composability
+
+Higher order functions start to shine when we need to **compose** opearations. As an example, let's write code that finds the average year of origin for living and dead scripts in the dataset.
+
+```javascript
+
+function average(array) {
+  return array.reduce((a,b) => a+b) / array.length;
+}
+
+console.log(Math.round(average(SCRIPTS.filter(script => script.living).map(script => script.year))));
+// -> 1188
+console.log(Math.round(average(SCRIPTS.filter(script => !script.living).map(script => script.year))));
+// -> 188
+
+```
+
+With out using the higher order functions it is harder to implement and when implemented, it is harder to see what has been implemented.
+
+### Strings & Character Codes
+
+Given a character code, we could use a function like the following to find out corresponding script (if any):
+
+```javascript
+
+function characterScript(code) {
+  for(let script of SCRIPTS) {
+    if(script.ranges.some(([from, to] => {
+      return code>=from && code< to;
+    })) {
+      return script;
+    }
+  }
+  return null;
+}
+console.log(characterScript(121));
+// -> {name: "Latin", ...}
+
+```
+
+* The `some` method is another higher order function. It takes a test function and tells us whether that function returns `true` for any of the elements in the array.
+
+### SUMMARY
+
+Arrays provide a number of useful higher-order methods.
+* We can use `forEach` to loop over the elements in an array.
+* The `filter` method returns a new array containing only the elements that pass the predicate function.
+* Transforming an array by putting each element through a function is done with `map`.
+* We can use `reduce` to combine all the elements in an array into a single value.
+* The `some` method tests whether any element matches a given predicate function.
+* The `every` method tests whether all the elements matche a given predicate function.
+* `findIndex` finds the position of the first element that matches a predicate.
+
+___
+___
+
+## The Secret Life of Objects
+
+### Encapsulation
+
+The core idea in object-oriented programming is to divide programs into smaller pieces and make each piece responsible for managing its own state. Different pieces of such a program interact with each other through `interfaces`, limited sets of functions or bindings that provide useful functionality at a more abstract level, hiding their precise implementation.
+
+Such program pieces are modeled using objects. Their interfaces consists of a specific set of methods and properties. Properties that are part of the interface are called `public`. The others, which outside code should not be touching, are called `private`.
+
+It is common to put an underscore `_` character at the start of property names to indicate that those properties are private.
+
+Separating interface from implementation is a greate idea. It is usually called **encapsulation**.
+
+### Methods
+
+* Methods are nothing more than properties holding function values. This is a simple method:
+
+  ```javascript
+
+  let rabbit = {};
+
+  rabbit.speak = function(line) {
+    console.log(`The rabbit says '${line}'`);
+  };
+  rabbit.speak("I'm alive.");
+  // -> The rabbit says 'I'm alive.'
+
+  ```
+
+* When a function is called as a method-- it is looked up as a property of an object and called as `object.method()`. The binding called `this` in it's body automatically points at the object for which it was called on:
+
+  ```javascript
+
+  function speak(line) {
+  console.log(`The ${this.type} rabbit says '${line}'`);
+  }
+  let whiteRabbit = {type: "white", speak};
+  let hungryRabbit = {type: "hungry", speak};
+  whiteRabbit.speak("Oh my ears and whiskers, " +
+  "how late it's getting!");
+  // → The white rabbit says 'Oh my ears and whiskers, how
+  // late it's getting!'
+  hungryRabbit.speak("I could use a carrot right now.");
+  // → The hungry rabbit says 'I could use a carrot right now.'
+
+  ```
+
+* `this` can be thought of as an extra parameter that can be passed in a different way. If we want to pass it explicitly we can use `call` method:
+
+  ```javascript
+
+  speak.call(hungryRabbit, "Burp!");
+  // -> The hungry rabbit says 'Burp!'
+
+  ```
+
+* Each function has it's own `this` binding. So, `this` binding of parent function is not accessible by nested functions. The following code gives error:
+
+  ```javascript
+
+  function speak(line) {
+
+    function nested(line) {
+      console.log(`The ${this.type} rabbit says '${line}'`);
+    }
+    nested(line);
+  }
+
+  let rabbitA = {type: "white", speak};
+  let rabbitB = {type: "hungry", speak};
+
+  speak.call(rabbitA, "I am white");
+  // -> The undefined rabbit says 'I am white'
+
+  ```
+
+  The `nested` function has it's own `this`, it can not access `speak`'s `this`. We can pass the parent function's `this` as parameter. Then it will be correct:
+
+  ```javascript
+
+  function speak(line) {
+
+    function nested(line) {
+      console.log(`The ${this.type} rabbit says '${line}'`);
+    }
+    nested.call(this, line);
+  }
+
+  let rabbitA = {type: "white", speak};
+  let rabbitB = {type: "hungry", speak};
+
+  speak.call(rabbitA, "I am white");
+
+  ```
+
+  We can also solve this problem using the **Arrow function**. Arrow functions are different—they do not bind their own `this` but can see the `this` binding of the scope around them:
+
+  ```javascript
+
+  function speak(line) {
+
+    let nested = line => console.log(`The ${this.type} rabbit says '${line}'`);
+
+    nested(lne)
+  }
+
+  let rabbitA = {type: "white", speak};
+  let rabbitB = {type: "hungry", speak};
+
+  speak.call(rabbitA, "I am white");
+
+  ```
+
+### Prototypes
+
+* A prototype of an object is another object that is used as a fallback source of properties. When an object gets a request of a property that it does not have, it's prototype will be searched for the property, then the prototype's prototype and so on.
+* It can be thought of a tree like structure with `Object.prototype` at it's root. It provides a few methods that show up on all objects.
+* `Object.getPrototypeOf()` returns the prototype of an object.
+* We can use `Oject.create` to create an object with a specific prototype.
+
+  ```javascript
+
+  let protoRabbit = {
+    speak(line) {
+      console.log(`The ${this.type} rabbit says '${line}'`);
+    }
+  };
+  let killerRabbit = Object.create(protoRabbit);
+  killerRabbit.type = "killer";
+  killerRabbit.speak("SKREEEE!");
+  // → The killer rabbit says 'SKREEEE!
+
+  ```
+
+### Classes
+
+* A class defines the shape of a type of object -- what methods and properties it has. Such an object is called an **instance** of the class.
+* Prototypes are useful for defining properties for which all instances of a class share the same value, such as methods. Properties that differ need to stored directly in the objects themeselves.
+* To create an instance of a given class we need `constructor` method:
+
+  ```javascript
+
+  function makeRabbit(type) {
+    let rabbit = Object.create(protoRabbit);
+    rabbit.type = type;
+    return rabbit;
+  }
+
+  ```
+
+  In JavaScript the defining constructors are easy. If we put keywork `new` infornt of a function call, the funciton is treated as a constructor. The object with the right prototype is automatically created bound by the `this` in the function, and returned at the end of the function.
+
+  ```javascript
+
+  function Rabbit(type) {
+    this.type = type;
+  }
+  Rabbit.prototype.speak = function(line) {
+    console.log(`The ${this.type} rabbit says '${line}'`);
+  };
+
+  let weirdRabbit = new Rabbit("weird");
+
+  ```
+
+* Constructors (all functions, in fact) automatically get a property named `prototype`, which by default holds a plain, empty object that derives form `Object.prototype`. We can overwrite it with a new object if we want. Or we can add properties to the existing object, as the exaple does.
+* By convention the names of the constructors are capitalized.
+* It is important to understand the distinction between the way a prototype is associated with a constructor (through its prototype property) and the way objects have a prototype (which can be found with `Object.getPrototypeOf`). The actual prototype of a constructor is `Function.prototype` since constructors are functions. Its prototype property holds the prototype used for instances created through it.
+
+### Class Notation
+
+```javascript
+
+class Rabbit {
+  constructor (type) {
+    this.type = type;
+  }
+  speak(line) {
+    console.log(`The ${this.type} rabbit says '${line}'`);
+  }
+}
+
+let killerRabbit = new Rabbit("killer");
+let blackRabbit = new Rabbit("black");
+
+```
+
+* The method named `constructor` provides the actual constructor function which will be bound to the name `Rabbit`. The other methods are bound to that constructor's prototype. Thus earlier class declaration is equivalent to the constructor definition form the previous section.
+* Class declarations currently only allow methods--properties that hold functions to be added to the prototype. For now, we can create such property by directly manipulating the prototype after we've defined the class.
+* Like `function`, `class` can be used both in statements and expressions. When used as expression, it returns the constructor as a value.
+
+  ```javascript
+
+  let object = new class {getWord() {return "hello";}};
+  console.log(object.getWord());
+  // -> hello
+
+  ```
+
+### Overriding Derived Properties
+
+* When we add a property to an Object, whether it is present in the prototype or not, the property is added to the object itself. If there was a property with the same name in the prototype, it will get overwritten for this object.
+
+  ```javascript
+
+  Rabbit.prototype.teeth = "small";
+  console.log(killerRabbit.teeth);
+  // → small
+  killerRabbit.teeth = "long, sharp, and bloody";
+  console.log(killerRabbit.teeth);
+  // → long, sharp, and bloody
+  console.log(blackRabbit.teeth);
+  // → small
+  console.log(Rabbit.prototype.teeth);
+  // → small
+
+  ```
+
+* Overriding can be useful to express exceptional properties in an instance of a more generic class of objects, while letting no exceptional objects take a standard value from their prototype.
+* Overriding is also useful for giving standard function and array prototypes a different `toString` method:
+
+  ```javascript
+
+  console.log(Array.prototype.toString ==
+  Object.prototype.toString);
+  // → false
+  console.log([1, 2].toString());
+  // → 1,2
+
+  ```
+
+### Maps
+
+* A `map` is a data structure that associates values (the keys) with other values. We can create maps using objects:
+
+  ```javascript
+  let ages = {
+    Boris: 39,
+    Liang: 22,
+    Júlia: 62
+  };
+  console.log(`Júlia is ${ages["Júlia"]}`);
+  // → Júlia is 62
+  console.log("Is Jack's age known?", "Jack" in ages);
+  // → Is Jack's age known? false
+  console.log("Is toString's age known?", "toString" in ages);
+  // → Is toString's age known? true
+
+  ```
+
+* Object property names must be string. If we need a map whose keys are not strings - such as objects- we can not use objects in our map.
+* JavaScript comes with a class called `Map` that is written for this exact purpose. It stores a mapping and allows any type of keys.
+
+```javascript
+
+let ages = new Map();
+ages.set("Boris", 39);
+ages.set("Liang", 22);
+ages.set("Júlia", 62);
+console.log(`Júlia is ${ages.get("Júlia")}`);
+// → Júlia is 62
+console.log("Is Jack's age known?", ages.has("Jack"));
+// → Is Jack's age known? false
+console.log(ages.has("toString"));
+// → false
+
+```
+
+* The method `get`, `set` and `has` are part of the interface of the `Map` object.
+* If we do have a plain object the we need to treat as a map for some reason, it is useful to know that `Object.keys` returns only an object's own keys, not those in the prototype. As an alternative to the `in` operator, we can use the `hasOwnProperty` method, which ignores the object's prototype.
+
+  ```javascript
+
+  console.log({x: 1}.hasOwnProperty("x"));
+  // -> true
+  console.log({x: 1}.hasOwnProperty("toString"));
+  // -> false
+
+  ```
