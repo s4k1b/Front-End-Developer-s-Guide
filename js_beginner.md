@@ -1395,3 +1395,244 @@ console.log(ages.has("toString"));
   // -> false
 
   ```
+
+### Polymorphism
+
+* When a piece of code is written to work with objects that have a certain interface, any kind of object that happens to support this interface can be plugged into the code, and it will just work.
+
+  ```javascript
+
+  class Rabbit {
+    constructor(type) {
+      this.type = type;
+    }
+    speak(line) {
+      console.log(`The ${this.type} rabbit says '${line}'`);
+    }
+  }
+
+  Rabbit.prototype.toString = function() {
+    return `a ${this.type} rabbit.`;
+  }
+
+  whiteRabbit = new Rabbit('white');
+  blackRabbit = new Rabbit('black');
+
+  console.log(String(blackRabbit));
+  // -> a black rabbit.
+  console.log(String(whiteRabbit));
+  // -> a white rabbit.
+
+  ```
+  This technique is called **polymorphism**.
+* Polymorphic code can work with values of different shapes, as long as they support the interface it expects.
+* The `for/of` loop can loop over several kinds of data structures. This is another case of polymorphism-- such loops expect the data structure to expose a specific interface, which arrays and strings do. And we can add this interface to our own objects!
+
+### Symbols
+
+* It is possible for multiple interfaces to use the same property name for different things. For example, We could define an interface in which the `toString` method is supposed to convgert the object into a piece of yarn. It would not be possible for an object to conform to boht that interface and the standard use of `toString`.
+* Symbols are values created with the `Symbol` function. Newly created symbols are unique and we can not create the same symbol twice.
+
+  ```javascript
+
+  let sym = Symbol("name");
+  console.log(sym == Symbol("name"));
+  // → false
+  Rabbit.prototype[sym] = 55;
+  console.log(blackRabbit[sym]);
+  // → 55
+
+  ```
+
+* Being both unique and usable as property names makes symbols suitable for defining interfaces that can peacefully live alongside other properties, no matter what their names are.
+
+  ```javascript
+
+  const toStringSymbol = Symbol("toString");
+  Array.prototype[toStringSymbol] = function() {
+  return `${this.length} cm of blue yarn`;
+  };
+  console.log([1, 2].toString());
+  // → 1,2
+  console.log([1, 2][toStringSymbol]());
+  // → 2 cm of blue yarn
+
+  ```
+
+* It is possible to include symbol properties in object expressions and classes by using square brackets around property name. That causes the property name to be evaluated, much like square bracket property acces notation, which allows us to refer to a binding that holds the symbol.
+
+  ```javascript
+
+  let stringObject = {
+    [toStringSymbol]() {return "a jute rope.";}
+  };
+  console.log(stringObject[toStringSymbol]());
+  // -> a jute rope
+
+  ```
+
+### The Iterator Interface
+
+* The object given to a `for/of` loop is expected to be iterable. This means that it has a method named with the  `Symbol.iterator` symbol (a symbol value defined by the language, stored as a property of the `Symbol` function).
+* When this method is called, it returns a second interface *iterator*. This is tha actual thing that iterates. It has `next` method that returns the next result. That result should be an object with a `value` property which provides the next value and a `done` property which indicates if the iteration is finished or not.
+
+  ```javascript
+
+  let okIterator = "OK"[Symbol.iterator]();
+  console.log(okIterator.next());
+  // → {value: "O", done: false}
+  console.log(okIterator.next());
+  // → {value: "K", done: false}
+  console.log(okIterator.next());
+  // → {value: undefined, done: true}
+
+  ```
+
+* Let's implement a iterable data structure. We will build a *matrix* class acting as a two dimentional array.
+
+  ```javascript
+
+  class Matrix {
+    constructor(width, height, element = (x, y) => undefined) {
+      this.width = width;
+      this.height = height;
+      this.content = [];
+      for (let y = 0; y < height; y++) {
+        for (let x = 0; x < width; x++) {
+          this.content[y * width + x] = element(x, y);
+        }
+      }
+    }
+    get(x, y) {
+      return this.content[y * this.width + x];
+    }
+    set(x, y, value) {
+      this.content[y * this.width + x] = value;
+    }
+  }
+
+  ```
+
+  This class stores it's content in a single array of `width*height` elements. There are `get` and `set` methods to update and retrieve the contents.
+
+  We will have our iterator produce objects with `x`, `y`, and `value` properties.
+
+  ```javascript
+
+  class MatrixIterator {
+    constructor(matrix) {
+      this.x = 0;
+      this.y = 0;
+      this.matrix = matrix;
+    }
+
+    next() {
+      if (this.y == this.matrix.height) return {done: true};
+      let value = {
+        x: this.x,
+        y: this.y,
+        value: this.matrix.get(this.x, this.y)
+      };
+      this.x++;
+      if(this.x == this.matrix.width) {
+        this.x = 0;
+        this.y++;
+      }
+      return {value, done:false};
+    }
+  }
+
+  ```
+
+  * The class tracks the progress of iterating over the matrix in it's `x` and `y` properties.
+  * The `next` method starts by checking whether the bottom of the matrix has been reached. It it hasn't, it first creates the object holding the current value and *then* updates it's position, moving to the next row if necessary.
+
+  Now we can add this iterator object to our matrix class.
+
+  ```javascript
+
+  Matrix.prototype[Symbol.iterator] = function() {
+    return new MatrixIterator(this);
+  };
+
+  ```
+
+  Now, we can loop over the matrix with `for/of`:
+
+  ```javascript
+
+  let matrix = new Matrix(2, 2, (x, y) => `value ${x},${y}`);
+  for (let {x, y, value} of matrix) {
+    console.log(x, y, value);
+  }
+  // → 0 0 value 0,0
+  // → 1 0 value 1,0
+  // → 0 1 value 0,1
+  // → 1 1 value 1,1
+
+  ```
+
+### Getters, Setters & Statics
+
+* Interfaces mostly consists of methods but it is also okay to include properties that hold non functional values. Properties that are acessed directly may hide a method call. Such methods are called *getters*. They are defined using the `get` keyword infront of method name in an object expression or class declaration.
+
+  ```javascript
+
+  class Temperature {
+    constructor(celsius) {
+      this.celsius = celsius;
+    }
+    get fahrenheit() {
+      return this.celsius*1.8 +32; //Convert to Fahrenheit
+    }
+    set fahrenheit(value) {
+      this.celsius = (value - 32)/1.8; //Convert to celsius
+    }
+    static fromFahrenheit(value) {
+      return new Temperature((value-32)/1.8);
+    }
+  }
+
+  let temp = new Temperature(22);
+  console.log(temp.fahrenheit); //convert to fahrenheit
+  // -> 71.6
+  temp.fahrenheit = 86;         //convert to celsius
+  console.log(temp.celsius);
+  // -> 30
+
+  ```
+
+* The `Temperature` class allows us to read and write the temperature in either Celsius or Fahrenheit, but iternally it stores only in Celsius and automatically converts Celsius in the `fahrenheit` getter and setter.
+* Sometimes we want to attach some properties directly to our constructor function, rather than to the prototype. Such methods won’t have access to a class instance but can, for example, be used to provide additional ways to create instances. Inside a class declaration, methods that have `static` written before their name are stored on the constructor.
+
+### Inheritance
+
+* JavaScript's prototype system makes it possible to create a *new* class, much like the old class, but with new definitions for some of its properties. The prototype for the new class derives form the old prototype but adds a new definition for, say, the `set` method. In Object Oriented Programming (OOP) terms, this is called *inheritance*. The new class inherits properties and behavior from the old class.
+
+  ```javascript
+
+  class SymmetricMatrix extends Matrix {
+    constructor(size, element = (x, y) => undefined) {
+      super(size, size, (x, y) => {
+        if(x<y) return element(y, x);
+        else return element(x, y);
+      });
+    }
+
+    set(x, y, value) {
+      super.set(x, y, value);
+      if(x!=y) {
+        super.set(y, x, value);
+      }
+    }
+  }
+
+  let matrix = new SymmetricMatrix(5, (x, y) => `${x},${y}`);
+  console.log(matrix.get(2, 3));
+  // → 3,2
+
+  ```
+
+  * The use of word `extend` indicates that this class shouldn't be directly based on the default Object prototype but on some other class. This is called the *superclass*. The derived class is *subclass*.
+  * To initialize a `SymmetricMatrix` instance, the constructor calls it superclass's constructor through the `super` keyword. To ensure that the matrix is symmetrical, the constructor wraps the `content` method to swap the coordinates for values below the diagonal.
+  * The `set` method again uses `super` but this time not to call the constructor but to call a specific method from the supercalss's set of methods. We are redifining `set` but we want to use the original behavior. **Becaue `this.set` refers to the *new* `set` method, calling that wouldn't work**.

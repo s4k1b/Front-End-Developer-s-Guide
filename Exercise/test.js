@@ -1,14 +1,24 @@
-class Rabbit {
-  constructor(type) {
-    this.type = type;
+class Temperature {
+  constructor(celsius) {
+    this.celsius = celsius;
   }
-  speak(line) {
-    console.log(`The ${this.type} rabbit says '${line}'`);
+  get fahrenheit() {
+    return this.celsius*1.8 +32; //Convert to Fahrenheit
+  }
+  set fahrenheit(value) {
+    this.celsius = (value - 32)/1.8; //Convert to celsius
+  }
+  static fromFahrenheit(value) {
+    return new Temperature((value-32)/1.8);
   }
 }
 
-whiteRabbit = new Rabbit('white');
-blackRabbit = new Rabbit('black');
+let temp = new Temperature(22);
+console.log(temp.fahrenheit); //convert to fahrenheit
+// -> 71.6
+temp.fahrenheit = 86;         //convert to celsius
+console.log(temp.celsius);
 
-whiteRabbit.speak(`HI! I am ${whiteRabbit.type}.`);
-blackRabbit.speak(`HI! I am ${blackRabbit.type}.`);
+let tmp1 = Temperature.fromFahrenheit(86);
+console.log(tmp1.fahrenheit);
+console.log(tmp1.celsius);
