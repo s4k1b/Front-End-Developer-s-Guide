@@ -1636,3 +1636,41 @@ console.log(ages.has("toString"));
   * The use of word `extend` indicates that this class shouldn't be directly based on the default Object prototype but on some other class. This is called the *superclass*. The derived class is *subclass*.
   * To initialize a `SymmetricMatrix` instance, the constructor calls it superclass's constructor through the `super` keyword. To ensure that the matrix is symmetrical, the constructor wraps the `content` method to swap the coordinates for values below the diagonal.
   * The `set` method again uses `super` but this time not to call the constructor but to call a specific method from the supercalss's set of methods. We are redifining `set` but we want to use the original behavior. **Becaue `this.set` refers to the *new* `set` method, calling that wouldn't work**.
+  * Inside class methods, `super` provides a way to call methods as they were defined in the superclass.
+
+### The Instanceof Operator
+
+* It is occasionally useful to know whether an object was derived from a specific class. JavaScript provides a binary operator called `instanceof` for this purpose:
+
+  ```javascript
+
+  console.log(new SymmetricMatrix(2) instanceof SymmetricMatrix);
+  // -> true
+
+  console.log(new SymmetricMatrix(2, 2) instanceof Matrix);
+  // -> true
+  console.log(new Matrix(2, 2) instanceof SymmetricMatrix);
+  // → false
+  console.log([1] instanceof Array);
+  // → true
+
+  ```
+
+___
+___
+
+## Project: A Robot
+
+### Persistent Data
+
+* Data structures that don't change are called *immutable* or *persistent*. They behave a lot like strings and numbers in that they are who they are and stay that way, rather than containng different things at diffenrent tiems.
+* In JavaScript, there is a function called `Object.freeze` that changes an object so that writing to its properties is ignored!!!
+
+```javascript
+
+let object = Object.freeze({value: 5});
+object.value = 10;
+console.log(object.value);
+// -> 5
+
+```
