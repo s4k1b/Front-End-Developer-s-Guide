@@ -51,3 +51,42 @@ class VillageState {
     }
   }
 }
+
+
+function runRobot(state, robot, memory) { //robot is a function that looks at the village state and it's memory to calculate the direction of heading
+  for (let turn = 0;; turn++) {
+    if (state.parcels.length == 0) { //check if all percels are delivered
+      console.log(`Done in ${turn} turns`);
+      break;
+    }
+    let action = robot(state, memory);  //calculated next direction and memory
+    state = state.move(action.direction); //move to next direction (changing the villageState)
+    memory = action.memory; //remember the move
+    console.log(`Moved to ${action.direction}`);
+  }
+}
+
+//declare some random functions to randomly pick states
+function randomPick(array) {
+  let choice = Math.floor(Math.random() * array.length);
+  return array[choice];
+}
+function randomRobot(state) {
+  return {direction: randomPick(roadGraph[state.place])};
+}
+
+//Create a new state with some parcels (to put this sophisticated robot to work)
+VillageState.random = function(parcelCount = 5) {
+  let parcels = [];
+  for (let i = 0; i < parcelCount; i++) {
+    let address = randomPick(Object.keys(roadGraph));
+    let place;
+    do {
+      place = randomPick(Object.keys(roadGraph));
+    } while (place == address);
+    parcels.push({place, address});
+  }
+  return new VillageState("Post Office", parcels);
+};
+
+runRobot(VillageState.random(), randomRobot);

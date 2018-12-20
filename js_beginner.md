@@ -1666,11 +1666,492 @@ ___
 * Data structures that don't change are called *immutable* or *persistent*. They behave a lot like strings and numbers in that they are who they are and stay that way, rather than containng different things at diffenrent tiems.
 * In JavaScript, there is a function called `Object.freeze` that changes an object so that writing to its properties is ignored!!!
 
+  ```javascript
+
+  let object = Object.freeze({value: 5});
+  object.value = 10;
+  console.log(object.value);
+  // -> 5
+
+  ```
+
+___
+___
+
+## Bugs & Errors
+
+Flaws in computer programs are usually called *bugs*. It makes programmer feel good to think of them as little things that just happen to crawl into our work. It reality, ofcourse we put them there. The process of finding mistakes -- bugs -- in programs is called *debugging*.
+
+### Strict Mode
+
+* JavaScript can be made a *little* stricter by enabling *strict mode*.
+* This is done by putting the string `"use strict"` at the top of afile or a function body.
+
+  ```javascript
+
+  function caYouSpotTheProblem() {
+    "use strict";
+    for(counter = 0; counter < 10; counter++) {
+      console.log("Happy happy");
+    }
+  }
+
+  canYouSpotTheProblem();
+  // -> ReferenceError: counter is not defined
+
+  ```
+* Normally when we forget to put `let` infront of a  binding, JavaScript automatically creates a global binding and uses that which can be problematic. Using strict mode prevents this problem.
+* Strict mode prevents us from using `this` binding in functions that are not methods. It holds the `undefined` value for functions that are not methods. Usually when making such a call outside of strict mode, `this` refers to the global scope object, which is an object whose properties are the global bindings.
+
+  ```javascript
+
+  function Person(name) { this.name = name; }
+  let ferdinand = Person("Ferdinand"); // oops
+  console.log(name);
+  // → Ferdinand
+
+  ```
+
+  So, the bogus call to `Person` succeeded but returned an undefined value and created the global binding `name`. In strict mode it is different:
+
+  ```javascript
+
+  "use strict";
+  function Person(name) { this.name = name; }
+  let ferdinand = Person("Ferdinand"); // forgot new
+  // → TypeError: Cannot set property 'name' of undefined
+
+  ```
+
+* In short, putting `"use strict"` at the top of our program rarely hurts and might help us spot a problem.
+
+### Testing
+
+* Automated testing is the process of writing a program that tests another program. Writing tests is a bit more work than testing manually, but once we've done it, we gain a kind of superpower: it takes us only a few seconds to verify that our program strill behaves properly in all the situations we wrote test for.
+* Tests usually take the from of little labeled programs that verify some aspect of our code.
+
+  ```javascript
+
+  function test(label, body) {
+    if (!body()) console.log(`Failed: ${label}`);
+  }
+  test("convert Latin text to uppercase", () => {
+    return "hello".toUpperCase() == "HELLO";
+  });
+  test("convert Greek text to uppercase", () => {
+    return "Χαίρετε".toUpperCase() == "ΧΑΊΡΕΤΕ";
+  });
+  test("don't convert case-less characters", () => {
+    return "ࢎ࠶߈ఆ௷".toUpperCase() == "ࢎ࠶߈ఆ௷";
+  });
+
+  ```
+
+* There are pieces of software that hellps in building and running colections of tests by providing a labguage suited to expressing tests and by outputting informative information when a tet fails. These are called ***test runners***.
+
+### Debugging
+
+* Onece we have noticed there is something wrong with our program because it misbehaves or produces errors, the next step is to figure out what the problem is. This is knows as *debugging*.
+* Sometimes it is obvious, because there is a message pointing to a specific line on the code where the error has occured.
+* But, error in the logic or thought can not be debugged by this. To debug logical errors, we can use `console.log` to print out values at different parts of the code to pin point where the problem occured.
+* Another alternative to `console.log` is using `debugger` capabilities of our browser. Browsers come with the ability to set a *breakpoint* on a specific line of our code. When the execution of the program reaches a line with a breakpoint, it is paused, and we can inspect the values of bindings at that point.
+* Another way of including breakpoints is to include a `debugger` statement (consisting of simply that keyword)  in our program. If the developer tools of our browser are active, the program will pause whever it reaches such a statement.
+
+### Exceptions
+
+* When a function cannot proceed normally, what we would *like* to do is just stop what we are doing and immediately jump to a place that knows how to handle the problem. This is what ***exception handling does***.
+* Exceptons are mechaisms that makes it possible for code that runs into a problem to *raise* (or *throw*) an exception.
+* An exception can be any value. Raising one somewhat resembles a super-charged return from a function: it jumps out of not just the current function but also its callers, all the way down to the first call that started the current execution. This is called *unwinding the stack*.
+* Once we’ve caught an exception, we can do something with it to address the problem and then continue to run the program:
+
+  ```javascript
+
+  function promptDirection(question) {
+    let result = prompt(question);
+    if (result.toLowerCase() == "left") return "L";
+    if (result.toLowerCase() == "right") return "R";
+    throw new Error("Invalid direction: " + result);
+  }
+  function look() {
+    if (promptDirection("Which way?") == "L") {
+      return "a house";
+    } else {
+      return "two angry bears";
+    }
+  }
+  try {
+    console.log("You see", look());
+  } catch (error) {
+    console.log("Something went wrong: " + error);
+  }
+
+  ```
+* The `throw` keyword is used to raise an exception. Catching one is done by wrapping a piece of cod ein a `try` block, bollowed by the keyword `catch`.
+* When the code in the `try` block causes an exception to be raised, the `catch` block is evaluated, with the name in parentheses bound to the exception value. After the `catch` block finishes—or if the `try` block finishes without problems—the program proceeds beneath the entire `try/catch` statement.
+* In this case, we use the `Error` constructor to create our exception value. This is a standard JavaScript constructor that creates an object with a `message` property. In most JavaScript environments, instances of this constructor also gather information about the call stack that existed when the exception was created, a so-called *stack trace*. The information is stored in the `stack` property and can be useful when trying to debug a problem: it tells us the function where the problem occurred and which functions made the failing call.
+* The `try` statements may be followed by a `finally` block either instead of or in addition to a `catch` block. A `finally` block says "no matter *what* happens, run this code after trying to run the code in the `try` block."
+
+  ```javascript
+
+  function transfer(from, amount) {
+    if (accounts[from] < amount) return;
+    let progress = 0;
+    try {
+      accounts[from] -= amount;
+      progress = 1;
+      accounts[getAccount()] += amount;
+      progress = 2;
+    } finally {
+      if (progress == 1) {
+        accounts[from] += amount;
+      }
+    }
+  }
+
+  ```
+
+### Selective Catching
+
+* When an exception makes it all the way to the bottomof the stack without being `caught`, it gets handled by the environment.
+  * In browsers, a decription of the error typically gets written to the JavaScript console.
+  * In *Node.js*, the browserless JavaScript environment, is more careful about data corruption. It aborts the whole process when an unhandled exception occurs.
+* Invalid uses of the language, such as referencing a nonexistent binding, looking up a property on `null`, or calling something that’s not a function, will also result in exceptions being raised. Such exceptions can also be caught.
+* When a `catch` body is entered, all we know is that *simething* in our `try` body caused an exception. But we don't know *what* did or *which* exception it caused.
+* JavaScript doesn't provide direct support for selectively catching exceptions: either we catch them all or we don't catch any. This makes it tempting to assume that the exception we got is the one we expected. But, we might be wrong and some other assumptions might be violated.
+* We have to check inside the `catch` block, whether the exception we got is the one we are interested in, otherwise we can rethrow the exception.
+* To recognize an exception, we could compare it's *message* property against the error message we happen to expect. But that's a shaky way to write code. Rahter we should use a new type of *error* and use `instanceof` to identfy it.
+
+  ```javascript
+
+  class InputError extends Error {}
+  function promptDirection(question) {
+    let result = prompt(question);
+    if (result.toLowerCase() == "left") return "L";
+    if (result.toLowerCase() == "right") return "R";
+    throw new InputError("Invalid direction: " + result);
+  }
+
+  ```
+  The new error class extends `Error`. It doesn’t define its own constructor, which means that it inherits the `Error` constructor, which expects a string message as argument. In fact, it doesn’t define anything at all—the class is empty. `InputError` objects behave like `Error` objects, except that they have a different class by which we can recognize them.
+
+  ```javascript
+
+  for (;;) {
+    try {
+      let dir = promptDirection("Where?");
+      console.log("You chose ", dir);
+      break;
+    } catch (e) {
+      if (e instanceof InputError) {
+        console.log("Not a valid direction. Try again.");
+      } else {
+        throw e;
+      }
+    }
+  }
+
+  ```
+
+  This will catch only instances of `InputError` and let unrelated exceptions through. If we reintroduce the typo, the undefined binding error will be properly reported.
+
+### Assertion
+
+* Assertions are checks inside a program that verify that something is the way it is supposed to be. They are used not to handle situations that can come up in normal uperation but to find programmer mistakes.
+* If, for exaple, `firstElement` is described as a function that should never be called on empty arrays, we might write it like:
+
+  ```javascript
+
+  function firstElement(array) {
+    if(array.length == 0 ) {
+      throw new Error("firstElement called with []");
+    }
+    return array[0];
+  }
+
+  ```
+
+  Now, instead of silently returning undefined (which we get when reading an array property that does not exist), this will loudly blow up our program as soon as we misuse it. This makes it less likely for such mistakes to go unnoticed and easier to find their cause when they occur.
+
+___
+___
+
+## Regular Expressions
+
+*Regular expressions* are a way to describe patterns in string data. They form a small, separate language that is part of JavaScript and many other languages and systems.
+
+### Creating Regular Expressions
+
+* A regular expression is a type of object. It can be either constructed with the `RegExp` constructor or written as a literal value by enclosing a pattern in forward slash `/` characters.
+
+  ```javascript
+
+  let re1 = new RegExp("abc");
+  let re2 = /abc/;
+
+  ```
+
+  In the second notation (using forward slash `/`), the backslashes are treated differently:
+  
+  * Since forward slash ends a pattern, we need to put backslash before any forward slash that are part of the pattern.
+  * Backslashes that aren’t part of special character codes (like \n) will be preserved, rather than ignored as they are in strings, and change the meaning of the pattern.
+  * SOme characters such as quetion marks and plus signs, have special meanings in regular expressions and must be preceded by backslash if they are meant to represent the character itself.
+
+    ```javascript
+
+    let eighteenPlus = /eighteen\+/;
+
+    ```
+
+
+### Testing for Matches
+
+* Regular expressions objects have a number of methods. The simplest one is `test`. If we pass it a string, it will return a Boolean telling us whther the string contains a match of the pattern in the expression:
+
+  ```javascript
+
+  console.log(/abc/.test("abc"));
+  // -> true
+  console.log(/abc/.test("abxua"));
+  // -> false
+
+  ```
+
+A regular expression consisting of only nospecial characters simply represent that sequence of characters. If in occurs anywhere withing the `test` string, it will return `true`.
+
+### Sets of Characters
+
+* Putting a set of characters between square brackets makes that part of the expression match any the characters between the brackets. Both of the following expressions match all strings that have a digit in it:
+
+  ```javascript
+
+  console.log(/[0123456789]/.test("in 1992"));
+  // → true
+  console.log(/[0-9]/.test("in 1992"));
+  // → true
+
+  ```
+
+  * Within square brackets hyphens `-` between two characters can be used to indicate a range of characters where the ordering is determined by the character's Unicode number.
+* A number of common character groups have their own built-in shortcuts. `\d` means the same thing as `[0-9]` :
+  * `\d` Any digit character
+  * `\w` An alphanumeric character ("word character")
+  * `\b` Zero or more words containing alphanumeric characters
+  * `\s` Any whitespace character (space, tab, newline, and similar)
+  * `\D` Any character that is not a digit
+  * `\W` A non-alphanumeric character
+  * `\S` A non-whitespace character
+  * `.` Any character except for newline.
+  
+  So we could match a date and time format like 01-30-2003 15:20 with the following expression:
+
+  ```javascript
+
+  let dateTime = /\d\d-\d\d-\d\d\d\d \d\d:\d\d/;
+
+  ```
+
+  * The backslashed codes can be used inside square brackets. For example, `[\d.]` matches any digits followed by a dot.
+    * Inside square brackets `.` and `+` operators loose their special meaning.
+  * To invert a set of characters we can write a caret `^` character after the opening bracket.
+
+    ```javascript
+
+    let notBinary = /[^01]/;
+    console.log(notBinary.test("1100100010100110"));
+    // → false
+    console.log(notBinary.test("1100100010200110"));
+    // → true
+
+    ```
+
+### Repeating Parts of A Pattern
+
+* `+` sign after something in a regular expression, indicates that the element may be repeated more than once. Thus, `/\d+/` matches one or more digit characters.
+
+  ```javascript
+
+  console.log(/'\d+'/.test("'123'"));
+  // → true
+  console.log(/'\d+'/.test("''"));
+  // → false
+  console.log(/'\d*'/.test("'123'"));
+  // → true
+  console.log(/'\d*'/.test("''"));
+  // → true
+
+  ```
+
+* `*` sign has similer meaning. It also allows a pattern to match zero times. Something with a star after it never prevents a pattern from matching, it'll just match zero instances if it can't find any suitable text to match.
+* `?` operator makes a part of a pattern *optional*, meaning it may occur zero times or one time.
+
+  ```javascript
+
+  let neighbor = /neighbou?r/;
+  console.log(neighbor.test("neighbour"));
+  // → true
+  console.log(neighbor.test("neighbor"));
+  // → true
+
+  ```
+
+* To indicate that a pattern should occur a precise number of times, we need to use braces. Putting `{n}` after an element requirs it to occur exactly `n` times. It is also possible to specify ranges this way: `{a, b}` means the element must occur atleast `a` times and atmost `b` times.
+
+* We can also specify open ranges when using braces by omitting the number after the comma, So `{n, }` means `n` or more times.
+
+Anoter version of date and time pattern that allows both single and double digit days, months and hours:
+
 ```javascript
 
-let object = Object.freeze({value: 5});
-object.value = 10;
-console.log(object.value);
-// -> 5
+let dateTime = /\d{1,2}-\d{1,2}-d{4} \d{1,2}:\d{2}/;
 
 ```
+
+### Grouping Subexpressions
+
+* To use an operator like `*` or `+` on more than one element at a time, we have to use parentheses. A part of regular expression that is enclosed in parentheses count as a single element as fas as the operators following it are concerned.
+
+  ```javascript
+
+  let cartoonCrying = /boo+(hoo+)+/i;
+  console.log(cartoonCrying.test("Booooooohooooooooooohooooooooooohooooooooo"));
+  // -> true
+
+  ```
+
+* Using `i` at the end of regular expressions make them case insensetive.
+
+### Matche & Groups
+
+* The `test` method only tells whether a string matched or not, nothing else.
+* The `exec` method will return `null` when no match is found, otherwise will return an object with information if match was found.
+
+  ```javascript
+
+  let match = /\d+/.exec("one two 100");
+  console.log(match);
+  // -> ["100"]
+  console.log(match.index);
+  // -> 8
+
+  ```
+
+  * Object returned from `exec` has an `index` property that tells us where the match was found.
+  * Otherwise the object looks like and ifact is an array of strings, whose first element is the string that was matched.
+  * `String` valuse have a similer `match` method
+
+    ```javascript
+
+    console.log("one two 100".match(/\d+/));
+    // → ["100"]
+
+    ```
+  * When a regular expressions have a subexpression enclosed by parentheses, the text that matched those groups will also show up in the array.
+
+    ```javascript
+
+    let quotedText = /'([^']*)'/;
+    console.log(quotedText.exec("she said 'hello'"));
+    // → ["'hello'", "hello"]
+
+    ```
+    The whole matche string is the first element. The next element is the part matched by the first group, then the second group and so on.
+    * When a group does not end up being matched at all (for example, when followed by a question mark), its position in the output array will hold `undefined`. Similarly, when a group is matched multiple times, only the last match ends up in the array.
+
+      ```javascript
+
+      console.log(/bad(ly)?/.exec("bad"));
+      // → ["bad", undefined]
+      console.log(/(\d)+/.exec("123"));
+      // → ["123", "3"]
+
+      ```
+
+    * Groups can be useful for extracting parts of a string. If we don’t just want to verify whether a string contains a date but also extract it and construct an object that represents it, we can wrap parentheses around the digit patterns and directly pick the date out of the result of `exec`.
+
+### The Date Class
+
+* JavaScript has a standard date class to represent dates -- or rather points in time. I is called `Date`.
+* If we create a new date object using `new` we will get current date and time.
+
+  ```javascript
+
+  console.log(new Date());
+  // current time
+
+  ```
+
+* We can also create object for a specific time.
+
+  ```javascript
+
+  console.log(new Date(2009, 11, 9));
+  // → Wed Dec 09 2009 00:00:00 GMT+0100 (CET)
+  console.log(new Date(2009, 11, 9, 12, 59, 59, 999));
+  // → Wed Dec 09 2009 12:59:59 GMT+0100 (CET)
+
+  ```
+
+* JavaScript uses a convention where month numbers start at zero (so December is 11), yet day numbers start at one.
+* The last four arguments (hours, minutes, seconds, and milliseconds) are optional and taken to be zero when not given.
+* Timestamps are stored as the number of milliseconds since the start of 1970, in the UTC time zone. This follows a convention set by “Unix time”, which was invented around that time. You can use negative numbers for times before 1970. The `getTime` method on a date object returns this number.
+
+  ```javascript
+
+  console.log(new Date(2013, 11, 19).getTime());
+  // → 1387407600000
+  console.log(new Date(1387407600000));
+  // → Thu Dec 19 2013 00:00:00 GMT+0100 (CET)
+
+  ```
+
+* We can pass single argument to `Date` constructor, that will be treated as milliseconds.
+* We can get current millisecond count by creating a new `Date` object and calling `getTime` on it or by calling `Date.now` function.
+* Date objects provide methods such as `getFullYear`, `getMonth`, `getDate`, `getHours` , `getMinutes`, and `getSeconds` to extract their components.
+* Putting parentheses around the parts of the expression that we are interested in, we can now create a date object from a string.
+
+  ```javascript
+
+  function getDate(string) {
+    let [_, month, day, year] =
+    /(\d{1,2})-(\d{1,2})-(\d{4})/.exec(string);
+    return new Date(year, month - 1, day);
+  }
+  console.log(getDate("1-30-2003"));
+  // → Thu Jan 30 2003 00:00:00 GMT+0100 (CET)
+
+  ```
+
+### Words & String Boundaries
+
+* If we want to match a pattern with the whole string, not just any part of the string, we should use carret `^` and dollar `$` sign, where carret matches the start of the string and dollar matches the end of the input string. So,
+  * `/^\d+$/` matches a string consisting entirely of one or more digits.
+  * `/^!/` matches any string that starts with `!` sign.
+  * `/x^/` does not mach any string, because there can be no `x` before the start of the string.
+* If we want to make sure the date starts and ends on a word boundary, we can use the marker `\b`. A word boundary can be the start or end of the string or any point in the string that has a word character (as in `\w`) on one side and a nonword character on the other.
+
+  ```javascript
+
+  console.log(/cat/.test("concatenate"));
+  // → true
+  console.log(/\bcat\b/.test("concatenate"));
+  // → false
+  console.log(/\bcat\b/.test("co432n cat 432enate"));
+  // -> true
+
+  ```
+
+### Choice Patterns
+
+* The pipe character (`|`) denotes a choise between the pattern to it's left and the pattern to it's right.
+
+  ```javascript
+
+  let animalCount = /\b\d+ (pig|cow|chicken)s?\b/;
+  console.log(animalCount.test("15 pigs"));
+  // -> true
+  console.log(animalCount.test("15 pigchickens"));
+  // -> false
+
+  ```
+
+* Parentheses can be used to limit the part of the pattern that the pipe operator applies to, and we can put multiple such operators next to each other to express a choice between more than two alternatives.
