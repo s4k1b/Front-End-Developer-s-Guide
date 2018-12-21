@@ -1941,6 +1941,7 @@ A regular expression consisting of only nospecial characters simply represent th
   * `\W` A non-alphanumeric character
   * `\S` A non-whitespace character
   * `.` Any character except for newline.
+  * `^` Any character that is not in the empty set of characters.
   
   So we could match a date and time format like 01-30-2003 15:20 with the following expression:
 
@@ -2155,3 +2156,266 @@ let dateTime = /\d{1,2}-\d{1,2}-d{4} \d{1,2}:\d{2}/;
   ```
 
 * Parentheses can be used to limit the part of the pattern that the pipe operator applies to, and we can put multiple such operators next to each other to express a choice between more than two alternatives.
+
+### The Replace Method
+
+* String values have a `replace` method that can be used to replace part of the string with another string.
+
+  ```javascript
+
+  console.log("papa".replace("p", "m"));
+
+  ```
+
+  The first argument can also be a regular expression, in which case the first match of the regular expression is replaced.
+* We can add a `g` option at the end of the regular expression to make the function replace all matches in the string, not just the first.
+
+  ```javascript
+
+  console.log("Borobudur".replace(/[ou]/, "a"));
+  // -> Barobudur
+  console.log("Borobudur".replace(/[ou]/g, "a"));
+  // -> Barabadar
+
+  ```
+
+* We can refer to the matched groups in the replacement strings
+  * `$1` is used to refer to the first group that matched the string
+  * `$2` is used to refer to the second group that matched and so on, up to `$9`.
+  * `$&` is used to refer to the whole matched string.
+
+  ```javascript
+
+  console.log(
+  "Liskov, Barbara\nMcCarthy, John\nWadler, Philip"
+  .replace(/(\w+), (\w+)/g, "$2 $1"));
+  // → Barbara Liskov
+  // John McCarthy
+  // Philip Wadler
+
+  ```
+
+* It is possible to pass a fucntion rather than a string as the second argument to `replace`. For each replacement, the function will be called with the matched groups(as well as the whole match) as arguments, and it's return value will be inserted into the new string.
+  * Small example:
+    ```javascript
+    let s = "the cia and fbi";
+    console.log(s.replace(/\b(fbi|cia)\b/g,
+    str => str.toUpperCase()));
+    // → the CIA and FBI
+    ```
+  * More interesting example:
+    ```javascript
+    let stock = "1 lemon, 2 cabbages, and 101 eggs";
+    function minusOne(match, amount, unit) {
+    amount = Number(amount) - 1;
+    if (amount == 1) { // only one left, remove the 's'
+    unit = unit.slice(0, unit.length - 1);
+    } else if (amount == 0) {
+    amount = "no";
+    }
+    return amount + " " + unit;
+    }
+    console.log(stock.replace(/(\d+) (\w+)/g, minusOne));
+    // → no lemon, 1 cabbage, and 100 eggs
+    ```
+
+### The Search Method
+
+* The `indexOf` method on strings cannot be called with a regular expression.
+* The `search` method is alternative to `indexOf` which supports regular expressions. It returns the first index on which the expression was found, or `-1` when it wasn't found.
+
+```javascript
+
+console.log(" word".search(/\S/));
+// → 2
+console.log(" ".search(/\S/));
+// → -1
+
+```
+
+* Unfortunately, there is no way to indicate that the match should start at a given offset.
+
+### The LastIndex Property
+
+* Regular exprssion object have `source` property which contains the string that expression was created from.
+* Another property is `lastIndex` which controls where the next match will start. There are some conditions that should be met:
+  * The regular expression must have the global (`g`) or sticky (`y`) option enabled.
+  * Match must happen through `exec` method.
+
+  ```javascript
+
+  let pattern = /y/g;
+  pattern.lastIndex = 3;
+  let match = pattern.exec("xyzzy");
+  console.log(match.index);
+  // → 4
+  console.log(pattern.lastIndex);
+  // → 5
+
+  ```
+
+  If the match was successful, the call to `exec` automatically updates the `lastIndex` property to point after the match. If no match was found, `lastIndex` is set back to zero, which is also the value it has in a newly constructed regular expression object.
+
+  The difference between the global and the sticky options is that, when sticky is enabled, the match will succeed only if it starts directly at `lastIndex`, whereas with global, it will search ahead for a position where a match can start.
+
+  ```javascript
+
+  let global = /abc/g;
+  console.log(global.exec("xyz abc"));
+  // -> ["abc"]
+  let sticky = /abc/y;
+  console.log(sticky.exec("xyz abc"));
+  // → null
+
+  ```
+
+  * When useing shared regular expression which is global for multiple `exec` calls, these automatic updates to the `lastIndex` property can cause problems. Our regular expression might be accidentally starting at an index that was left over form a previous call.
+
+    ```javascript
+    let digit = /\d/g;
+    console.log(digit.exec("here it is: 1"));
+    // -> ["1"]
+    console.log(digit.exec("and now: 1"));
+    // -> null
+    ```
+  
+  * Another interesting effect of the global option is that it changes the way the `match` method on strings works. When called with a global expression, instead of returning an array similar to that returned by `exec`, `match` will find all matches of the pattern in the string and return an array containing the matched strings.
+
+    ```javascript
+    console.log("Banana".match(/an/g));
+    // → ["an", "an"]
+    ```
+  
+  * Global regular expressions should only be used in case of `repalce` method.
+
+### Looping Over Matches
+
+* A common thing to do is to scan through all occurrences of a pattern in a string, in a way that gives us access to the match object in the loop body. We can do this by using `lastIndex` and `exec`.
+
+  ```javascript
+
+  let input = "A string with 3 numbers in it... 42 and 88.";
+  let number = /\b\d+\b/g;
+  let match;
+  while (match = number.exec(input)) {
+  console.log("Found", match[0], "at", match.index);
+  }
+  // → Found 3 at 14
+  // Found 42 at 33
+  // Found 88 at 40
+
+  ```
+
+  This makes use of the fact that the value of an assignment expression (`=`) is the assigned value. So by using `match = number.exec(input)` as the condition in the `while` statement, we perform the match at the start of each iteration, save its result in a binding, and stop looping when no more matches are found.
+
+___
+___
+
+## Modules
+
+### Module
+
+* A module is a piece of program that specifies which other pieces it relies on and which functionality it provides for other modules to use (it's interface).
+* The interfaces of modules have a lot in common with object interfaces. They make part of the module available to the rest of the workd and keep the rest private.
+* The relation between modules are called *dependencies*.
+* To separate the modules, each needs it's own private scope, just putting the modules into different files does not satisfy the requirements. The files share the same global namespace and they can intentionally or unintentionally interfere with each other's bindings.
+
+### Packages
+
+* Advantage of modular programming is that the modules can be reused.
+* A package is a chunk of code that can be distributed (copied and installed).
+* A packege contains one or more modules and also information about which other packeges it depends on.
+* A package also usulally comes with documentation explaining what it does so that people can reuse it.
+* Working this way requires infrastructure. This infrastructure is provided by [NPM](https://npmjs.org).
+
+### Inporvised Modules
+
+* We can use JavaScript functions to create local scopes and objects to represent module interfaces.
+
+```javascript
+
+const weekDay = function() {
+  const names = ["Sunday", "Monday", "Tuesday", "Wednesday",
+  "Thursday", "Friday", "Saturday"];
+  return {
+    name(number) { return names[number]; },
+    number(name) { return names.indexOf(name); }
+  };
+}();
+console.log(weekDay.name(weekDay.number("Sunday")));
+// → Sunday
+
+```
+
+* This style of modules provides isolation, to a certain degree, but it does not declare dependencies.
+
+### Evaluating Data as Code
+
+There are several ways to take data (a string of code) and return it as part of the current program:
+
+* We can do it using an `eval` operator, which will execute a string in the *current* scope. It is usually a bad idea, because it breaks some of the properties that scopes normally have.
+
+  ```javascript
+
+  const x = 1;
+  function evalAndReturnX(code) {
+    eval(code);
+    return x;
+  }
+
+  console.log(evalAndReturnX("var x = 2"));
+  // ->
+  console.log(x);
+  // -> 1
+
+  ```
+
+* Another way is to use the `Function` constructor. It takes two arguments: a string containing a comma-separated list of argument names and a string containing the function body. It wraps the code in a function value so that it gets it's own scope.
+
+  ```javascript
+
+  let plusOne = Function("n", "reutrn n+1;");
+  console.log(plusOne(4));
+  // ->5
+
+  ```
+
+### CommonJS
+
+* The most widely used approach towards bolted-on JavaScript modules is called *CommonJS* modules. Node.js uses it and is the system used by most packages on NPM.
+* The main concept in *CommonJS* module is a function called `require`. When we call this wiht the module name of a dependency, it makes sure the module is loaded and returns it's interface.
+* We can use `exports` to bind interfaces to objects, which can be used by other modules.
+* The follwoing example moduel provides a date-formatting function. It uses two packages from NPM:
+  * `ordinal` to convert numbers to string like "1st" and "2nd".
+  * `date-names` to get the English names for weekdays and months.
+  
+  It exports a single function `formatDate`, which takes a `Date` object and a template string.
+
+  ```javascript
+
+  const ordinal = require("ordinal");
+  const {days, months} = require("date-names");
+  exports.formatDate = function(date, format) {
+    return format.replace(/YYYY|M(MMM)?|Do?|dddd/g, tag => {
+      if (tag == "YYYY") return date.getFullYear();
+      if (tag == "M") return date.getMonth();
+      if (tag == "MMMM") return months[date.getMonth()];
+      if (tag == "D") return date.getDate();
+      if (tag == "Do") return ordinal(date.getDate());
+      if (tag == "dddd") return days[date.getDay()];
+    });
+  };
+
+  ```
+
+  The module adds it's interface function to `exports` so that modules that depend on it get access to it. We could use the module like:
+
+  ```javascript
+
+  const {formatDate} = require("./format-date");
+  console.log(formatDate(new Date(2017, 9, 13), "dddd the Do"));
+  // -> Friday the 13th
+
+  ```
+
+  
