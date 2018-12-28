@@ -1,2 +1,5 @@
-const {parse} = require("ini");
-console.log(parse("x = 10\ny = 20"));
+function f1() {
+  console.log('this: ', this);
+}
+
+f1();

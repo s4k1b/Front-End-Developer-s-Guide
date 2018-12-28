@@ -2460,3 +2460,244 @@ for (let power of powers(3)) {
 ---
 
 ---
+
+## JavaScript and the Browser
+
+### Networks and the Internet
+
+- Computers communicate over the internate by shooting chunks of bits at eachother. _Protocols_ are used to describe the style of communication. There are protocols for sending and receiving emails(SMTP, POP3), sharing files (FTP).
+- Similerly the _protocol_ used for fetching HTML web pages is known as _Hypertext Transter Protocol_(HTTP). It specifies that thte side making the request should start with a line like this, naming the resource and the version of the protocol that it is trying to use:
+
+  ```js
+  GET /index.html HTTP/1.1
+  ```
+
+- HTTP treats Networks as a stramlike device into which you can put bits and have them arrive at the correct destinmation in the correct order. Ensuring this is a difficult task. This problem is addressed by _Transmission Control Protocol_ (TCP). Almost all the Internet-connected devices "speak" it.
+
+### The Web
+
+- The _World Wide Web_ (WWW) is not to be confused with the whole internet but rather it is the set of protocols and formats that allow us to visit web pages in a browser.
+- To become part of the Web, all we need to do is connect a machine to the Internet and have it listen on port 80 with the HTTP protocol so that other computers can ask it for documents.
+- Each document in the Web is named by a _Uniform Resource Locator_ (URL), which look something like this:
+
+  ```js
+  http:// eloquentjavascript.net/13_browser.html
+  ```
+
+- Machines connected to the internet get an IP address using which we can address it to send a message.
+- IP addresses ar numbers which are hard to remember, so we use URL instead of IP addresses and the URL gets mapped to IP address by the DNS server.
+
+### HTML
+
+- HTML, which stands for _Hypertext Markup Language_, is the document format used for web pages.
+- An HTML document contains text, as well as _tags_ that give structure to the text, describing things such as links, paragraphs, and headings.
+
+Example of HTML document:
+
+```html
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>My home page</title>
+  </head>
+  <body>
+    <h1>My home page</h1>
+    <p>Hello, I am Marijn and this is my home page.</p>
+    <p>
+      I also wrote a book! Read it
+      <a href="http://eloquentjavascript.net">here</a>.
+    </p>
+  </body>
+</html>
+```
+
+### HTML and JavaScript
+
+- The `<script>` tag allows us to include JavaScript code in HTML documents.
+
+  ```html
+  <h1>Testing alert</h1>
+  <script>
+    alert("hello!");
+  </script>
+  ```
+
+- Such script will run as soon as the browser encounters the `<script>` tag while it is reading the HTML document.
+- Including large scripts can be impractical so the `<script>` tag be used wiht `src` attribute to link an external JavaScript file:
+
+  ```html
+  <h1>Testing alert</h1>
+  <script src="code/hello.js"></script>
+  ```
+
+- We can load ES modules in the browser by giving the `<script>` tag a `type="module"` attribute. Such modules can depend on other modules by using URLs relative to themselves.
+- Some attributes my also contain JavaScript programs. The `<button>` tag has an `onclick` attribute. The attributes value will run whenever the button is pressed.
+
+  ```html
+  <button onclick="alert('Boom!');">DO NOT PRESS</button>
+  ```
+
+### In the Sandbox
+
+- Running a program from the internet is potentially dangerous as it can harm the computer.
+- Browsers prevent this by running the program in an enclosed environment which is called _Sandbox_.
+- It prevents programs to prevent altering or modifying the computer's internal files and programs.
+- The ahrd part of sandboxing is allowing the programs enough room to be useful yet at the same time restricting them from doing anything dangerous.
+
+---
+
+---
+
+## The Document Object Model
+
+When a web page is opened by the browser, it retrievees the page's HTML text and parses it. The browser builds up a model of the document's structure and uses this model to draw the page on the screen.
+
+### Document Structure
+
+- HTML Documents can be thought of a set of nested boxes. Tags such as `<body>` and `</body>` enclose other tags, which in turn contain other tags or text.
+- For each box, there is an object in JavaScript, which we can interact with to find out things such as what HTML tag it represents and which boxes and text it contains.
+- This representation is known as the _**Document Object Model**_.
+- The **global** binding `Document` gives us access to these objects.
+- It's `documentElement` property refers to the object representing the `<html>` tag. It also has `head` and `body` property which points to those elements in the HTML.
+
+### Trees
+
+- The _Document Object Model_(DOM) has a tree like structure.
+- Each _node_ may refer to ohter nodes, _children_, which in turn may have their own children.
+- The root of the tree is `Document.documentElement`.
+- Each _node_ represents an Element of the HTML document. These can have child nodes which are nested elements.
+- Each DOM node object has a `nodeType` property, which contains a code(number) that identifues the type of node.
+  - Elements have code 1
+  - Text nodes have code 3
+  - Comments have code 8 and so on.
+
+### Moving Through the Tree
+
+- DOM nodes containa wealth of links to other nearby nodes.
+- Every node has a `parentNode` property that ponits to the node it is part of, if any.
+- Every element node has a `childNodes` property that points to an array like object holding it's childern.
+- The `firstChild` and `lastChild` properties point to the first and last child elements or have the value `null` for nodes without children.
+- Similerly `previousSibling` and `nextSibling` point to adjacent nodes, which are nodes of with the same parent that appear immediately before or after the node itself. For first child, `previousSibling` will be `null` and for last child `nextSibling` will be `null`.
+- There is another property `children` similer to `childNodes` which contain an array of element nodes, not other type of nodes.
+- The `nodeValue` property of text nodes holds the string of text that it represents.
+
+The following example scans a document for text nodes containing a given string and returns _true_ when it has found one:
+
+```javascript
+function talksAbout(node, string) {
+  if (node.nodeType == Node.ELEMENT_NODE) {
+    for (let i = 0; i < node.childNodes.length; i++) {
+      if (talksAbout(node.childNodes[i], string)) {
+        return true;
+      }
+    }
+    return false;
+  } else if (node.nodeType == Node.TEXT_NODE) {
+    return node.nodeValue.indexOf(string) > -1;
+  }
+}
+console.log(talksAbout(document.body, "book"));
+// → true
+```
+
+### Finding Elements
+
+- All Elements have a `getElementsByTagName` method, which collects all elements with the given tag name that are descendants (direct or indirect children) of that node and returns them as an array-like object.
+
+  ```js
+  let link = document.body.getElementsByTagName("a")[0];
+  console.log(link.href);
+  ```
+
+- To find a specific _single_ node, we can assign it an **id** attribute and use `document.getElementById` instead.
+
+  ```html
+  <p>My ostrich Gertrude:</p>
+  <p><img id="gertrude" src="img/ostrich.png" /></p>
+
+  <script>
+    let ostrich = document.getElementById("gertrude");
+    console.log(ostrich.src);
+  </script>
+  ```
+
+* A third similer method is `getElementsByClassName`, which is like `getElementsByTagName`, searches through the entire document and retrueves all elements that have the given sttring in their `class` attribute.
+
+### Changing the Document
+
+- Almost everything about the DOM data structure can be changed. The shape of the document tree can be modified by changing parent-child relationships.
+- Nodes have a `remove` method to remove them from their current parent node.
+- To add a child node to an element node, we can use `appendChild`, which puts it as the last child of the parent node.
+- We can use `insertBefore` to insert an element before anther element. The new node is the first argument and the existing node is the second argument.
+
+  ```html
+  <p>One</p>
+  <p>Two</p>
+  <p>Three</p>
+
+  <script>
+    let paragraphs = document.body.getElementsByTagName("p");
+    document.body.insertBefore(paragraphs[2], paragraph[0]);
+  </script>
+  ```
+
+- A node can exist in the document at only one place, so every replace operation first deletes the node from the document and re-adds it at the specified place.
+- The `replaceChild` method is used to replace a child node with another node. The first argument is the replacer and the second argument is the node to be replaced with must be a child of the element the method is called on.
+
+### Creating Nodes
+
+- Text nodes are created using `document.getTextNode` method. The following code will remove all the elements with `img` tag with text containing it's `alt` value:
+
+  ```html
+  <p>
+    The <img src="img/cat.png" alt="Cat" /> in the
+    <img src="img/hat.png" alt="Hat" />.
+  </p>
+  <p><button onclick="replaceImages()">Replace</button></p>
+  <script>
+    function replaceImages() {
+      let images = document.body.getElementsByTagName("img");
+      for (let i = images.length - 1; i >= 0; i--) {
+        let image = images[i];
+        if (image.alt) {
+          let text = document.createTextNode(image.alt);
+          image.parentNode.replaceChild(text, image);
+        }
+      }
+    }
+  </script>
+  ```
+
+  **It is necessary to loop through the images in reverse order.** THe method like `getElementsByTagName` is _live_. It gets updated as the document changes.
+  We can change this by creating a _non live_ array by using the `Array.from` method.
+
+- To create element nodes, we can use the `createElement` method. This method takes a tag name and returns a new empty node of the given type.
+
+### Attributes
+
+- Most commonly used standard attributes of HTML elements can be accessed by property of the same name on the element's DOM object.
+- HTML allows us to set any attributes we want on elements. This allows us to store more information on the elements, but they are not accessible as properties of the element's DOM object. We have to use `getAttribute` and `setAttribute` methods to work with them.
+
+  ```html
+  <p data-classified="secret">The launch code is 00000000.</p>
+  <p data-classified="unclassified">I have two feet.</p>
+  <script>
+    let paras = document.body.getElementsByTagName("p");
+    for (let para of Array.from(paras)) {
+      if (para.getAttribute("data-classified") == "secret") {
+        para.remove();
+      }
+    }
+  </script>
+  ```
+
+- It is recomended to prefix the names of the madeup attributes with `data-` to ensure they do not conflict with any other attributes.
+- The attribute `class` is a keyword in JavaScript, so to refer to this attribute we have to use `className` property. We can access it under it's real name using `getAttribute` and `setAttribute` methods.
+
+### Layout
+
+- The `offsetWidth` and `offsetHeight` properties gives us the space the element takes in pixels.
+- Similerly, `clientWidth` and `clientHeight` gives us the size of the space _inside_ the element, ignoring the border width. to ensure they do not conflict with any other attributes.
+- The `getBoundingClientRect` method returns an object with `top`, `bottom`, `left`, and `right` properties indicating pixel positions of the sides of the element relative to top left of the screen. If we want them relative to the whole document we must add the current scroll position, which we can find in the `pageXOffset` and `pageYOffset` bindings.
+- A program that repeatedly alternames between reading DOM layout information and changing the DOM forces a lot of layout computations to happen and will cosequently run very slowly.
