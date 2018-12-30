@@ -2701,3 +2701,87 @@ console.log(talksAbout(document.body, "book"));
 - Similerly, `clientWidth` and `clientHeight` gives us the size of the space _inside_ the element, ignoring the border width. to ensure they do not conflict with any other attributes.
 - The `getBoundingClientRect` method returns an object with `top`, `bottom`, `left`, and `right` properties indicating pixel positions of the sides of the element relative to top left of the screen. If we want them relative to the whole document we must add the current scroll position, which we can find in the `pageXOffset` and `pageYOffset` bindings.
 - A program that repeatedly alternames between reading DOM layout information and changing the DOM forces a lot of layout computations to happen and will cosequently run very slowly.
+
+### Styles
+
+- JavaScript can directly manipulate the style of an element through the element's `style` property.
+- This property holds an object that holds properties for all possible style properties.
+- The values of these properties are string, which we can write in order to change a particular aspect of the element's style:
+
+  ```html
+  <p id="para" style="color: purple">Nice text</p>
+  <script>
+    let para = document.getElementById("para");
+    console.log(para.style.color);
+    para.style.color = "magenta";
+  </script>
+  ```
+
+- Some property names have hyphens in them, such as - `font-family`. Becuase they are awkward to write in JavaScript, the property name is changes and the hyphens are removed. We can access `font-family` as `style.fontFamily`.
+
+### Query Selectors
+
+- The notations used in _CSS_ to select an element in the HTML document can be used in JavaScript to specify DOM elements.
+- The `querySelectorAll` method, which is defined on both the `document` object and the `element` nodes, takes a selector string and returns a `nodeList` containing all the elements that matches that string.
+
+  ```html
+  <p>And if you go chasing <span class="animal">rabbits</span></p>
+  <p>And you know you're going to fall</p>
+  <p>
+    Tell 'em a
+    <span class="character"
+      >hookah smoking <span class="animal">caterpillar</span></span
+    >
+  </p>
+  <p>Has given you the call</p>
+  <script>
+    function count(selector) {
+      return document.querySelectorAll(selector).length;
+    }
+    console.log(count("p"));
+    // All <p> elements
+    // → 4
+    console.log(count(".animal"));
+    // Class animal
+    // → 2
+    console.log(count("p .animal"));
+    // Animal inside of <p>
+    // → 2
+    console.log(count("p > .animal")); // Direct child of <p>
+    // → 1
+  </script>
+  ```
+
+- Unlike methods such as `getElementsByTagName`, the `querySelectorAll` method returns a list which is not live. So it will not change as the document is changed. Al though it does not return as `Array`, it can be converted to one using `Array.from` method.
+- `querySelector` without the `All` suffix still works same, but it returns only the first matching element, otherwise it returns `null`.
+
+### Animating
+
+- The following code displays a picture of a cat moving around in an eliptical motion:
+
+  ```html
+  <p style="text-align: center">
+    <img src="img/cat.png" style="position: relative" />
+  </p>
+  <script>
+    let cat = document.querySelector("img");
+    let angle = Math.PI / 2;
+    function animate(time, lastTime) {
+      if (lastTime != null) {
+        angle += (time - lastTime) * 0.001;
+      }
+      cat.style.top = Math.sin(angle) * 20 + "px";
+      cat.style.left = Math.cos(angle) * 200 + "px";
+      requestAnimationFrame(newTime => animate(newTime, time));
+    }
+    requestAnimationFrame(animate);
+  </script>
+  ```
+
+- Our picture is centered on the page and given a position of relative . We’ll repeatedly update that picture’s top and left styles to move it.
+- The script uses `requestAnimationFrame` to schedule the `animate` function to run whenever the browser is ready to repaint the screen. The `animate` function itself again calls `requestAnimationFrame` to schedule the next update. When the browser window (or tab) is active, this will cause updates to happen at a rate of about 60 per second, which tends to produce a good-looking animation.
+- If we just updated the DOM in a loop, the page would freeze, and nothing would show up on the screen. Browsers do not update their display while a JavaScript program is running, nor do they allow any interaction with the page. This is why we need `requestAnimationFrame`.
+
+---
+
+---
