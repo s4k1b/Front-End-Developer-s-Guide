@@ -3030,7 +3030,7 @@ The _Hypertext Transfer Protocol_, is the mechanism through which data is reques
   localStorage.setItem("username", "sakib");
   console.log(localStorage.getItem("username"));
   // -> sakib
-  localStorage.removeItem("username);
+  localStorage.removeItem("username");
   ```
 
   A value in `localStorage` stricks around until it is overwritten, it is removed with `removeItem`, or the user clears their local data.
