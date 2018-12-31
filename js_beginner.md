@@ -1,5 +1,11 @@
 # JavaScript Note
 
+**Source:** https://eloquentjavascript.net/
+
+---
+
+---
+
 ## Values, Types and Operators
 
 ### Number`s
