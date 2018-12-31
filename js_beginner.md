@@ -2785,3 +2785,256 @@ console.log(talksAbout(document.body, "book"));
 ---
 
 ---
+
+## HTTP and Forms
+
+The _Hypertext Transfer Protocol_, is the mechanism through which data is requested and on the World Wide Web.
+
+### The Protocol
+
+- If we type _eloquentjavascript.net/18_http.html_ into our browser's address bar, the browser first looks up the address of the server associated with _eloquentjavascript.net_ and tries to open a TCP connection to it on port 80, the default port for HTTP traffic. If the server exists and accepts the connection, the browser might send something like:
+
+  ```txt
+  GET /18_http.html HTTP/1.1
+  Host: eloquentjavascript.net
+  User-Agent: Your browser's name
+  ```
+
+  The the server resoponds, through that same connection:
+
+  ```txt
+  HTTP/1.1 200 OK
+  Content-Length: 65585
+  Content-Type: text/html
+  Last-Modified: Mon, 08 Jan 2018 10:29:45 GMT
+  <!doctype html>
+  ... the rest of the document
+  ```
+
+- The browser takes the part of the response after the blank line, it's _body_, and displays it as an HTML document.
+- The information sent by the client is called the _request_. It starts with `GET /18_http.html HTTP/1.1`.
+
+  The first word is the _method_ of the request. `GET` means that we want to _get_ specified resource. Other common methods are
+
+  - `DELETE` to \_delete a resource,
+  - `PUT` to create or replace it,
+  - `POST` to send information to it.
+
+  The part after the method name is the path of the _resource_ the request applies to. In the simplest case, a resource is simply a file on the server, but the protocol doesn't require it to be. A resource can be anything that can be transferred as _if_ it is a file.
+
+  After the resource path, the first line of the request mentions `HTTP 1.1` to indicate the version of the HTTP protocol it is using.
+
+- The server's response starts with a HTTP version, followed by the status of the response, first as a three-digit status code and then as a human-readable string.
+
+  ```txt
+  HTTP/1.1 200 OK
+  ```
+
+  - Status codes starting with a 2 indicate that the request succeeded.
+  - Codes starting with 4 means there was something wrong with the request (client side). 404 is probably the most famous HTTP status code- it means that the resource could not be found.
+  - Codes starting with 5 means an error happened on the server side and the request is not to blame.
+
+- The frirst line of a request or response may be followed by any number of _headers_. These are lines the form `name: value` that secify extra informations about the request or response.
+- For most headers, the client and server are free to decide whether to include them in a request or response. But a few are required. For example, the `Host` header, which specifies the hostname, should be included in a request because a server might be serving multiple hostnames on a single IP address, and without that header, the server won't know which hostname the client is trying to talk to.
+
+### Browsers and HTTP
+
+- A moderately complicated website can easily include anythere from 10 to 200 resources. To be able to fetch those quickly, browsers will make several `GET` requests simultaneously, rather than waiting for the responses one at a time.
+- HTML pages may include _forms_, which allow users to fill out information and send it to the server. Example:
+
+  ```html
+  <form method="GET" action="example/message.html">
+    <p>Name: <input type="text" name="name" /></p>
+    <p>Message:<br /><textarea name="message"></textarea></p>
+    <p><button type="submit">Send</button></p>
+  </form>
+  ```
+
+  When the send button is clicked, the form is _submitted_, meaning that the content of it's field is packed into an HTTP request and the browser navigates to the result of that request.
+
+- When the `<form>` element's `mehtod` attribute is `GET` (or is omitted), the information in the form is added to the end of the `action` URL as a _query string_. The browser might make a request to this URL:
+
+  ```txt
+  GET /example/messages.html?name=Jean&message=Yes%3F HTTP/1.1
+  ```
+
+  The question mark indicates the end of the path part and begining of the query. It is followed by pairs of names and values, corressponding to the `name` attribute on the form field elements and the content of those elements, respectively. An ampersand characer(&) is used to separate the paris.
+
+- To escape a character in _URL encoding_, we use percent sign followed by two hexadecimal digitsthat encode the character code. JavaScript provides the `encodeURIComponent` and `decodeURIComponent` functions to encode and decode this format:
+
+  ```js
+  console.log(encodeURIComponent("Yes?"));
+  // → Yes%3F
+  console.log(decodeURIComponent("Yes%3F"));
+  // → Yes?
+  ```
+
+- If we change the `method` attribute of the HTML form in the example we saw earlier to `POST`, the HTTP request made to submit the form will use the `POST` method and put the query string in the body of the request, rather than adding it to the URL.
+
+  ```txt
+  POST /example/message.html HTTP/1.1
+  Content-length: 24
+  Content-type: application/x-www-form-urlencoded
+  name=Jean&message=Yes%3F
+  ```
+
+- `GET` should be used for requests that do not have side effects but simply ask for information. Requests that change something on the server, for example creating a new account or poting a message, should be expressed with other methods, such as `POST`.
+
+### Fetch
+
+- The interface through which browser JavaScript can make HTTP requests is called `fetch`. It conviniently uses promises.
+
+  ```js
+  fetch("example/data.txt").then(response => {
+    console.log(response.status);
+    // → 200
+    console.log(response.headers.get("Content-Type"));
+    // → text/plain
+  });
+  ```
+
+- Calling `fetch` returns a promise that resolves to a `Response` object holding information about the server's response, such as it's status code and it's headers. The headers are wrapped in a `Map` like object that treats it's keys as case insensitive because header names are not supposed to be case sensitive.
+- The `Promise` resolves successfully even if the server responds with an error code. It _might_ also be rejected if there is a network error.
+- To get the actual content of the response, we can use it's `text` method. The `text` itself is returned as a `Promise`.
+
+  ```js
+  fetch("example/data.txt")
+    .then(resp => resp.text())
+    .then(text => console.log(text));
+  // -> This is the content of data.txt
+  ```
+
+- A similer method, called `json`, returns a promise that resolves to the value we get when parsing the body as JSON or rejects if it's not valid JSON.
+- By default `fetch` uses the `GET` method to make it's HTTP request and does not include a request body. We can configure it differently by passing an object with extra options as a second argument. For example, this request tries to delete `example/data.txt`:
+
+  ```js
+  fetch("example/data.txt", { method: "DELETE" }).then(resp => {
+    console.log(resp.status);
+    // → 405
+  });
+  ```
+
+- To add a request body, we can include a `body` option. TO set headers, there's a headers option.
+
+  ```js
+  fetch("example/data.txt", { headers: { Range: "bytes=8-19" } })
+    .then(resp => resp.text())
+    .then(console.log);
+  // → the content
+  ```
+
+### Focus
+
+- We can control focus form JavaScript with the `focus` and `blur` methods. The first moves the focus to the DOM element it is called on, and the second removes focus. The value in `document.activeElement` corresponds to the currently focused element.
+
+  ```html
+  <input type="text" />
+  <script>
+    document.querySelector("input").focus();
+    console.log(document.activeElement.tagName);
+    // → INPUT
+    document.querySelector("input").blur();
+    console.log(document.activeElement.tagName);
+    // → BODY
+  </script>
+  ```
+
+- JavaScript can be used to focus a field when the document is loaded, but HTML also provides the `autofocus` attribute which gives us the same effect while letting the browser know what we are trying to achieve. This gives the brwoser the option to disable the behavior when it is not appropriate, such as when the user has focus on another element.
+- Browser traditionally allows the user to focus from element to element using the `TAB` key. We can influence the order in which elements receive focus with the `tabindex` attribute.
+
+  ```js
+  <input type="text" tabindex=1> <a href=".">(help)</a>
+  <button onclick="console.log('ok')" tabindex=2>OK</button>
+  ```
+
+  A `tabindex` of `-1` makes tabbing skip over an element, even if it is normally focusable.
+
+### The Form as a Whole
+
+- When a field is contained in a `<form>` element, its DOM element will have a `form` property linking back to the form's DOM element.
+- The `form` element in turn, has a property called `lements` that contains an array-like collection of the fields inside it.
+- The `name` attribute of a form field determines the way it's value will be identified when the form is submitted. It can also be used as a prperty name when accessing it's elements, which acts both as an array-like object (accessible by index) and also a map (accessible by name).
+
+  ```html
+  <form action="example/submit.html">
+    Name: <input type="text" name="name" /><br />
+    Password: <input type="password" name="password" /><br />
+    <button type="submit">Log in</button>
+  </form>
+  <script>
+    let form = document.querySelector("form");
+    console.log(form.elements[1].type);
+    // → password
+    console.log(form.elements.password.type);
+    // → password
+    console.log(form.elements.name.form == form);
+    // → true
+  </script>
+  ```
+
+- Submitting a form means that the brwoser will traditionally navigate to the page indicated in form's `action` attribute, using either `GET` or `POST` request. But before it happens, a **"submit"** event is fired. We can handle this event with JavaSCript and prevent this default behavior by calling `preventDefault` on the event object.
+
+### Text Fields
+
+- Fields created with `<textarea>` tags, or `<input>` tags with a type `text` or `password`, share a common interface. Their DOM elements have a `value` property that holds their current content as string value.
+- The `selectionStart` and `selectionEnd` properties of text fields give us information about the cursor and selection in the text. When nothing is selected those two properties will hold the same number, indicating the position of the cursore. For example, 0 indicates the start of a text and 10 indicates the cursore is after the 10<sup>th</sup> character.
+- The `replaceSelection` function repalces the currently selected part of a text field's content with the given word and then moves the cursor after that word.
+- The `change` event for a text field does not fire every time something is typed. Rather, it fires when the field looses focus after it's content was changed.
+- To respond immediately to changes to text field we should register handlers for the `input` event instead, which fires everytime a user types a character.
+
+  ```html
+  <input type="text" /> length: <span id="length">0</span>
+  <script>
+    let text = document.querySelector("input");
+    let output = document.querySelector("#length");
+    text.addEventListener("input", () => {
+      output.textContent = text.value.length;
+    });
+  </script>
+  ```
+
+### File Fields
+
+- The `files` property of a file field element is an array-like object containing the files chose in the field.
+- Ojects in the `files` object have properties such as `name` (the filename), `size` (the file size), and `type` (the media type of the file). It does not have a property that contains the content of the file.
+
+  ```html
+  <input type="file" multiple />
+  <script>
+    let input = document.querySelector("input");
+    input.addEventListener("change", () => {
+      for (let file of Array.from(input.files)) {
+        let reader = new FileReader();
+        reader.addEventListener("load", () => {
+          console.log(
+            "File",
+            file.name,
+            "starts with",
+            reader.result.slice(0, 20)
+          );
+        });
+        reader.readAsText(file);
+      }
+    });
+  </script>
+  ```
+
+- Reading a file is done by creating a `FileReader` object, registering a **"load"** event handler for it, and calling it's `readAsText` method, giving it the file we wnat to read. Once loading finishes, the reader's `result` property contains the file's content.
+
+### Storing Data Client-Side
+
+- When application needs to remember something between sessions, we cannot use JavaScript bindings, those are thrown away every time the page is closed.
+- The `localStorage` object can be used to store data in a way that survives page reloads:
+
+  ```js
+  localStorage.setItem("username", "sakib");
+  console.log(localStorage.getItem("username"));
+  // -> sakib
+  localStorage.removeItem("username);
+  ```
+
+  A value in `localStorage` stricks around until it is overwritten, it is removed with `removeItem`, or the user clears their local data.
+
+---
+
+---
