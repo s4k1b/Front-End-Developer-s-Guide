@@ -154,30 +154,30 @@ For instance, `document.querySelectorAll(':hover')` will return the collection o
 
 - There are some built-in DOM properties. But technically there is no limit. We can add our own DOM property:
 
-  ````js
+  ```js
   document.body.myData = {
-  name: 'Caesar',
-  title: 'Imperator'
+    name: "Caesar",
+    title: "Imperator"
   };
 
-      		alert(document.body.myData.title); // Imperator
-      		```
-      		we can add methods as well
-      		```js
-      		document.body.sayTagName = function() {
-      		alert(this.tagName);
-      		};
+  alert(document.body.myData.title); // Imperator
+  ```
 
-      		document.body.sayTagName(); //BODY
-      		```
+  we can add methods as well
 
-  ````
+  ```js
+  document.body.sayTagName = function() {
+    alert(this.tagName);
+  };
+
+  document.body.sayTagName(); //BODY
+  ```
 
 - HTML standard attributes are automaticly created as DOM property and can be accessed instantly.
 - For HTML non standard attributes: - `elem.hasAttribute(name)` - checks for the existence. - `elem.getAttribute(name)` - gets the value. - `elem.setAttribute(name, value)` - sets the value. - `elem.removeAttribute(name)` - removes the attribute.
   Demo of working with attributes:
 
-  ````html
+  ```html
   <body>
     <div id="elem" about="Elephant"></div>
 
@@ -195,13 +195,12 @@ For instance, `document.querySelectorAll(':hover')` will return the collection o
     </script>
   </body>
   ```
-  ````
 
 - The Attribute names are case insensetive.
 - All the attributes, including the ones we set are visible in `outerHTML`.
 - When a standard attribute changes, the corresponding property is auto-updated and vise-versa. - There are some exceptions:
 
-  ````html
+  ```html
   <input />
 
   <script>
@@ -216,7 +215,6 @@ For instance, `document.querySelectorAll(':hover')` will return the collection o
     alert(input.getAttribute("value")); // text (not updated!)
   </script>
   ```
-  ````
 
 - Attributes are strings but DOM properties may not be. For instance, the `input.checked` property is boolean.
 
