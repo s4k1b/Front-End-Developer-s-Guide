@@ -242,4 +242,113 @@ For instance, `document.querySelectorAll(':hover')` will return the collection o
 ### Modifying the Document
 
 - DOM modifications is the key to create _live_ pages.
-- testing
+- Creating an Element:
+  There are two methods:
+
+  - `document.createElement(tag)`- creates new element with the given tag.
+  - `document.createTextNode(text)`- creates new node with given text.
+  - We can assign classes to created elements:
+
+  ```js
+  let div = document.createElement("div");
+  div.className = "alert alert-success";
+  div.innerHTML =
+    "<strong>Hi there!</strong> You've read an important message.";
+  ```
+
+- Inserting Elements:
+
+  - `document.body.appendChild(div)` - Method that inserts a `div` inside another `div`.
+  - `parentElem.appendChild(node)` - Inserts node as the last child of `parentElem`.
+  - `parentElem.insertBefore(node, nextSibling)` - Inserts node under `parentElem` just before the `nextSibling` node.
+  - `parentElem.replaceChild(node, oldChild)` - Replaces `oldChild` with `node` among children of `parentElem`.
+  - The following set of methods provide a more flexible insertions:
+
+    - `node.append(...nodes or string)` - append nodes or strings at the end of node.
+    - `node.prepend(...nodes or string)` - prepend nodes or strings at the begining of node.
+    - `node.before(...nodes or string)` - insert nodes or string before the node.
+    - `node.after(...nodes or string)` - insert nodes or string after the node.
+    - `node.replaceWith(...nodes or string)` - replace node with the given nodes or string.
+
+    A simple picture depicting what the methods do:
+    ![Method describing picture](http://javascript.info/article/modifying-document/before-prepend-append-after.png)
+
+    - These methods can take more than one node as arguments.
+    - These methods can only insert DOM nodes or text elements. The HTML tags wont work this way like `innerHTML`.
+
+  - `elem.insertAdjacentHTML/Text/Element(where, html)` is a versatile method for inserting HTML/Text/Element.
+    The first parameter is a string, specifying where to insert. Must be one of the following:
+
+    - `beforebegin` - insert `html` before `elem`.
+    - `beforeend` - insert `html` into `elem`, at the end.
+    - `afterbegin` - insert `html` into `elem`, at the begining.
+    - `afterend` - insert `html` after `elem`.
+
+  - `elem.clodeNode(true)` - creates a _deep_ clone of the element - with all attributes and subelements. If we call `elem.cloneNode(fale)` then the clone is made without child elements.
+
+  An example of copying the message:
+
+  ````html
+  <style>
+    .alert {
+      padding: 15px;
+      border: 1px solid #d6e9c6;
+      border-radius: 4px;
+      color: #3c763d;
+      background-color: #dff0d8;
+    }
+  </style>
+
+  <div class="alert" id="div">
+    <strong>Hi there!</strong> You've read an important message.
+  </div>
+
+  <script>
+    let div2 = div.cloneNode(true); // clone the message
+    div2.querySelector("strong").innerHTML = "Bye there!"; // change the clone
+
+    div.after(div2); // show the clone after the existing div
+  </script>
+  ```
+  ````
+
+- To remove nodes, there are following methods:
+
+  - `parentElem.removeChild(node)` - removes `elem` from `parentElem` (assuming it's a child).
+  - `node.remove()`- removes the node form it's place.
+
+- To move a node from one place to another we don't need to replace it form it's old place. **All insertion methods automatically remove the node from the old place.**
+
+  ```html
+  <div id="first">First</div>
+  <div id="second">Second</div>
+  <script>
+    // no need to call remove
+    second.after(first); // take #second and after it - insert #first
+  </script>
+  ```
+
+- The call to `document.write(html)` - writes the `html` into page _right here right now_. The `html` string can be dynamically generated, so it's kind of flexible. We can use JavaScript to create a full-fledged webpage and write it. **The call to `document.write` only works while the page is loading.**. If we call it afterwards, the existing document content is erased. For istance:
+
+  ```html
+  <p>After one second the contents of this page will be replaced...</p>
+  <script>
+    // document.write after 1 second
+    // that's after the page loaded, so it erases the existing content
+    setTimeout(() => document.write("<b>...By this.</b>"), 1000);
+  </script>
+  ```
+
+  So, it's kind of unusable at _after loaded_ stage. Technically when `document.write` is called while the browser is still reading the HTML, it appedns directly to the HTML. That is why it is blazingly fast.
+
+## Styles and Classes
+
+- There are generally two ways to style an element:
+
+  - Create a class in CSS and add it: `<div class="...">`
+  - Write properties directly into `style`: `div style="..."`.
+
+  It is prefered to use the CSS.
+  We should only manipulate the `style` property if classes _can't handle it_.
+
+-
