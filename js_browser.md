@@ -5,7 +5,6 @@
 ### Browser environment, specs
 
 - Bird's-eye view of what we have when JavaScript runs in a web-browser:
-
 		![bird_view](birds_eye_view.png)
 
 - There's a _root_ object called `window`. It has two roles:
@@ -31,11 +30,9 @@
 ### Walking the DOM
 
 - Here's a picture of links that allow to travel between DOM nodes:
-
 		![Picture of DOM nodes](http://javascript.info/article/dom-navigation/dom-links.png)
 
 - `document.body` can be `null`. A script can not access an element taht doesn't exist at the moment of running. In the example below the first `alert` shows `null` because `document.body` is not compiled yet.
-
 		```html
 		<html></html>
 		<head>
@@ -53,9 +50,7 @@
 
 - It the DOM world `null` means it does not exist.
 - **Child nodes (or childre):** elements that are direct children. eg: `<head>` and `<body>` are children of `<html>`.
-
-		**Descendants:** all elements that are nested in the given node including it's children.
-
+	**Descendants:** all elements that are nested in the given node including it's children.
 - The `childNodes` collection provides access to all child nodes, including text nodes.
 - Properties `firstChild` and `lastChild` give fast access to the first and last children.
 - The parent of a node is available in `parentNode` property.
@@ -66,7 +61,6 @@
 	- `previousElementSibling`, `nextElementSibling` - neighbour elements.
 	- `parentElement` - parent element.
 - The `parentElement` property returns the _element_ parent, while `parentNode` returns _any node_ parent. They are usually the same except for `document.documentElement`:
-
 		```js
 		alert(document.documentElement.parentNode); // document
 		alert(document.documentElement.parentElement); // null`
@@ -88,7 +82,6 @@
 ### Searching: getElement* and querySelector*
 
 - If an element has an `id` attribute, then there's a global variable by the name from that `id`. We can access elements like this:
-
 		```html
 		<div id="elem">
 		<div id="elem-content">Element</div>
@@ -109,8 +102,7 @@
 - `elem.getElementsByName(name)` reuturns elements with the given `name` attribute.
 - The call to `elem.querySelectorAll(css)` returns all elements inside `elem` matching the given CSS selector. That's the most used powerful method.
 
-		here we, look for all `<li>` elements that are last children:
-
+  here we, look for all `<li>` elements that are last children:
 		```html
 		<ul>
 		<li>The</li>
@@ -154,13 +146,14 @@ For instance, `document.querySelectorAll(':hover')` will return the collection o
 		alert(chapter.closest('h1')); // null (because h1 is not an ancestor)
 		</script>
 		```
+
 ### Node Properties: type, tag and contents
 
 - DOM nodes have different properties depending on their class. For instance, an element node corresponding to tag `<a>` has link related property and one corresponding to `input` has input related properties.
 - Each DOM node belongs to a corresponding built-in class.
 - The root of the heirarchy is `EventTarget`, that is inherited by `Node`, and other DOM nodes inherit from it.
-
 ![DOM heirarchy](http://javascript.info/article/basic-dom-node-properties/dom-class-hierarchy.png)
+
 	- The `EventTarget` is a _abstract_ class. Instance of that class can not be created. It serves as base, so that all DOM nodes support _events_.
 	- Then the `Node` is also an _abstract_ class, serving as the base for DOM nodes. It provides core tree functionality such as `parentNode`, `nextSibling`, `childNodes` and so on.
 	- `Element` is the base class for DOM elements. It porvides element level navigations, such as: `children`, `nextElementSibling`, `firstElementChild` etc.
