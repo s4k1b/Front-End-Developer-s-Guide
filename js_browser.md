@@ -7,15 +7,15 @@
 - Bird's-eye view of what we have when JavaScript runs in a web-browser:
   ![bird_view](birds_eye_view.png)
 
-- There's a _root_ object called `window`. It has two roles: - First, it is a global object for JS code. - Second, it represents the _browser_window_ and provides methods to control it.
+- There's a _root_ object called `window`. It has two roles: - First, it is a global object for JavaScript code. - Second, it represents the _browser_window_ and provides methods to control it.
 - The `document` object gives access to the page's content. We can change or create anything on the page using it.
-- Browser Object Model (BOM) are addtional objects provided by the browser (host environment) to work with everything except the document. - The `navigator` object provides background information about the browser and the operating system. - The `location` object allows us to read the current URL and can redirect the browser to a new one.
+- Browser Object Model (BOM) are additional objects provided by the browser (host environment) to work with everything except the document. - The `navigator` object provides background information about the browser and the operating system. - The `location` object allows us to read the current URL and can redirect the browser to a new one.
 
 ### DOM tree
 
 - According to Document Object Model (DOM) each HTML tag is an object. Nested tags are called _children_ of the enclosing one.
 - If the browser encounters a malformed HTML, it automatically corrects it when making DOM. Errors such as missing ending tags and missing tags are auto corrected most of the time.
-- Tbales always have a `<tbody>` element enclosing the `<tr>` and `<td>` elements in the DOM, but in HTML it can be omitted.
+- Tables always have a `<tbody>` element enclosing the `<tr>` and `<td>` elements in the DOM, but in HTML it can be omitted.
 - Text nodes are labelled as `#text` and comment nodes are labelled as `#comment`. They are leaf nodes and can never have children.
 - There are [12 node types](https://dom.spec.whatwg.org/#node). In practice we usually work with 4 of them: - `document` - the _entry_point_ into the DOM. - element nodes - HTML tags, the tree building blocks. - text nodes - contains text. - comment node - sometimes we can put information there, it won't be shown but can be accessed by JavaScript.
 
@@ -24,17 +24,17 @@
 - Here's a picture of links that allow to travel between DOM nodes:
   ![Picture of DOM nodes](http://javascript.info/article/dom-navigation/dom-links.png)
 
-- `document.body` can be `null`. A script can not access an element taht doesn't exist at the moment of running. In the example below the first `alert` shows `null` because `document.body` is not compiled yet.
+- `document.body` can be `null`. A script can not access an element that doesn't exist at the moment of running. In the example below the first `alert` shows `null` because `document.body` is not compiled yet.
   `html <html></html> <head> <script> alert( "From HEAD: " + document.body ); // null, there's no <body> yet </script> </head> <body> <script> alert( "From BODY: " + document.body ); // HTMLBodyElement, now it exists </script> </body> </html>`
 
 - It the DOM world `null` means it does not exist.
-- **Child nodes (or childre):** elements that are direct children. eg: `<head>` and `<body>` are children of `<html>`.
+- **Child nodes (or children):** elements that are direct children. For instance: `<head>` and `<body>` are children of `<html>`.
   **Descendants:** all elements that are nested in the given node including it's children.
 - The `childNodes` collection provides access to all child nodes, including text nodes.
 - Properties `firstChild` and `lastChild` give fast access to the first and last children.
 - The parent of a node is available in `parentNode` property.
 - The next node under same parent is `nextSibling` and the previous one is `previousSibling`.
-- To achieve element only navigation, we need have similer properties but with the word `ELement` inside: - `children` - only those children that are element nodes. - `firstElementChild`, `lastElementChild` - first and last child elements. - `previousElementSibling`, `nextElementSibling` - neighbour elements. - `parentElement` - parent element.
+- To achieve element only navigation, we need have similar properties but with the word `ELement` inside: - `children` - only those children that are element nodes. - `firstElementChild`, `lastElementChild` - first and last child elements. - `previousElementSibling`, `nextElementSibling` - neighbour elements. - `parentElement` - parent element.
 - The `parentElement` property returns the _element_ parent, while `parentNode` returns _any node_ parent. They are usually the same except for `document.documentElement`:
 
   `js alert(document.documentElement.parentNode); // document alert(document.documentElement.parentElement); // null`
@@ -44,7 +44,7 @@
 - **`<tr>`:** - `tr.cells` - the collection of `<td>` and `<th>` cells inside the given `<tr>`. - `tr.sectionRowIndex` - the position (index) of the given `<tr>` inside the enclosing `<thead>/<tbody>/<tfoot>`. - `tr.rowIndex` - the number of the `<tr>` in the table as a whole (including all table rows).
 - **`<td>` and `<th>`**: - `td.cellIndex` - the number of the cell inside the enclosing `<tr>`.
 
-### Searching: getElement* and querySelector*
+### Searching: `getElement*` and `querySelector*`
 
 - If an element has an `id` attribute, then there's a global variable by the name from that `id`. We can access elements like this:
   `html <div id="elem"> <div id="elem-content">Element</div> </div> <script> alert(elem); // DOM-element with id="elem" alert(window.elem); // accessing global variable like this also works // for elem-content things are a bit more complex // that has a dash inside, so it can't be a variable name alert(window['elem-content']); // ...but accessible using square brackets [...] </script>`
@@ -53,7 +53,7 @@
 - This method can only be called on the `document` object. It searches the whole document for that `id`.
 - `elem.getElementsByTagName(tag)` looks for elements with the given tag and returns the collection of them. The parameter can also be `*` for any tags.
 - `elem.getElementsByClassName(className)` returns elements that have the given CSS class. Elements may have other classes to.
-- `elem.getElementsByName(name)` reuturns elements with the given `name` attribute.
+- `elem.getElementsByName(name)` returns elements with the given `name` attribute.
 - The call to `elem.querySelectorAll(css)` returns all elements inside `elem` matching the given CSS selector. That's the most used powerful method.
 
   here we, look for all `<li>` elements that are last children:
@@ -77,13 +77,13 @@
   ```
   ````
 
-- We can use pseudo-classes as well. Presudo-clases in the CSS selctor like `:hover` and `:active` are also supported.
+- We can use pseudo-classes as well. Pseudo-classes in the CSS selector like `:hover` and `:active` are also supported.
 
 For instance, `document.querySelectorAll(':hover')` will return the collection of elements that the pointer in over now (in nesting order: from the outermost to the most nested one).
 
 - The `elem.matches(css)` does not look for anything, it merely checks if `elem` matches the given CSS selector. It returns either `true` or `false`.
 
-- `elem.closest(css)` looks the nearest ancestor that metche the CSS-selector. The `elem` itself can also included in the search.
+- `elem.closest(css)` looks the nearest ancestor that matches the CSS-selector. The `elem` itself can also included in the search.
 
   ````html
   <h1>Contents</h1>
@@ -110,12 +110,12 @@ For instance, `document.querySelectorAll(':hover')` will return the collection o
 
 - DOM nodes have different properties depending on their class. For instance, an element node corresponding to tag `<a>` has link related property and one corresponding to `input` has input related properties.
 - Each DOM node belongs to a corresponding built-in class.
-- The root of the heirarchy is `EventTarget`, that is inherited by `Node`, and other DOM nodes inherit from it.
-  ![DOM heirarchy](http://javascript.info/article/basic-dom-node-properties/dom-class-hierarchy.png)
+- The root of the hierarchy is `EventTarget`, that is inherited by `Node`, and other DOM nodes inherit from it.
+  ![DOM hierarchy](http://javascript.info/article/basic-dom-node-properties/dom-class-hierarchy.png)
 
       - The `EventTarget` is a _abstract_ class. Instance of that class can not be created. It serves as base, so that all DOM nodes support _events_.
       - Then the `Node` is also an _abstract_ class, serving as the base for DOM nodes. It provides core tree functionality such as `parentNode`, `nextSibling`, `childNodes` and so on.
-      - `Element` is the base class for DOM elements. It porvides element level navigations, such as: `children`, `nextElementSibling`, `firstElementChild` etc.
+      - `Element` is the base class for DOM elements. It provides element level navigations, such as: `children`, `nextElementSibling`, `firstElementChild` etc.
       - `HTMLElement` is finally the basic class for all HTML elements. It is inherited by various HTML elements:
       	- `HTMLInputElement - the class for `<input>` elements,
       	- HTMLBodyElement` - the class for `<body>` elements,
@@ -128,7 +128,7 @@ For instance, `document.querySelectorAll(':hover')` will return the collection o
   `js alert( document.body instanceof HTMLBodyElement ); // true alert( document.body instanceof HTMLElement ); // true alert( document.body instanceof Element ); // true alert( document.body instanceof Node ); // true alert( document.body instanceof EventTarget ); // true`
 - `nodeType` property provides old fashioned way to get the _type_ of a DOM node. It has a numeric value.
 - Given a node, we can read it's tag name by `nodeName` or `tagName` property.
-- The `innerHTML` property allowsw to get the HTML inside the element as a string. We can also modify it's one of the powerful ways to change a web page. - Beware: `innerHTML+=` does a full overwrite. We can append more HTML by using `elem.innerHTML+="something"`. But we should be careful in doing so, because it is not only addition but a full overwrite.
+- The `innerHTML` property allows to get the HTML inside the element as a string. We can also modify it's one of the powerful ways to change a web page. - Beware: `innerHTML+=` does a full overwrite. We can append more HTML by using `elem.innerHTML+="something"`. But we should be careful in doing so, because it is not only addition but a full overwrite.
   `js elem.innerHTML += "..."; //is a shorter way to write: elem.innerHTML = elem.innerHTML + "...";`
 - The `outerHTML` property contains the full HTML of the element. That is `innerHTML` plus the HTML of the element itself. - Beware: unlike `innerHTML`, it does not perform a full overwriting of the HTML, instead it replaces it as a whole in the outer context.
 - The `innerHTML` property is only valid for element type nodes. The content of other nodes such as, text nodes and comment nodes, can be obtained by using `nodeValue` and `data` property.
@@ -173,7 +173,7 @@ For instance, `document.querySelectorAll(':hover')` will return the collection o
   document.body.sayTagName(); //BODY
   ```
 
-- HTML standard attributes are automaticly created as DOM property and can be accessed instantly.
+- HTML standard attributes are automatically created as DOM property and can be accessed instantly.
 - For HTML non standard attributes: - `elem.hasAttribute(name)` - checks for the existence. - `elem.getAttribute(name)` - gets the value. - `elem.setAttribute(name, value)` - sets the value. - `elem.removeAttribute(name)` - removes the attribute.
   Demo of working with attributes:
 
@@ -196,7 +196,7 @@ For instance, `document.querySelectorAll(':hover')` will return the collection o
   </body>
   ```
 
-- The Attribute names are case insensetive.
+- The Attribute names are case insensitive.
 - All the attributes, including the ones we set are visible in `outerHTML`.
 - When a standard attribute changes, the corresponding property is auto-updated and vise-versa. - There are some exceptions:
 
@@ -218,7 +218,7 @@ For instance, `document.querySelectorAll(':hover')` will return the collection o
 
 - Attributes are strings but DOM properties may not be. For instance, the `input.checked` property is boolean.
 
-  - There are other examples. The `style` attribute is a string, the the `stype` property is an object.
+  - There are other examples. The `style` attribute is a string, the `stype` property is an object.
   - The `href` DOM property is always the full URL, even if the attribute consists of relative URL or just a `#hash`. For example.
 
   ```html
@@ -234,8 +234,8 @@ For instance, `document.querySelectorAll(':hover')` will return the collection o
 
 - We can use non-standard attributes to pass custom data from HTML JavaScript, or to _mark_ HTML-elements for JavaScript.
 - All attributes starting with _data-_ are reserved for programmers' use. They are available in the `dataset` property.
-  - For instace if `elem` has a `data-about` property, then it is avaible as `elem.dataset.about` in DOM.
-  - For multiword attributes like `data-order-state` become camel-cased: `dataset.orderState`.
+  - For instance if `elem` has a `data-about` property, then it is available as `elem.dataset.about` in DOM.
+  - For multi-word attributes like `data-order-state` become camel-cased: `dataset.orderState`.
 
 ### Modifying the Document
 
@@ -263,7 +263,7 @@ For instance, `document.querySelectorAll(':hover')` will return the collection o
   - The following set of methods provide a more flexible insertions:
 
     - `node.append(...nodes or string)` - append nodes or strings at the end of node.
-    - `node.prepend(...nodes or string)` - prepend nodes or strings at the begining of node.
+    - `node.prepend(...nodes or string)` - prepend nodes or strings at the beginning of node.
     - `node.before(...nodes or string)` - insert nodes or string before the node.
     - `node.after(...nodes or string)` - insert nodes or string after the node.
     - `node.replaceWith(...nodes or string)` - replace node with the given nodes or string.
@@ -279,14 +279,14 @@ For instance, `document.querySelectorAll(':hover')` will return the collection o
 
     - `beforebegin` - insert `html` before `elem`.
     - `beforeend` - insert `html` into `elem`, at the end.
-    - `afterbegin` - insert `html` into `elem`, at the begining.
+    - `afterbegin` - insert `html` into `elem`, at the beginning.
     - `afterend` - insert `html` after `elem`.
 
-  - `elem.clodeNode(true)` - creates a _deep_ clone of the element - with all attributes and subelements. If we call `elem.cloneNode(fale)` then the clone is made without child elements.
+  - `elem.clodeNode(true)` - creates a _deep_ clone of the element - with all attributes and sub-elements. If we call `elem.cloneNode(fale)` then the clone is made without child elements.
 
   An example of copying the message:
 
-  ````html
+  ```html
   <style>
     .alert {
       padding: 15px;
@@ -308,7 +308,6 @@ For instance, `document.querySelectorAll(':hover')` will return the collection o
     div.after(div2); // show the clone after the existing div
   </script>
   ```
-  ````
 
 - To remove nodes, there are following methods:
 
@@ -326,7 +325,7 @@ For instance, `document.querySelectorAll(':hover')` will return the collection o
   </script>
   ```
 
-- The call to `document.write(html)` - writes the `html` into page _right here right now_. The `html` string can be dynamically generated, so it's kind of flexible. We can use JavaScript to create a full-fledged webpage and write it. **The call to `document.write` only works while the page is loading.**. If we call it afterwards, the existing document content is erased. For istance:
+- The call to `document.write(html)` - writes the `html` into page _right here right now_. The `html` string can be dynamically generated, so it's kind of flexible. We can use JavaScript to create a full-fledged webpage and write it. **The call to `document.write` only works while the page is loading.**. If we call it afterwards, the existing document content is erased. For instance:
 
   ```html
   <p>After one second the contents of this page will be replaced...</p>
@@ -337,7 +336,7 @@ For instance, `document.querySelectorAll(':hover')` will return the collection o
   </script>
   ```
 
-  So, it's kind of unusable at _after loaded_ stage. Technically when `document.write` is called while the browser is still reading the HTML, it appedns directly to the HTML. That is why it is blazingly fast.
+  So, it's kind of unusable at _after loaded_ stage. Technically when `document.write` is called while the browser is still reading the HTML, it appends directly to the HTML. That is why it is blazingly fast.
 
 ## Styles and Classes
 
@@ -346,7 +345,7 @@ For instance, `document.querySelectorAll(':hover')` will return the collection o
   - Create a class in CSS and add it: `<div class="...">`
   - Write properties directly into `style`: `div style="..."`.
 
-  It is prefered to use the CSS.
+  It is preferred to use the CSS.
   We should only manipulate the `style` property if classes _can't handle it_.
 
 - `elem.className` - corresponds to the `class` attribute of an element. If we replace this with another string, it will replace the whole string of classes.
@@ -381,7 +380,7 @@ For instance, `document.querySelectorAll(':hover')` will return the collection o
     </body>
     ```
 
-- The property `elem.style` returns an object that corresponds to what's written in the _style_ attribute. For multi-word property the camelCase is used:
+- The property `elem.style` returns an object that corresponds to what's written in the _style_ attribute. For multi-word property the `camelCase` is used:
 
   ```txt
   background-color  => elem.style.backgroundColor
@@ -439,20 +438,20 @@ For instance, `document.querySelectorAll(':hover')` will return the collection o
   ```
 
   - This returned `style` object is read only.
-  - It actually returnes the resolved value of the property, not relative.
+  - It actually returns the resolved value of the property, not relative.
   - The properties of the pseudo-class `:visited` can not be read by this method.
 
 ### Element Size and Scrolling
 
-There are many JavaScript properties that allow us to read information about element width, height and other geometry features. We ofter need them when moving or positioning elements in JavaScript, to correctly calculate coordinates.
+There are many JavaScript properties that allow us to read information about element width, height and other geometry features. We often need them when moving or positioning elements in JavaScript, to correctly calculate coordinates.
 
 - The `offsetParent` is the nearest ancestor that is:
 
-  - CSS postioned (`postion` is `absolute`, `fixed` or `sticky`).
+  - CSS positioned (`postion` is `absolute`, `fixed` or `sticky`).
   - or `<td>`, `<th>`, `<table>`.
   - or `<body>`.
 
-  In the most practical case we can use it to get the neasest CSS-postioned ancestor.
+  In the most practical case we can use it to get the nearest CSS-positioned ancestor.
 
   - The `offsetLeft/offsetTop` provides with x/y co-ordinates relative to it's upper-left corner.
 
@@ -489,7 +488,7 @@ There are many JavaScript properties that allow us to read information about ele
 - `scrollWidth` and `scrollHeight` also account for the scrolled out part of the element while the previous two only account for the visible part:
   ![scrolled out example](http://javascript.info/article/size-and-scroll/metric-scroll-width-height.png)
 - `scrollTop` and `scrollLeft` property gives the width and height of the hidden or scrolled out part of the element.
-  ![scrollTop example](http://javascript.info/article/size-and-scroll/metric-scroll-top.png)
+  ![scroll-top example](http://javascript.info/article/size-and-scroll/metric-scroll-top.png)
 
   - There properties can be modified unlike most of the other geometric properties.
 
@@ -497,3 +496,82 @@ There are many JavaScript properties that allow us to read information about ele
 
   - The CSS `width/height` depend on another property: `box-sizing`. A change in this `box-sizing` for CSS purposes may break such JavaScript.
   - The CSS `width/height` may be set to `auto`.
+
+### Window Sizes and Scrolling
+
+- We can use `clientWidth/clientHeight` of `document.documentElement` to get the height and width of the window.
+- We can not use `scrollWidth/scrollHeight` do not work for `document.documentElement`. We can obtain the scroll height of entire document by :
+
+  ```js
+  let scrollHeight = Math.max(
+    document.body.scrollHeight,
+    document.documentElement.scrollHeight,
+    document.body.offsetHeight,
+    document.documentElement.offsetHeight,
+    document.body.clientHeight,
+    document.documentElement.clientHeight
+  );
+
+  alert("Full document height, with scrolled out part: " + scrollHeight);
+  ```
+
+  This is an inconsistency. There is no specific reason behind it.
+
+- To avoid these peculiarities, we can use `window.pageXOffset/pageYOffset` to get the current scroll position. These properties are read only.
+- Regular elements can be scrolled by changing `scrollTop/scrollLeft`.
+- We can do the same for the page:
+
+  - For all browsers except Chrome/Opera/Safari: modify `document.documentElement.scrollTop/Left`.
+  - For Chrome/Opera/Safari: use `document.body.scrollTop/Left` instead.
+
+- To avoid these cross-browser incompatibilities, there are other methods: `window.scrollBy(x,y)` and `window.scrollTo(pageX, pageY)`.
+
+  - The method `scrollBy(x,y)` scroll the page relative to its current position. For instance, `scrollBy(0, 10)` scrolls the page `10px` down.
+  - The method `scrollTo(x,y)` scrolls the page relative to the document top-left corner. It's like setting `scrollLeft/scrollTop`. To scroll to the beginning we can use `scrollTo(0,0)`.
+  - There is another method: `elem.scrollIntoView(top)`:
+
+    - if `top=true` (by default), then the page will scroll to make the `elem` appear on top of the window.
+    - if `top=false` then the page will scroll that the `elem` appears at the bottom of the window.
+
+- To make the document _unscrollable_ we can set `document.body.style.overflow` as `hidden`. This will freeze the page on it's current scroll.
+
+### Coordinates
+
+- Most JavaScript methods deal with one of two coordinate systems:
+
+  - Relative to the window(or another viewport) top/left.
+  - Relative to the document top/left.
+
+- The method `getBoundingClientRect()` returns window coordinates for `elem` as an object with properties:
+
+  - `top` - Y-coordinate for the top element edge,
+  - `left` - X-coordinate for the left element edge,
+  - `right` - X-coordinate for the right element edge,
+  - `bottom` - Y-coordinate for the bottom element edge.
+
+  Like this:
+  ![Example](http://javascript.info/article/coordinates/coords.png)
+
+  - They do not take the scrolled out part of the window. They are calculated from the top-left corner of the window.
+  - The coordinates can be fractions. We don't have to round them up.
+
+- The call to `document.elementFromPoint(x, y)` returns the most nested element at window coordinates (x, y).
+
+  - The syntax is : `let elem = document.getElementFromPoint(x, y);`.
+  - For instance, the code below highlights and outputs the tag of the element that is now in the middle of the window:
+
+    ```js
+    let centerX = document.documentElement.clientWidth / 2;
+    let centerY = document.documentElement.clientHeight / 2;
+
+    let elem = document.elementFromPoint(centerX, centerY);
+
+    elem.style.background = "red";
+    alert(elem.tagName);
+    ```
+
+  - For out of window coordinates, it returns `null`.
+
+- Document-relative coordinates start from the upper-left corner of the document, not the window.
+- In CSS, window-relative coordinates correspond to `position:fixed`, while document-relative coordinates corresponds to `position:absolute` on top.
+
