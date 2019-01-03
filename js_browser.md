@@ -349,4 +349,151 @@ For instance, `document.querySelectorAll(':hover')` will return the collection o
   It is prefered to use the CSS.
   We should only manipulate the `style` property if classes _can't handle it_.
 
--
+- `elem.className` - corresponds to the `class` attribute of an element. If we replace this with another string, it will replace the whole string of classes.
+
+  - If we need to remove a single class we can use `elem.classList` property. It is a special object with methods to `add/remove/toggle` classes. For instance:
+
+    ```html
+    <body class = "main page">
+      <script>
+        //add a class
+        document.body.classList.add('article');
+
+        alert(document.body.className); //main page article
+        </script>
+      </script>
+    </body>
+    ```
+
+    - `elem.classList.add/remove("class")` - adds/removes the class.
+    - `elem.classList.toggle("class")` - if the class exists, then removes it, otherwise adds it.
+    - `elem.classList.contains("class")` - returns `true/false`, checks for the given class.
+
+  - Besides that, the `elem.classList` is iterable. For instance:
+
+    ```html
+    <body class="main page">
+      <script>
+        for (let name of document.body.classList) {
+          alert(name); // main, and then page
+        }
+      </script>
+    </body>
+    ```
+
+- The property `elem.style` returns an object that corresponds to what's written in the _style_ attribute. For multi-word property the camelCase is used:
+
+  ```txt
+  background-color  => elem.style.backgroundColor
+  z-index           => elem.style.zIndex
+  border-left-width => elem.style.borderLeftWidth
+  ```
+
+- We can reset a style property as if it was not set by assigning it `null` string: `elem.style.display= ""`. If we set a property as empty string, the browser will use the CSS classes and it's build-in styles normally, as if there were no such property.
+- We can rewrite the whole CSS of an element by using `style.cssText`:
+
+  ```html
+  <div id="div">Button</div>
+
+  <script>
+    // we can set special style flags like "important" here
+    div.style.cssText = `color: red !important;
+      background-color: yellow;
+      width: 100px;
+      text-align: center;
+    `;
+
+    alert(div.style.cssText);
+  </script>
+  ```
+
+  - We can also use `elem.setAttribute('style', 'color:red...')`.
+
+- **The `style` property operates only on the value of the _style_ attribute, without any CSS cascade.** So we can not see anything using `style` property if it is not written in the `style` attribute.
+- To read these properties we need to use `getComputedStyle(element[,pseudo])` -
+
+  - `element` to read the value for.
+  - A pseudo-element if required, for instance `::before`. An empty string or no argument means the element itself.
+
+  The result is an object with style properties, like `elem.style`, but now with respect to all CSS classes. For instance:
+
+  ```html
+  <head>
+    <style>
+      body {
+        color: red;
+        margin: 5px;
+      }
+    </style>
+  </head>
+  <body>
+    <script>
+      let computedStyle = getComputedStyle(document.body);
+
+      // now we can read the margin and the color from it
+
+      alert(computedStyle.marginTop); // 5px
+      alert(computedStyle.color); // rgb(255, 0, 0)
+    </script>
+  </body>
+  ```
+
+  - This returned `style` object is read only.
+  - It actually returnes the resolved value of the property, not relative.
+  - The properties of the pseudo-class `:visited` can not be read by this method.
+
+### Element Size and Scrolling
+
+There are many JavaScript properties that allow us to read information about element width, height and other geometry features. We ofter need them when moving or positioning elements in JavaScript, to correctly calculate coordinates.
+
+- The `offsetParent` is the nearest ancestor that is:
+
+  - CSS postioned (`postion` is `absolute`, `fixed` or `sticky`).
+  - or `<td>`, `<th>`, `<table>`.
+  - or `<body>`.
+
+  In the most practical case we can use it to get the neasest CSS-postioned ancestor.
+
+  - The `offsetLeft/offsetTop` provides with x/y co-ordinates relative to it's upper-left corner.
+
+  In the example below the inner `<div>` has `<main>` as `offsetParent` and `offsetLeft/offsetTop` shifts from it's upper-left corner `(180)`.:
+
+  ```html
+  <main style="position: relative" id="main">
+    <article>
+      <div id="example" style="position: absolute; left: 180px; top: 180px">
+        ...
+      </div>
+    </article>
+  </main>
+  <script>
+    alert(example.offsetParent.id); // main
+    alert(example.offsetLeft); // 180 (note: a number, not a string "180px")
+    alert(example.offsetTop); // 180
+  </script>
+  ```
+
+  There are several occasions when a `offsetParent` is `null`:
+
+  - For not shown elements (`display:none;` or not in the document).
+  - For `<body>` and `<html>`.
+  - For elements with `postion:fixed`.
+
+- `offsetWidth` and `offsetHeight` gives the outer width and height of the element.
+
+  - Geometric properties can not be shown for elements that are not displayed. If an element or any ancestor of it has `display:none`, the geometric properties will be `null` or `zero`.
+  - `isHidden` method returns `true` for elements that are on screen but not shown, that is they have zero sizes (like empty div).
+
+- To measure the borders inside an element we can use `clientLeft` and `clientTop`. To be precise, they are not borders, they are relative co-ordinates of the inner side from the outer side.
+- `clientWidth` and `clientHeight`- gives us the width and height of the content including the padding and without the scrollbar.
+- `scrollWidth` and `scrollHeight` also account for the scrolled out part of the element while the previous two only account for the visible part:
+  ![scrolled out example](http://javascript.info/article/size-and-scroll/metric-scroll-width-height.png)
+- `scrollTop` and `scrollLeft` property gives the width and height of the hidden or scrolled out part of the element.
+  ![scrollTop example](http://javascript.info/article/size-and-scroll/metric-scroll-top.png)
+
+  - There properties can be modified unlike most of the other geometric properties.
+
+- We should not use the `getComputedStyle()` method instead of geometric properties. Because of:
+
+  - The CSS `width/height` depend on another property: `box-sizing`. A change in this `box-sizing` for CSS purposes may break such JavaScript.
+  - The CSS `width/height` may be set to `auto`.
