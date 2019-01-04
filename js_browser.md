@@ -575,3 +575,235 @@ There are many JavaScript properties that allow us to read information about ele
 - Document-relative coordinates start from the upper-left corner of the document, not the window.
 - In CSS, window-relative coordinates correspond to `position:fixed`, while document-relative coordinates corresponds to `position:absolute` on top.
 
+## Introduction to Events
+
+## Introduction to Browser Events
+
+- An _event_ is a signal that something has happened. All DOM nodes generate such signals (but events are not limited to DOM).
+- Mouse events:
+
+  - `click` - when the mouse clicks on an element (touchscreen devices generate it on tap).
+  - `contextmenu` - when the mouse right-clicks on an element.
+  - `mouseover`/`mouseout` - when the mouse cursor comes over/leaves an element.
+  - `mosedown`/`mouseup` - when the mouse button is pressed/released over an element.
+  - `mousemove` - when the mouse is moved.
+
+- Form element events:
+
+  - `submit` - when the visitor submits a `<form>`.
+  - `focus` - when the visitor focuses on an element, e.g. on an `<input>`.
+
+- Keyboard events:
+
+  - `keydown` and `keyup` - when the visitor presses and then releases the button.
+
+- Document events:
+
+  - `DOMContentLoaded` - when the HTML is loaded and processed, DOM is fully built.
+
+- CSS events:
+
+  - `transitioned` - when a CSS-animation finishes.
+
+- To react on events we can assign a _handler_ - a function that runs in case of an event.
+- There are several ways to assign handlers:
+
+  - A handler can be set in HTML with an attribute named `on<event>`.
+    For instance, we can assign a `click` handler for an `input`, we can use `onclick`, like:
+
+    ```html
+    <input value="Click me" onclick="alert('Click!')" type="button" />
+    ```
+
+    Inside HTML we can not write a lot of code, it would be inconvenient. So we can create a JavaScript function and call it inside the HTML:
+
+    ```html
+    <script>
+      function countRabbits() {
+        for (let i = 1; i <= 3; i++) {
+          alert("Rabbit number " + i);
+        }
+      }
+    </script>
+
+    <input type="button" onclick="countRabbits()" value="Count Rabbits" />
+    ```
+
+  - We can assign handlers using DOM property `on<event>`.
+    For instance, `elem.onclick`:
+
+    ```html
+    <input id="elem" type="button" value="Click me!" />
+    <script>
+      elem.onclick = function() {
+        alert("Thank You");
+      };
+    </script>
+    ```
+
+    This is same as previous one, **A handler is always set in the DOM property as a function. Assigning via HTML attribute is just a way to initialize it.**
+
+    We can not assign more than one handler to one event e.g. `onclick`. If we assign via both the HTML attribute and DOM property, the HTML attribute will be overwritten.
+
+    To remove handler we can do : `elem.onclick = null`.
+
+  - The value of `this` inside a handler function is the element on which the handler was triggered.
+  - There some common mistakes that are encountered while working with events:
+
+    - The function should be assigned as `syThanks`, not `sayThanks()`. That is not to invoke the function.
+      But in HTML, we do need the brackets. `<input type='button' id='button' onclick='sayThanks()'>`
+    - The assignment `elem.onclick= "alert(1)"` works too for compatibility reasons but it is strongly recommended to avoid assigning strings.
+    - Don't use `setAttributes` for handlers, they won't work.
+
+      ```js
+      // a click on <body> will generate errors,
+      // because attributes are always strings, function becomes a string
+      document.body.setAttribute("onclick", function() {
+        alert(1);
+      });
+      ```
+
+    - HTML attributes are not case-sensitive but DOM properties are case-sensitive.
+
+  - The fundamental problem is assigning handlers in the aforementioned ways is that - we can't assign multiple handlers to one event. So to solve this problem special methods `addEventListener` and `removeEventListener` were introduced. They are free of such problem.
+  - Syntax to add a handler
+
+    ```js
+    element.addEventListener(event, handler[, phase]);
+    ```
+
+    - `event` - event name, e.g. "click".
+    - `handler` - The handler function.
+    - `phase` - optional, the _phase_ for the handler to work. Usually not used.
+
+  - To remove the handler we can use `removeEventListener`:
+
+    ```js
+    // exactly the same arguments as addEventListener
+    element.removeEventListener(event, handler[, phase]);
+    ```
+
+    - To remove the handler we need to pass exactly the same function as was assigned.
+      This does not work:
+
+      ```js
+      elem.addEventListener("click", () => alert("Thanks!"));
+      // ....
+      elem.removeEventListener("click", () => alert("Thanks!"));
+      ```
+
+    - To remove using `removeEventListener` we need to put the handler in a variable:
+      The right way:
+
+      ```js
+      function handler() {
+        alert("Thanks!");
+      }
+
+      input.addEventListener("click", handler);
+      // ....
+      input.removeEventListener("click", handler);
+      ```
+
+  - We can add multiple event handlers in the following way:
+
+    ```html
+    <input id="elem" type="button" value="Click me" />
+
+    <script>
+      function handler1() {
+        alert("Thanks!");
+      }
+
+      function handler2() {
+        alert("Thanks again!");
+      }
+
+      elem.onclick = () => alert("Hello");
+      elem.addEventListener("click", handler1); // Thanks!
+      elem.addEventListener("click", handler2); // Thanks again!
+    </script>
+    ```
+
+  - For some handlers, we can only add then using `addEventListener`. For instance, the event `transitioned` (CSS animation finished) is like that.
+
+- To properly handle an event we need more information about the event. The **Event Object** provides us with these informations.
+
+  - When an events happens, the browser creates an _event object_, puts details into it and passes it as an argument to the handler.
+  - Example of getting mouse coordinates via event object:
+
+    ```html
+    <input type="button" value="Click me" id="elem" />
+
+    <script>
+      elem.onclick = function(event) {
+        // show event type, element and coordinates of the click
+        alert(event.type + " at " + event.currentTarget);
+        alert("Coordinates: " + event.clientX + ":" + event.clientY);
+      };
+    </script>
+    ```
+
+  - Some properties of `event` object:
+
+    - `event.type` - Event type: e.g.- "`click`".
+    - `event.currentTarget` - Element that handled the event. That's exactly same as `this`.
+    - `event.clientX / event.clientY` - Window-relative coordinates of the cursor, for mouse events.
+
+  - The event object is also accessible via HTML attribute.
+
+- We can assign an object as an event handler using `addEventListener`. When an event occurs, it's `handleEvent` method is called with it.
+
+  - In other words, when `addEventListener` receives an object as the handler, it calls `object.handleEvent(event)` in case of an event.
+  - We could also use a class for that:
+
+    ```html
+    <button id="elem">Click me</button>
+
+    <script>
+      class Menu {
+        handleEvent(event) {
+          switch (event.type) {
+            case "mousedown":
+              elem.innerHTML = "Mouse button pressed";
+              break;
+            case "mouseup":
+              elem.innerHTML += "...and released.";
+              break;
+          }
+        }
+      }
+
+      let menu = new Menu();
+      elem.addEventListener("mousedown", menu);
+      elem.addEventListener("mouseup", menu);
+    </script>
+    ```
+
+  - The `handleEvent` method can also call other methods:
+
+    ```html
+    <button id="elem">Click me</button>
+
+    <script>
+      class Menu {
+        handleEvent(event) {
+          // mousedown -> onMousedown
+          let method = "on" + event.type[0].toUpperCase() + event.type.slice(1);
+          this[method](event);
+        }
+
+        onMousedown() {
+          elem.innerHTML = "Mouse button pressed";
+        }
+
+        onMouseup() {
+          elem.innerHTML += "...and released.";
+        }
+      }
+
+      let menu = new Menu();
+      elem.addEventListener("mousedown", menu);
+      elem.addEventListener("mouseup", menu);
+    </script>
+    ```
