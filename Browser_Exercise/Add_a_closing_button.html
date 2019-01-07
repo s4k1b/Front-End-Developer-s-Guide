@@ -6,9 +6,6 @@
   </head>
 
   <body>
-    The button code (may need to adjust CSS):
-    <button class="remove-button">[x]</button>
-
     <div>
       <div class="pane">
         <h3>Horse</h3>
@@ -49,8 +46,17 @@
     //console.log(button);
 
     for(item of document.getElementsByClassName('pane')) {
-      item.insertAdjacentElement('afterbegin', button);
-      console.log(item);
+      //item.insertAdjacentElement('afterbegin', button);
+      //console.log(item);
+      btn = button.cloneNode(true);
+      
+      item.prepend(btn);
+
+      btn.addEventListener('click', function(event) {
+        console.log(this.closest('.pane'));
+        parentPane = this.closest('.pane');
+        parentPane.hidden = true;
+      });
     }
   </script>
 </html>

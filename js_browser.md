@@ -282,7 +282,7 @@ For instance, `document.querySelectorAll(':hover')` will return the collection o
     - `afterbegin` - insert `html` into `elem`, at the beginning.
     - `afterend` - insert `html` after `elem`.
 
-  - `elem.clodeNode(true)` - creates a _deep_ clone of the element - with all attributes and sub-elements. If we call `elem.cloneNode(fale)` then the clone is made without child elements.
+  - `elem.cloneNode(true)` - creates a _deep_ clone of the element - with all attributes and sub-elements. If we call `elem.cloneNode(false)` then the clone is made without child elements.
 
   An example of copying the message:
 
@@ -577,7 +577,7 @@ There are many JavaScript properties that allow us to read information about ele
 
 ## Introduction to Events
 
-## Introduction to Browser Events
+### Introduction to Browser Events
 
 - An _event_ is a signal that something has happened. All DOM nodes generate such signals (but events are not limited to DOM).
 - Mouse events:
@@ -727,7 +727,7 @@ There are many JavaScript properties that allow us to read information about ele
 
   - For some handlers, we can only add then using `addEventListener`. For instance, the event `transitioned` (CSS animation finished) is like that.
 
-- To properly handle an event we need more information about the event. The **Event Object** provides us with these informations.
+- To properly handle an event we need more information about the event. The **Event Object** provides us with these information.
 
   - When an events happens, the browser creates an _event object_, puts details into it and passes it as an argument to the handler.
   - Example of getting mouse coordinates via event object:
@@ -764,10 +764,10 @@ There are many JavaScript properties that allow us to read information about ele
       class Menu {
         handleEvent(event) {
           switch (event.type) {
-            case "mousedown":
+            case "mouseDown":
               elem.innerHTML = "Mouse button pressed";
               break;
-            case "mouseup":
+            case "mouseUp":
               elem.innerHTML += "...and released.";
               break;
           }
@@ -775,8 +775,8 @@ There are many JavaScript properties that allow us to read information about ele
       }
 
       let menu = new Menu();
-      elem.addEventListener("mousedown", menu);
-      elem.addEventListener("mouseup", menu);
+      elem.addEventListener("mouseDown", menu);
+      elem.addEventListener("mouseUp", menu);
     </script>
     ```
 
@@ -788,22 +788,523 @@ There are many JavaScript properties that allow us to read information about ele
     <script>
       class Menu {
         handleEvent(event) {
-          // mousedown -> onMousedown
+          // mouseDown -> onMouseDown
           let method = "on" + event.type[0].toUpperCase() + event.type.slice(1);
           this[method](event);
         }
 
-        onMousedown() {
+        onMouseDown() {
           elem.innerHTML = "Mouse button pressed";
         }
 
-        onMouseup() {
+        onMouseUp() {
           elem.innerHTML += "...and released.";
         }
       }
 
       let menu = new Menu();
-      elem.addEventListener("mousedown", menu);
-      elem.addEventListener("mouseup", menu);
+      elem.addEventListener("mouseDown", menu);
+      elem.addEventListener("mouseUp", menu);
     </script>
     ```
+
+### Bubbling and Capturing
+
+- When an event happens on an element, it first runs the handlers on it, then on it's parent, then all the way up on other ancestors. This in known as **_bubbling_**.
+
+  - Almost all events bubble, except `focus` and some others.
+
+- A handler on a parent element can always get the details about where it actually happened using the `event.target` binding.
+
+  - The most deeply nested element that caused the event is called a _target_ element, accessible as `event.target`.
+  - Difference between `this` and `event.target` -
+
+    - `this` - is the _current_ element, the one that has a currently running handler on it.
+    - `event.target` - is the _target_ element which initiated the event, it doesn't change through the bubbling process.
+
+  - For instance: If we have single handler `form.onclick`, then it can _catch_ all the clicks inside the form, no matter where the click happens. The click bubbles up to `<form>` and runs the handler.
+
+    - `this` = `event.currentTarget` is the `<form>` element, because the handler runs on it.
+    - `event.target` is the concrete element inside the form that actually was clicked.
+
+  - We can use `event.stopPropagation()` method to stop bubbling. For instance: here, `body.onlClick` doesn't work if we click on `<button>`:
+
+    ```html
+    <body onclick="alert(`the bubbling doesn't reach here`)">
+      <button onclick="event.stopPropagation()">Click me</button>
+    </body>
+    ```
+
+    - `event.stopPropagation()` method only stops the current event from bubbling but the other event handlers on current element will run.
+    - `event.stopImmediatePropagation()` will stop all the events on current element from propagating upwards.
+
+  - We should not stop bubbling unless necessary
+
+- The standard DOM Events describes 3 phases of event propagation:
+
+  - Capturing phase - the event goes down to the element.
+  - Target phase - the event reached the target element.
+  - Bubbling phase - the event bubbles up from the element.
+
+- Here's a picture of a click on `<td>` inside a table, taken from the specification:
+
+![Example](http://javascript.info/article/bubbling-and-capturing/eventflow.png)
+
+- The capturing phase is rarely used and is invisible to us. Handler added using `on<Event>` property via HTML or `addEventListener` via JavaScript doesn't know anything about capturing, they only run on the 2nd or 3rd phases.
+- To catch an event on the capturing phase, we need to set the 3rd argument of `addEventListener` as `true`. There are two possible values for that optional argument:
+
+  - `false` - (default), then the handler is set on the bubbling phase.
+  - `true` - then the handler is set on the capturing phase.
+
+- Example:
+
+  ```html
+  <style>
+    body * {
+      margin: 10px;
+      border: 1px solid blue;
+    }
+  </style>
+
+  <form>
+    FORM
+    <div>
+      DIV
+      <p>P</p>
+    </div>
+  </form>
+
+  <script>
+    for (let elem of document.querySelectorAll("*")) {
+      elem.addEventListener(
+        "click",
+        e => alert(`Capturing: ${elem.tagName}`),
+        true
+      );
+      elem.addEventListener("click", e => alert(`Bubbling: ${elem.tagName}`));
+    }
+  </script>
+  ```
+
+  - If we click `<p>` then the sequence is:
+
+    - `HTML` -> `BODY` -> `FORM` -> `DIV` -> `P` (capturing phase, the first listener) and then:
+    - `P` -> `DIV` -> `FORM` -> `BODY` -> `HTML` (bubbling phase, the second listener)
+
+  - Notice that the `P` appears twice.
+  - `event.eventPhase` - tells us the number of phases the event was caught.
+
+### Event Delegation
+
+- Capturing and bubbling allows us to implement one of the most powerful event handling patterns called _event delegation_.
+- The basic idea is that instead of assigning the same handler to a lot of events, we can assign a single handler on their common ancestor. In the handler we have `event.target` which points to element where the event happened.
+- There might still be elements inside our preferred `event.target` element, so to make sure that our handler take such `event.target` and find out whether the event happened on it or inside it we should use `closest()` method.
+
+  - `elem.closest(selector)` - returns the nearest ancestor that matches the selector.
+  - `event.target.closest('td');` - returns `<td>` even if the click was on another element inside the `<td>`.
+
+- We can use a single handler as entry point for many different things:
+
+  - For instance we want to make a menu with buttons "Save", "Load", "Search" and so on. There is an object with methods `save`, `load`, `search`, ....
+  - We can do this by adding a handler for the whole menu and `data-action` attributes for buttons that has the method to call:
+
+    ```html
+    <button data-action="save">Click to Save</button>
+    ```
+
+    The handler reads the attribute and executes the method. Working example:
+
+    ```html
+    <div id="menu">
+      <button data-action="save">Save</button>
+      <button data-action="load">Load</button>
+      <button data-action="search">Search</button>
+    </div>
+
+    <script>
+      class Menu {
+        constructor(elem) {
+          this._elem = elem;
+          elem.onclick = this.onClick.bind(this); // (*)
+        }
+
+        save() {
+          alert("saving");
+        }
+
+        load() {
+          alert("loading");
+        }
+
+        search() {
+          alert("searching");
+        }
+
+        onClick(event) {
+          let action = event.target.dataset.action;
+          if (action) {
+            this[action]();
+          }
+        }
+      }
+
+      new Menu(menu);
+    </script>
+    ```
+
+- We can use event delegation to add _behaviors_ to elements declaratively, with special attributes and classes.
+
+  - The pattern has two parts:
+
+    - We add a special attribute to an element.
+    - A document-wide handler tracks events, and if an event happens on an attributed element - performs the action.
+
+- For instance, here the attribute `data-counter` adds a behavior: "increase on click" to buttons:
+
+  ```html
+  Counter: <input type="button" value="1" data-counter /> One more counter:
+  <input type="button" value="2" data-counter />
+
+  <script>
+    document.addEventListener("click", function(event) {
+      if (event.target.dataset.counter != undefined) {
+        // if the attribute exists...
+        event.target.value++;
+      }
+    });
+  </script>
+  ```
+
+- One more example: a click on an element with attribute `data-toggle-id` will show/hide the element with the given `id`:
+
+  ```html
+  <button data-toggle-id="subscribe-mail">
+    Show the subscription form
+    <button>
+      <form id="subscribe-mail" hidden>Your mail: <input type="email" /></form>
+
+      <script>
+        document.addEventListener('click', function(event) {
+          let id = event.target.dataset.toggleId;
+          if(!id) return;
+
+          let elem - document.getElementById(id);
+
+          elem.hidden = !elem.hidden;
+        });
+      </script>
+    </button>
+  </button>
+  ```
+
+### Browser Default Actions
+
+- Many events automatically lead to browser actions. Such as:
+
+  - A click on a link - initiates going to it's URL.
+  - A click on submit button inside a form - initiates it's submission to the server.
+  - Pressing a mouse and moving it over text automatically select the text.
+
+  If we handle an event in JavaScript, often we don't want browser actions. Fortunately, it can be prevented.
+
+- There are two ways of preventing browser actions:
+
+  - The main way is to use the `event` object. There's a method `event.preventDefault()`.
+  - If the handler is assigned using `on<event>`, then we can just `return false` form it.
+
+    ```html
+    <a href="/" onclick="return false">Click here</a> or
+    <a href="/" onclick="event.preventDefault()">here</a>
+    ```
+
+    the previous links will not go to a new URL.
+
+    - The return value of an event handler is usually ignored except for this instance where we return false form an event handler which was defines by `on<event>` attribute.
+
+- Certain events can flow one into another. If we prevent the first event, there will be no second.
+
+  - For example the `mousedown` event on an `<input>` field leads to _focusing_ on and `focus` event. If we prevent `mousedown` event, then the `focus` will will automatically be cancelled.
+
+    ```html
+    <input value="Focus works" onfocus="this.value=''" />
+    <input
+      onmousedown="return false"
+      onfocus="this.value=''"
+      value="Click me"
+    />
+    ```
+
+- The property `event.defaultPrevented` is `true` if the default action was prevented, and `false` otherwise.
+
+  - Sometimes we can use `event.preventDefault` instead of `event.stopPropagation()`.
+  - For example, by default the browser on `contextmenu` event (right mouse click) shows a context menu with standard options. We can prevent it and show our own, like this:
+
+    ```html
+    <button>Righ-click for browser context menu</button>
+
+    <button oncontextmenu="alert('Draw our menu'); return false;">
+      Right-click for our context menu.
+    </button>
+    ```
+
+    Now. let's say we want to implement our own document-wide context menu, with our options. And inside the document we may have other elements with their own context menus:
+
+    ```html
+    <p>Right-click here for the document context menu</p>
+    <button id="elem">Right-click here for the button context menu</button>
+
+    <script>
+      elem.oncontextmenu = function(event) {
+        event.preventDefault();
+        alert("Button context menu");
+      };
+
+      document.oncontextmenu = function(event) {
+        event.preventDefault();
+        alert("Document context menu");
+      };
+    </script>
+    ```
+
+    The problem is that when we click on `elem`, we got two menus: the button-level and (the event bubbles up) the document-level menu. To stop this bubbling, we can use `event.stopPropagation()`:
+
+    ```html
+    <p>Right-click for the document menu</p>
+    <button id="elem">
+      Right-click for the button menu (fixed with event.stopPropagation)
+    </button>
+
+    <script>
+      elem.oncontextmenu = function(event) {
+        event.preventDefault();
+        event.stopPropagation();
+        alert("Button context menu");
+      };
+
+      document.oncontextmenu = function(event) {
+        event.preventDefault();
+        alert("Document context menu");
+      };
+    </script>
+    ```
+
+    The problem is that, we forever deny access to information about right-clicks for any outer code, including counters that gathers statistics and so on.
+
+    **That is why, we need the `event.defaultPrevented` property.**
+
+    ```html
+    <p>Right-click for the document menu (fixed with event.defaultPrevented)</p>
+    <button id="elem">Right-click for the button menu</button>
+
+    <script>
+      elem.oncontextmenu = function(event) {
+        event.preventDefault();
+        alert("Button context menu");
+      };
+
+      document.oncontextmenu = function(event) {
+        if (event.defaultPrevented) return;
+
+        event.preventDefault();
+        alert("Document context menu");
+      };
+    </script>
+    ```
+
+### Dispatching Custom Events
+
+- We can not only assign handlers, but also generate events form JavaScript.
+- Events form a hierarchy, just like DOM element classes. The root is the `Event` class. We can create an `Event` object like this:
+
+  ```js
+  let event = new Event(event type[, options]);
+  ```
+
+  Arguments:
+
+  - _event type_ - may be any string, like "`click`" or our own like "`hey-ho!".
+  - _options_ - the object with two optional properties:
+
+    - `bubbles: true/flase` - if `true`, then the event bubbles.
+    - `cancelable: true/false` - if `true`, then the "default action" may be prevented.
+
+    By default both are false.
+
+- After an event has been created, we can run it on an object by calling `elem.dispatchEvent(event)`.
+
+  - The handler reacts on it as if it were a regualar event. If the event was created with `bubbles` flag then, it bubbles.
+  - In the example below the `click` event is initiated in JavaScript. The handler works same way as if the button was clicked.
+
+    ```html
+    <button id="elem" onclick="alert('Click!');">Autoclick</button>
+
+    <script>
+      let event = new Event("click");
+      elem.dispatchEvent(event);
+    </script>
+    ```
+
+- We can use `event.isTrusted` to tell a _real_ user event from a script generated one.
+- We should use `addEventListener()` for our custom events, because `on<Event>` only works for built in events.
+- The following example shows what happens when `bubbles` is `true`.
+
+  ```html
+  <h1 id="elem">Hello from the script!</h1>
+
+  <script>
+    // catch on document...
+    document.addEventListener("hello", function(event) {
+      // (1)
+      alert("Hello from " + event.target.tagName); // Hello from H1
+    });
+
+    // ...dispatch on elem!
+    let event = new Event("hello", { bubbles: true }); // (2)
+    elem.dispatchEvent(event);
+  </script>
+  ```
+
+- We can use UI Events instead of using `Event` class, because the right constructor allows to specify standard properties for that type of event. Like `clientX/clientY` will only work for a mouse event:
+
+  ```js
+  let event = new MouseEvent("click", {
+    bubbles: true,
+    cancelable: true,
+    clientX: 100,
+    clientY: 100
+  });
+
+  alert(event.clientX); // 100
+  ```
+
+  The generic `Event` constructor does not allow that,
+
+  ```js
+  let event = new Event("click", {
+    bubbles: true, // only bubbles and cancelable
+    cancelable: true, // work in the Event constructor
+    clientX: 100,
+    clientY: 100
+  });
+
+  alert(event.clientX); // undefined, the unknown property is ignored!
+  ```
+
+- A list of classes for UI Events form the UI Event specification:
+
+  - `UIEvent`
+  - `FocusEvent`
+  - `MouseEvent`
+  - `WheelEvent`
+  - `KeyboardEvent`
+
+- For our own custom event, we should use `new CustomEvent`. Technically `CustomEvent` is the same as `Event` with one exception.
+
+  - In the second argument (object) we can add an additional property `detail` for any custom information that we want to pass with the event.
+
+    ```html
+    <h1 id="elem">Hello for John!</h1>
+
+    <script>
+      // additional details come with the event to the handler
+      elem.addEventListener("hello", function(event) {
+        alert(event.detail.name);
+      });
+
+      elem.dispatchEvent(new CustomEvent("hello", {
+        detail: { name: "John" }
+      });
+    </script>
+    ```
+
+  - The `detail` property can have any data.
+
+- We can call `event.preventDefault()` on a script-generated event if `cancelable:true` flag is specified. Applying this we can check in the handler if the event was cancelled or not:
+
+  ```html
+  <pre id="rabbit">
+    |\   /|
+    \|_|/
+    /. .\
+    =\_Y_/=
+    {>o<}
+  </pre>
+
+  <script>
+    // hide() will be called automatically in 2 seconds
+    function hide() {
+      let event = new CustomEvent("hide", {
+        cancelable: true // without that flag preventDefault doesn't work
+      });
+      if (!rabbit.dispatchEvent(event)) {
+        alert("the action was prevented by a handler");
+      } else {
+        rabbit.hidden = true;
+      }
+    }
+
+    rabbit.addEventListener("hide", function(event) {
+      if (confirm("Call preventDefault?")) {
+        event.preventDefault();
+      }
+    });
+
+    // hide in 2 seconds
+    setTimeout(hide, 2000);
+  </script>
+  ```
+
+- Usually events are processed asynchronously. That is: if the browser is processing `onclick` and in the process a new event occurs, then it waits till the `onclick` processing is finished.
+
+  - The exception is when one event is initiated form within another one. Then the control jumps to the nested event handler, and after it goes back.
+  - For instance, here is a nested `menu-open` event is processed synchronously, during the `onclick`:
+
+    ```html
+    <button id="menu">Menu (click me)</button>
+
+    <script>
+      // 1 -> nested -> 2
+      menu.onclick = function() {
+        alert(1);
+
+        // alert("nested")
+        menu.dispatchEvent(
+          new CustomEvent("menu-open", {
+            bubbles: true
+          })
+        );
+
+        alert(2);
+      };
+
+      document.addEventListener("menu-open", () => alert("nested"));
+    </script>
+    ```
+
+    - If we want to make it asynchronous, we can put the `dispatchEvent` at the end of `onclick` or, if inconvenient, wrap it in `setTimeout(...,0)`:
+
+      ```html
+      <button id="menu">Menu (click me)</button>
+
+      <script>
+        // 1 -> 2 -> nested
+        menu.onclick = function() {
+          alert(1);
+
+          // alert(2)
+          setTimeout(
+            () =>
+              menu.dispatchEvent(
+                new CustomEvent("menu-open", {
+                  bubbles: true
+                })
+              ),
+            0
+          );
+
+          alert(2);
+        };
+
+        document.addEventListener("menu-open", () => alert("nested"));
+      </script>
+      ```

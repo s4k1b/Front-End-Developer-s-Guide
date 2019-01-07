@@ -1,0 +1,34 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <style>
+    #contents {
+      padding: 5px;
+      border: 1px green solid;
+    }
+  </style>
+</head>
+
+<body>
+
+  <fieldset id="contents">
+    <legend>#contents</legend>
+    <p>
+      How about to read <a href="http://wikipedia.org">Wikipedia</a> or visit <a href="http://w3.org"><i>W3.org</i></a> and learn about modern standards?
+    </p>
+  </fieldset>
+
+  <script>
+    contents.addEventListener('click', function(event) {
+      let elem = event.target.closest("A");
+      let r = confirm("Do you really want to leave this site?");
+      if(r == false) {
+        event.preventDefault();
+      }
+    })
+  </script>
+
+</body>
+</html>
