@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <style>
+    .slider {
+      border-radius: 5px;
+      background: #E0E0E0;
+      background: linear-gradient(left top, #E0E0E0, #EEEEEE);
+      width: 310px;
+      height: 15px;
+      margin: 5px;
+    }
+
+    .thumb {
+      width: 10px;
+      height: 25px;
+      border-radius: 3px;
+      position: relative;
+      left: 10px;
+      top: -5px;
+      background: blue;
+      cursor: pointer;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div id="slider" class="slider">
+    <div class="thumb"></div>
+  </div>
+
+  <script>
+    // ...your code...
+    let thumb = slider.firstElementChild;
+    thumb.addEventListener('mousedown', function (event) {
+      //first take the element and initiate it for moving
+      let coords = thumb.getBoundingClientRect();
+      let shiftX = event.clientX - coords.left;
+      thumb.style.position = "absolute";
+      thumb.style.zIndex = 1000;
+
+      document.body.append(thumb);
+
+      function moveAt(pageX) {
+        newX = (pageX - shiftX);
+        newY = coords.top;
+
+        if (newX < slider.getBoundingClientRect().left) newX = slider.getBoundingClientRect().left;
+        if (newX > (slider.getBoundingClientRect().left + slider.offsetWidth)) newX = slider.getBoundingClientRect()
+          .left + slider.offsetWidth - thumb.offsetWidth;
+
+        thumb.style.left = newX + 'px';
+        thumb.style.top = newY + 'px';
+      }
+      if (event.clientX) moveAt(event.clientX);
+
+      function MouseMove(event) {
+        if (event.clientX) moveAt(event.clientX);
+      }
+      document.addEventListener('mousemove', MouseMove);
+
+      function drop(event) {
+        document.removeEventListener('mousemove', MouseMove);
+        document.removeEventListener('mouseup', drop);
+      }
+
+      document.addEventListener('mouseup', drop);
+    });
+
+    thumb.ondragstart = function () {
+      return false;
+    }
+  </script>
+
+</body>
+
+</html>

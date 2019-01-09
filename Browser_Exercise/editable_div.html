@@ -1,0 +1,78 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <style>
+    .view,
+    .edit {
+      height: 150px;
+      width: 400px;
+      font-family: sans-serif;
+      font-size: 14px;
+      display: block;
+    }
+
+    .view {
+      /* padding + border = 3px */
+      padding: 2px;
+      border: 1px solid black;
+    }
+
+    .edit {
+      /* replace padding with border (still 3px not to shift the contents) */
+      border: 3px solid blue;
+      padding: 0px;
+    }
+
+    .edit:focus {
+      outline: none;
+      /* remove focus border in Safari */
+    }
+  </style>
+</head>
+
+<body>
+
+  <ul>
+    <li>Click the div to edit.</li>
+    <li>Enter or blur saves the result.</li>
+  </ul>
+
+  HTML is allowed.
+
+  <div id="view" class="view" tabindex="0">Text</div>
+
+  <script>
+    // ...your code...
+    // Note: <textarea> should have class="edit"
+    // my.css has styles to make it the same size as div
+    let view = document.getElementById("view");
+    view.addEventListener('focus', function (event) {
+      let currentText = view.innerHTML
+      //console.log(currentText);
+      let textarea = document.createElement("textarea");
+      textarea.className = "edit";
+      textarea.value = currentText;
+      //console.log(textarea);
+      view.replaceWith(textarea);
+
+      textarea.addEventListener('keydown', function (event) {
+        if (event.key == "Enter") {
+          textarea.blur();
+        }
+      })
+
+      textarea.addEventListener('blur', function (event) {
+        let txt = textarea.value;
+        view.innerHTML = txt;
+        textarea.replaceWith(view);
+      })
+
+      textarea.focus();
+    })
+  </script>
+
+</body>
+
+</html>

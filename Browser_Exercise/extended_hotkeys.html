@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Extended Hotkeys</title>
+</head>
+
+<body>
+  <p>Press A,B,C,D together to get the message</p>
+
+  <script>
+    function runOnKeys(func, code1, code2, ...code_n) {
+      let pressed = [];
+      let want = [code1, code2];
+      want = want.concat(code_n);
+      console.log(want);
+
+      function isEqual(ar1, ar2) {
+        ar1 = ar1.sort();
+        ar2 = ar2.sort();
+
+        console.log(ar1, ar2);
+
+        if (ar1.length != ar2.length) return false;
+        else {
+          for (let i = 0; i < ar1.length; i++) {
+            if (ar1[i] != ar2[i]) return false;
+          }
+          return true;
+        }
+      }
+      document.addEventListener('keydown', function (event) {
+
+        if (isEqual(want, pressed)) {
+          console.log("yes");
+          func("Stop it");
+        }
+        if (!event.repeat) {
+          pressed.push(event.code);
+          console.log(pressed);
+        }
+      });
+      document.addEventListener('keyup', function (event) {
+        pressed = [];
+      })
+    }
+
+    function run(string) {
+      alert(string);
+    }
+    runOnKeys(run, "KeyA", "KeyS", "KeyD", "KeyF");
+  </script>
+</body>
+
+</html>

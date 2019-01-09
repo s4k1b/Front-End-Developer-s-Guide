@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <style>
+      #mouse {
+        display: inline-block;
+        cursor: pointer;
+        margin: 0;
+      }
+      #mouse:focus {
+        outline: 1px dashed black;
+      }
+    </style>
+  </head>
+
+  <body>
+    <p>Click on the mouse and move it with arrow keys.</p>
+
+    <pre id="mouse">
+ _   _
+(q\_/p)
+ /. .\
+=\_t_/=   __
+ /   \   (
+((   ))   )
+/\) (/\  /
+\  Y  /-'
+ nn^nn
+</pre
+    >
+
+    <script>
+      // ...your code...
+      let mouse = document.getElementById("mouse");
+      mouse.tabIndex = "1";
+
+      mouse.addEventListener("focusin", function(event) {
+        let coord = mouse.getBoundingClientRect();
+        mouse.style.position = "absolute";
+        mouse.style.zIndex = 1000;
+
+        mouse.style.top = coord.top + "px";
+        mouse.style.left = coord.left + "px";
+
+        mouse.addEventListener("keydown", function(event) {
+          let key = event.key;
+          let newCord = mouse.getBoundingClientRect();
+
+          if (key == "ArrowLeft") {
+            mouse.style.left = newCord.left - 10 + "px";
+          } else if (key == "ArrowRight") {
+            mouse.style.left = newCord.left + 10 + "px";
+          } else if (key == "ArrowUp") {
+            mouse.style.top = newCord.top - 10 + "px";
+          } else if (key == "ArrowDown") {
+            mouse.style.top = newCord.top + 10 + "px";
+          }
+        });
+      });
+    </script>
+  </body>
+</html>

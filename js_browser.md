@@ -1308,3 +1308,767 @@ There are many JavaScript properties that allow us to read information about ele
         document.addEventListener("menu-open", () => alert("nested"));
       </script>
       ```
+
+## Events in Details
+
+### Mouse Events Basics
+
+- Mouse events come not only from "mouse manipulators", but are also emulated on touch devices, to make them compatible.
+- We can split mouse events into two categories: "simple" and "complex".
+- Most used simple events are:
+
+  - `mousedown/mouseup`
+  - `mouseover/mouseout`
+  - `mousemove` - every mouse move over an element.
+
+- Complex events:
+
+  - `click` - Triggers after `mousedown` and `mouseup` over the same element if the left mouse button was used.
+  - `contextmenu` - Triggers after `mousedown` if the right mouse button was used.
+  - `dblclick` - Triggers after a double click over an element.
+
+  Complex events are made of simple ones, so in theory we could live without them. But they exist, and that's good, because they are convenient.
+
+- Complex Events happen in order, that is a `click` event involves `mousedown` and `mouseup` events. The handlers are called in order `mousedown` -> `mouseup` -> `click`. Evens are handled in the same sequence. `onmouseup` finishes before `onclick` runs.
+- Click related events always have the `which` property, which allows to get the exact mouse button.
+
+  - `event.which == 1` - the left button.
+  - `event.which == 2` - the middle button.
+  - `event.which == 3` - the right button.
+
+- All mouse events include the information about pressed modifier keys. The properties are:
+
+  - `shiftKey`
+  - `altkey`
+  - `ctrlKey`
+  - `metaKey` (`Cmd` for Mac)
+
+  For instance, the button below only works on `Alt+Shift+click`:
+
+  ```html
+  <button id="button">Alt+Shift+Click on me!</button>
+
+  <script>
+    button.onclick = function(event) {
+      if (event.altKey && event.shiftKey) {
+        alert("Hooray!");
+      }
+    };
+  </script>
+  ```
+
+- All mouse events have coordinates in two flavors:
+
+  - Window-relative: `clientX` and `clientY`
+  - Document-relative: `pageX` and `pageY`
+
+- Mouse click events have side-effects. A double click event may select text which we may not want.
+
+  - We can solve this using CSS by making the text unselectable by `user-select: none:`. But the select becomes unselectable forever, for all events.
+  - A text select is a default browser action for `mousedown` event. So, we can use `preventDefault()` method or `return false`.
+  - Instead of preventing selection, we can cancel it "post-factum" in the event handler.
+
+    ```html
+    Before...
+    <b ondblclick="getSelection().removeAllRanges()"> Double-click me </b>
+    ...After
+    ```
+
+  - If we want to disable selection to protect our content from copy-pasting, then we can use another event: `oncopy`.
+
+    ```html
+    <div oncopy="alert('Copying forbidden!');return false">
+      Dear user, The copying is forbidden for you. If you know JS or HTML, then
+      you can get everything from the page source though.
+    </div>
+    ```
+
+### Moving: mouseover/out, mouseenter/leave
+
+- For `mouseover`:
+
+  - `event.target` - is the element that mouse came over.
+  - `event.relatedTarget` - is the element from which the mouse came.
+
+- For `mouseout`:
+
+  - `event.target` - is the element from which the mouse left.
+  - `event.relatedEvent` - is the element the mouse entered after leaving.
+
+- The `relatedTarget` can be `null`, this means the mouse came form out of the window or entered out of the window.
+- According to the browser logic, the mouse cursor may be only over a single element at any time - the most nested one (and top by z-index).
+- Events `mouseenter/mouseleave` are like `mouseover/mouseout`. They also trigger when the mouse pointer eneters/leaves the element.
+
+  But there are two differences:
+
+  - Transitions inside the element are not counted.
+  - Events `mouseenter/mouseleave` do not bubble.
+
+- Events `mouseeneter/mouseleave` are easy to use, but they do not bubble. So, we can not use event delegation on them.
+- If we want to use event delegation, we have to use `mouseover/mouseout`. So we have to make them such that they do not trigger when mouse moves to it's child elements. One solution:
+
+  - Remember the currently highlighted `<td>` in a variable.
+  - On `mouseover` - ignore the event if we're still inside the current `<td>`.
+  - On `mouseout` - ignore if we didn't leave the current `<td>`.
+
+### Drag'n'Drop with Mouse Events
+
+- The basic Drag'n'Drop algorithm looks like this:
+
+  - Catch `mousedown` on a draggable element.
+  - Prepare the element for moving (maybe create a copy of it or whatever).
+  - Then on `mousemove` move it by changing `left/top` and `positon:absolute`.
+  - On `mouseup` (button release) - perform all actions related to a finished Drag'n'Drop.
+
+  Algorithm for drag'n'drop of a ball:
+
+  ```js
+  ball.onmousedown = function(event) {
+    // (1) start the process
+
+    // (2) prepare to moving: make absolute and on top by z-index
+    ball.style.position = "absolute";
+    ball.style.zIndex = 1000;
+    // move it out of any current parents directly into body
+    // to make it positioned relative to the body
+    document.body.append(ball);
+    // ...and put that absolutely positioned ball under the cursor
+
+    moveAt(event.pageX, event.pageY);
+
+    // centers the ball at (pageX, pageY) coordinates
+    function moveAt(pageX, pageY) {
+      ball.style.left = pageX - ball.offsetWidth / 2 + "px";
+      ball.style.top = pageY - ball.offsetHeight / 2 + "px";
+    }
+
+    function onMouseMove(event) {
+      moveAt(event.pageX, event.pageY);
+    }
+
+    // (3) move the ball on mousemove
+    document.addEventListener("mousemove", onMouseMove);
+
+    // (4) drop the ball, remove unneeded handlers
+    ball.onmouseup = function() {
+      document.removeEventListener("mousemove", onMouseMove);
+      ball.onmouseup = null;
+    };
+  };
+  ```
+
+- The browser has it's own drag'n'drop events. So in can interfere with us. We need to disable it:
+
+  ```js
+  ball.ondragstart = function() {
+    return false;
+  };
+  ```
+
+- We take a "draggable" element and drop it onto "droppable" element. We need to know the target droppable at the end of Drag'n'Drop - to do some corresponding action, and , preferably, during the dragging process, to highlight it.
+
+  - There's a method called `document.elementFromPoint(clientX, clientY)`. It returns the most nested on given window-relative coordinates( or `null` if coordinates are out of the window).
+
+    So, any of our mouse event handlers we can detect the potential droppable under the pointer like this:
+
+    ```js
+    // in a mouse event handler
+    ball.hidden = true; // (*)
+    let elemBelow = document.elementFromPoint(event.clientX, event.clientY);
+    ball.hidden = false;
+    // elemBelow is the element below the ball. If it's droppable, we can handle it.
+    ```
+
+    **We need to hide the ball first, otherwise it will always return the ball.**
+
+  - An extended code of `onMouseMove` to find "droppable" elements:
+
+    ```js
+    let currentDroppable = null; // potential droppable that we're flying over right now
+
+    function onMouseMove(event) {
+      moveAt(event.pageX, event.pageY);
+
+      ball.hidden = true;
+      let elemBelow = document.elementFromPoint(event.clientX, event.clientY);
+      ball.hidden = false;
+
+      // mousemove events may trigger out of the window (when the ball is dragged off-screen)
+      // if clientX/clientY are out of the window, then elementfromPoint returns null
+      if (!elemBelow) return;
+
+      // potential droppables are labeled with the class "droppable" (can be other logic)
+      let droppableBelow = elemBelow.closest(".droppable");
+
+      if (currentDroppable != droppableBelow) {
+        // if there are any changes
+        // we're flying in or out...
+        // note: both values can be null
+        //   currentDroppable=null if we were not over a droppable (e.g over an empty space)
+        //   droppableBelow=null if we're not over a droppable now, during this event
+
+        if (currentDroppable) {
+          // the logic to process "flying out" of the droppable (remove highlight)
+          leaveDroppable(currentDroppable);
+        }
+        currentDroppable = droppableBelow;
+        if (currentDroppable) {
+          // the logic to process "flying in" of the droppable
+          enterDroppable(currentDroppable);
+        }
+      }
+    }
+    ```
+
+### Keyboard: Keydown and Keyup
+
+- If we want to track any input into an `<input>` field, then keyboard events are not enough. There's another event name `input` to handle changes of an `<input>` field, by any means. And it may be better choice for such task.
+- A `keydown` event happens when a key is pressed down, and then `keyup` - when it's released.
+- The `key` property of the `event` object allows to get the character, while the `code` property of the object allows to get the "physical key code".
+
+  - For instance, the same key `Z` can be pressed with or without `Shift`. That gives us two different characters: lowercase z and uppercase Z.
+  - The `event.key` is exactly the character, and it will be different. But `event.code` is the same:
+
+    | Key         | `event.key`     | `event.code` |
+    | ----------- | --------------- | ------------ |
+    | `Z`         | `z` (lowercase) | `KeyZ`       |
+    | `Shift`+`Z` | `Z` (uppercase) | `KeyZ`       |
+
+  - If a user works with different language, then switching to another language would make a totally different character instead of `"Z"`. That will become the value of `event.key`, while `event.code` will always be the same: `"KeyZ"`.
+    -Every key has the code that depends on it's location on the keyboard. Key codes described in the [UI Events code specification](https://www.w3.org/TR/uievents-code/).
+
+    For instance:
+
+    - Letter keys have codes: `"Key<letter>"` : `"KeyA"`, `"KeyB"` etc.
+    - Digit keys have codes: `"Digit<number>"`: `"Digit0"`, `"Digit1"` etc.
+    - Special keys are coded by their names: `"Enter"`, `"Backspace"`, `"Tab"` etc.
+
+  - What if the key does not give any character? Then:
+
+    | Key         | `event.key` | `event.code`                |
+    | ----------- | ----------- | --------------------------- |
+    | `F1`        | `F1`        | `F1`                        |
+    | `Backspace` | `Backspace` | `Backspace`                 |
+    | `Shift`     | `Shift`     | `ShiftRight` or `ShiftLeft` |
+
+    `event.code` exactly tells us which key was pressed. For instance, the `Shift` key either gives `event.code = ShiftLeft` or `event.code = ShiftRight`.
+
+  - If a key is being pressed for a long enough time, it starts to repeat: the `keydown` triggers again and again, and then when it's released we finally get `keyup`.
+
+    - For all repeating keys the event object has `event.repeat` property set to `true`.
+
+  - There can be many default keyboard actions. Preventing the default action on `keydown` can cancel most of them, with the exception of OS-based special keys. For instance, on windows `Alt`+`F4` closes the current browser window. And there is no way to stop it by preventing the default action in JavaScript.
+
+    - For instance the `<input>` below excepts a phone number, so it does not accept keys except digits, `+`, `()` or `-`:
+
+      ```html
+      <script>
+        function checkPhoneKey(key) {
+          return (
+            (key >= "0" && key <= "9") ||
+            key == "+" ||
+            key == "(" ||
+            key == ")" ||
+            key == "-"
+          );
+        }
+      </script>
+      <input
+        onkeydown="return checkPhoneKey(event.key)"
+        placeholder="Phone, please"
+        type="tel"
+      />
+      ```
+
+### Scrolling
+
+- Scroll events allow to react on a page or element scrolling.
+- The `scroll` event works both on the `window` and on scrollable elements.
+- To make something unscrollable, we can not use `event.preventDefault()` on scroll events, because the event triggers after the scrolling happens.
+
+  - We can prevent scroll by applying `preventDefault()` on an event that causes the scroll. For instance:
+
+    - `wheel` event - a mouse wheel roll ( a "scrolling" touchpad action generates it too).
+    - `keydown` event for `pageUp` and `pageDown`.
+
+- How can we detect that a page is scrolled to bottom:
+
+  - The document is represented (and contained) withing `<html>` tag, that is `document.documentElement`.
+  - We can get the window relative coordinates of the whole document as `document.documentElement.getBoundingClientRect()`. And `bottom` property will be window-relative coordinates of the document end.
+
+    For instance, if the height of the whole HTML document is 2000px, then:
+
+    ```js
+    // When we're on the top of the page
+    // window-relative top = 0
+    document.documentElement.getBoundingClientRect().top = 0;
+
+    // window-relative bottom = 2000
+    // the document is long, so that is probably far beyond the window bottom
+    document.documentElement.getBoundingClientRect().bottom = 2000;
+    ```
+
+    If we scroll 500px below, then:
+
+    ```js
+    // document top is above the window 500px
+    document.documentElement.getBoundingClientRect().top = -500;
+    // document bottom is 500px closer
+    document.documentElement.getBoundingClientRect().bottom = 1500;
+    ```
+
+    When we scroll till the end, assuming the window height is 600px:
+
+    ```js
+    // document top is above the window 1400px
+    document.documentElement.getBoundingClientRect().top = -1400;
+    // document bottom is below the window 600px
+    document.documentElement.getBoundingClientRect().bottom = 600;
+    ```
+
+    - We can get the window height by `document.documentElement.clientHeight`.
+
+### Page lifecycle: DOMContentLoaded, Load, Beforeunload, Unload
+
+- The lifecycle of an HTML page has three important events:
+
+  - `DOMContentLoaded` - the browser fully loaded HTML, and the DOM tree is built, but external resources like pictures `<img>` and stylesheets may be not yet loaded.
+  - `load` - The browser loaded all resources (images, styles etc).
+  - `beforeunload/unload` - when the user is leaving the page.
+
+- Each event can be useful:
+
+  - `DOMContentLoaded` - DOM tree is created, so we can lookup DOM nodes, initialize the interface.
+  - `load` - additional resources are loaded, we can get image sizes.
+  - `beforeunload/unload` event - the user is leaving: we can check if the user saved the changes and ask them whether they really want to leave.
+
+- The `DOMContentLoaded` event happens on the `document` object. We must use `addEventListener` to catch it.
+
+  ```js
+  docuement.addEventListener("DOMContentLoaded", ready);
+  ```
+
+- When the browser initially loads HTML and comes accross a `<script>..</script>` in the text, it can't continue building DOM. It must execute the script right now. After that the DOM building resumes.
+
+  - External scripts (with `src`) also put DOM building to pause.
+  - The only exceptions are external scripts with `async` and `defer` attributes. They tell the browser to continue processing without waiting for the scripts.
+
+- Attributes `async` and `defer` only work for external scripts. They are ignored if there is no `src`.
+
+  - There are two differences between them:
+
+    |                  | `async`                                                                                                                                                                       | `defer`                                                                                                                      |
+    | ---------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+    | Order            | Scripts with `async` execute in the load-first order. Their document order doesn’t matter – which loads first runs first.                                                     | Scripts with `defer` always execute in the document order (as they go in the document).                                      |
+    | DOMContentLoaded | Scripts with `async` may load and execute while the document has not yet been fully downloaded. That happens if scripts are small or cached, and the document is long enough. | Scripts with `defer` execute after the document is loaded and parsed (they wait if needed), right before `DOMContentLoaded`. |
+
+- External stylesheets does not affect DOM, ans so `DOMContentLoaded` does not wait for them.
+  But, there is a pitfall: if we have a script after the style, then that script must wait for the stylesheet to execute:
+
+  ```html
+  <link type="text/css" rel="stylesheet" href="style.css" />
+  <script>
+    // the script doesn't not execute until the stylesheet is loaded
+    alert(getComputedStyle(document.body).marginTop);
+  </script>
+  ```
+
+- Firefox, Chrome, Opera autofill forms on `DOMContentLoaded`.
+- The `load` event on the `window` object triggers when the whole page is loaded including styles, images and other resources.
+
+  ```html
+  <script>
+    window.onload = function() {
+      alert("Page loaded");
+
+      // image is loaded at this time
+      alert(`Image size: ${img.offsetWidth}x${img.offsetHeight}`);
+    };
+  </script>
+
+  <img id="img" src="https://en.js.cx/clipart/train.gif?speed=1&cache=0" />
+  ```
+
+- When a visitor leaves the page, the `unload` event triggers on `window`. We can do something there that does not involve a delay, like closing related popup windows. But we can't cancel transition to other page.
+- If a vsisitor initiated navigation away form the page or tries to close the window, the `beforeunload` handler asks for additional confirmation.
+
+  It may return string with the question.
+
+  ```js
+  window.onbeforeunload = function() {
+    return "There are unsaved changes. Leave now?";
+  };
+  ```
+
+- The `document.readyState` property gives us information about the current state of the document.
+
+  - `"loading"` - the document is loading.
+  - `"interactive"` - the document was fully read.
+  - `"complete"` - the document was fully read and all resources (like images) are loaded too.
+
+  ```js
+  function work() {
+    /*...*/
+  }
+
+  if (document.readyState == "loading") {
+    document.addEventListener("DOMContentLoaded", work);
+  } else {
+    work();
+  }
+  ```
+
+- There is a `readystatechange` event that triggers when the state changes, so we can print all these states like this:
+
+  ```js
+  // current state
+  console.log(document.readyState);
+
+  // print state changes
+  document.addEventListener("readystatechange", () =>
+    console.log(document.readyState)
+  );
+  ```
+
+### Resource Loading: Onload and Onerror
+
+- The browser allows to track the loading of external resources - scripts, iframes, pictures and so on. There are two events for it:
+
+  - `onload` - successful load.
+  - `onerror` - an error occurred.
+
+- We need to call a function that resides in an external script. We can load it dynamically:
+
+  ```js
+  let script = document.createElement("script");
+  script.src = "my.js";
+
+  document.head.append(script);
+  ```
+
+  - Now, to run the function inside it, we need to wait until the script is fully loaded.
+  - The main helper is the `laod` event. It triggers after the script was **loaded** and **executed**.
+
+    ```js
+    let script = document.createElement("script");
+
+    // can load any script, from any domain
+    script.src =
+      "https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.3.0/lodash.js";
+    document.head.append(script);
+
+    script.onload = function() {
+      // the script creates a helper function "_"
+      alert(_); // the function is available
+    };
+    ```
+
+- Errors that occur during the loading (but not execution) of the script can be tracked on `error` event.
+
+  ```js
+  let script = document.createElement("script");
+  script.src = "https://example.com/404.js"; // no such script
+  document.head.append(script);
+
+  script.onerror = function() {
+    alert("Error loading " + this.src); // Error loading https://example.com/404.js
+  };
+  ```
+
+  - We can not get error details here.
+
+- The `laod` and `error` events work on other resourcs as well. There might be minor differences:
+
+  - `<img>`, `<link>` **(external stylesheets)** - Both `load` and `error` events work correctly.
+  - `<iframe>` - Only load event when the iframe loading finished. It triggers both for successful load and in case of an error. That’s for historical reasons.
+
+## Forms, Controls
+
+### Form Properties and Methods
+
+- Navigation: form and elements
+
+  - Document forms are members of the special collection `document.forms`.
+
+    ```js
+    document.forms.my - the form with name="my"
+    document.forms[0] - the first form in the document
+    ```
+
+  - When we have a form, then any element is available in the named collection `form.elements`
+
+    ```html
+    <form name="my">
+      <input name="one" value="1" /> <input name="two" value="2" />
+    </form>
+
+    <script>
+      // get the form
+      let form = document.forms.my; // <form name="my"> element
+
+      // get the element
+      let elem = form.elements.one; // <input name="one"> element
+
+      alert(elem.value); // 1
+    </script>
+    ```
+
+  - There might be multiple elements witht the same name. In that case `form.elements[name]` is a collection:
+
+    ```html
+    <form>
+      <input type="radio" name="age" value="10" />
+      <input type="radio" name="age" value="20" />
+    </form>
+
+    <script>
+      let form = document.forms[0];
+
+      let ageElems = form.elements.age;
+
+      alert(ageElems[0].value); // 10, the first input value
+    </script>
+    ```
+
+  - These navigation properties do not depend on the tag structure. All elements, no matter how deep they are in the form, are availbale in `form.elements`.
+  - A form may have one or more `fieldset` elements inside it. They also support the `elements` property:
+
+    ```html
+    <body>
+      <form id="form">
+        <fieldset name="userFields">
+          <legend>info</legend>
+          <input name="login" type="text" />
+        </fieldset>
+      </form>
+
+      <script>
+        alert(form.elements.login); // <input name="login">
+
+        let fieldset = form.elements.userFields;
+        alert(fieldset); // HTMLFieldSetElement
+
+        // we can get the input both from the form and from the fieldset
+        alert(fieldset.elements.login == form.elements.login); // true
+      </script>
+    </body>
+    ```
+
+  - There is a short form: instead of writing `forms.elements.name` we can write `forms.name`. There is a small shortcoming, if we change the name of a form element, the new element is accessible both by previous name and new name.
+
+- For any element, the form is available as `element.form` property.
+- Normally we can access the value of a form element as `input.value` or `input.checked` for checkboxes.
+
+  ```js
+  input.value = "New value";
+  textarea.value = "New text";
+
+  input.checked = true; // for a checkbox or radio button
+  ```
+
+- A `<select>` element has 3 important properties:\
+
+  - `select.options` - the collection of `<option>` elements
+  - `select.value` - the value of the chosen option.
+  - `select.selectedIndex` - the number of the selected option.
+
+- We have three ways to set the value of a `<select>`:
+
+  - Find the needed `<option>` and set `option.selected` to `true`.
+  - Set `select.value` to the value.
+  - Set `select.selectedIndex` to the number of the option.
+
+  ```html
+  <select id="select">
+    <option value="apple">Apple</option>
+    <option value="pear">Pear</option>
+    <option value="banana">Banana</option>
+  </select>
+
+  <script>
+    // all three lines do the same thing
+    select.options[2].selected = true;
+    select.selectedIndex = 2;
+    select.value = "banana";
+  </script>
+  ```
+
+- `<select multiple>` allowws multiple choice. In that case we have to walk over `select.options` to get all the selected values.
+
+  ```html
+  <select id="select" multiple>
+    <option value="blues" selected>Blues</option>
+    <option value="rock" selected>Rock</option>
+    <option value="classic">Classic</option>
+  </select>
+
+  <script>
+    // get all selected values from multi-select
+    let selected = Array.from(select.options)
+      .filter(option => option.selected)
+      .map(option => option.value);
+
+    alert(selected); // blues,rock
+  </script>
+  ```
+
+- We can create an option element:
+
+  ```js
+  option = new Option(text, value, defaultSelected, selected);
+  ```
+
+  Parameters:
+
+  - `text` - the text inside the option.
+  - `value` - the option value.
+  - `defalutSelected` - if `true`, the `selected` attribute is created.
+  - `selected` - if `true`, then the option is selected.
+
+- Addtional properties of `<option>`
+
+  - `selected` - Is the option selected.
+  - `index` - The number of the option among the others in it's `select`.
+  - `text` - The content of the option.
+
+### Focusing: focus/blur
+
+- The `focus` **event** is called on focusing and `blur` - when the element looses focus.
+- In the example below:
+
+  - The `blur` handler checks if teh field the email is entered, and if not - shows an error.
+  - The `focus` handler hides the error message (on `blur` it will be checked again).
+
+  ```html
+  <style>
+    .invalid {
+      border-color: red;
+    }
+    #error {
+      color: red;
+    }
+  </style>
+
+  Your email please: <input type="email" id="input" />
+
+  <div id="error"></div>
+
+  <script>
+    input.onblur = function() {
+      if (!input.value.includes("@")) {
+        // not email
+        input.classList.add("invalid");
+        error.innerHTML = "Please enter a correct email.";
+      }
+    };
+
+    input.onfocus = function() {
+      if (this.classList.contains("invalid")) {
+        // remove the "error" indication, because the user wants to re-enter something
+        this.classList.remove("invalid");
+        error.innerHTML = "";
+      }
+    };
+  </script>
+  ```
+
+- Mehtods `elem.focus()` and `elem.blur()` set/unset the focus on the element. For instance, we can make the visitor unable to leave the input if the value is invalid:
+
+  ```html
+  <style>
+    .invalid {
+      border-color: red;
+    }
+    #error {
+      color: red;
+    }
+  </style>
+
+  Your email please: <input type="email" id="input" />
+
+  <div id="error"></div>
+
+  <script>
+    input.onblur = function() {
+      if (!input.value.includes("@")) {
+        // not email
+        input.classList.add("invalid");
+        error.innerHTML = "Please enter a correct email.";
+      }
+    };
+
+    input.onfocus = function() {
+      if (this.classList.contains("invalid")) {
+        // remove the "error" indication, because the user wants to re-enter something
+        this.classList.remove("invalid");
+        error.innerHTML = "";
+      }
+    };
+  </script>
+  ```
+
+  - It works in all browsers except Firefox
+  - We can't prevent losing focus with `event.preventDefault()` because it triggers after the element looses focus.
+
+- By default many elements do not support focusing.
+
+  - `focus/blur` support is guaranteed for elements that a visitor can interact with: `<button>`, `<input>`, `<select>`, `<a>` and so on.
+  - Elemens that exist to format something like `<div>`, `<span>`, `<table>` - are unfocusable by default. `elem.onfocus()`, doesn't work on them.
+  - This can be changed using HTML attribute `tabindex`. Any element supports focusing if it has `tabindex`.
+
+    - `tabindex` provide order at wich the elements will be focused when `TAB` key is pressed.
+
+      - `tabindex=0` - makes the element the last one.
+      - `tablindex=-1` - means that `TAB` should ignore the element.
+
+  - We can add `tabindex` form JavaScript using the `elem.tabIndex` property.
+
+- Events `focus/blur` do not bubble.
+
+  There are two sollutions:
+
+  - There's a funny historical feature: `focus/blur` do not bubble up, but propagate down on the capturing phase:
+
+    ```html
+    <form id="form">
+      <input type="text" name="name" value="Name" />
+      <input type="text" name="surname" value="Surname" />
+    </form>
+
+    <style>
+      .focused {
+        outline: 1px solid red;
+      }
+    </style>
+
+    <script>
+      // put the handler on capturing phase (last argument true)
+      form.addEventListener("focus", () => form.classList.add("focused"), true);
+      form.addEventListener(
+        "blur",
+        () => form.classList.remove("focused"),
+        true
+      );
+    </script>
+    ```
+
+  - There's a `focusin` and `focusout` event - exactly same as `focus/blur`, but they bubble. **They must be assigned using `elem.addEventListener`**.
+
+    ```html
+    <form id="form">
+      <input type="text" name="name" value="Name" />
+      <input type="text" name="surname" value="Surname" />
+    </form>
+
+    <style>
+      .focused {
+        outline: 1px solid red;
+      }
+    </style>
+
+    <script>
+      // put the handler on capturing phase (last argument true)
+      form.addEventListener("focusin", () => form.classList.add("focused"));
+      form.addEventListener("focusout", () => form.classList.remove("focused"));
+    </script>
+    ```

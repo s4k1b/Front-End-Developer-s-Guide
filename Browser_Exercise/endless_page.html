@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+</head>
+
+<body>
+
+  <h1>Scroll me</h1>
+
+  <script>
+    // ... your code ...
+
+    function populate() {
+      while (true) {
+        let windowRelativeBottom = document.documentElement.getBoundingClientRect().bottom;
+        if (document.documentElement.clientHeight + 100 < windowRelativeBottom) break;
+        textNode = document.createTextNode(new Date());
+        console.log(textNode);
+        document.body.append(textNode);
+      }
+    }
+
+    populate();
+
+    document.addEventListener('scroll', function (event) {
+      textNode = document.createTextNode(new Date());
+      document.body.append(textNode);
+    })
+  </script>
+
+</body>
+
+</html>
