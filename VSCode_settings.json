@@ -1,31 +1,32 @@
 {
-  "materialTheme.accent": "Tomato",
+  "materialTheme.accent": "Acid Lime",
   "workbench.colorCustomizations": {
     "editor.background": "#0a0a0f",
     "editor.foreground": "#f7e7e7",
-    "statusBar.background": "#858EDF",
-    "statusBar.noFolderBackground": "#858EDF",
-    "statusBar.debuggingBackground": "#858EDF",
-    "activityBarBadge.background": "#F44336",
-    "list.activeSelectionForeground": "#F44336",
-    "list.inactiveSelectionForeground": "#F44336",
-    "list.highlightForeground": "#F44336",
-    "scrollbarSlider.activeBackground": "#F4433650",
-    "editorSuggestWidget.highlightForeground": "#F44336",
-    "textLink.foreground": "#F44336",
-    "progressBar.background": "#F44336",
-    "pickerGroup.foreground": "#F44336",
-    "tab.activeBorder": "#F44336",
-    "notificationLink.foreground": "#F44336",
-    "editorWidget.resizeBorder": "#F44336",
-    "editorWidget.border": "#F44336",
-    "settings.modifiedItemIndicator": "#F44336",
-    "settings.headerForeground": "#F44336",
-    "panelTitle.activeBorder": "#F44336",
-    "breadcrumb.activeSelectionForeground": "#F44336",
-    "menu.selectionForeground": "#F44336",
-    "menubar.selectionForeground": "#F44336",
-    "statusBar.foreground": "#000000"
+    "editorGroup.border": "#88ba09",
+    "statusBar.background": "#5D0FBB",
+    "statusBar.noFolderBackground": "#5D0FBB",
+    "statusBar.debuggingBackground": "#5D0FBB",
+    "activityBarBadge.background": "#C6FF00",
+    "list.activeSelectionForeground": "#C6FF00",
+    "list.inactiveSelectionForeground": "#C6FF00",
+    "list.highlightForeground": "#C6FF00",
+    "scrollbarSlider.activeBackground": "#C6FF0050",
+    "editorSuggestWidget.highlightForeground": "#C6FF00",
+    "textLink.foreground": "#C6FF00",
+    "progressBar.background": "#C6FF00",
+    "pickerGroup.foreground": "#C6FF00",
+    "tab.activeBorder": "#C6FF00",
+    "notificationLink.foreground": "#C6FF00",
+    "editorWidget.resizeBorder": "#C6FF00",
+    "editorWidget.border": "#C6FF00",
+    "settings.modifiedItemIndicator": "#C6FF00",
+    "settings.headerForeground": "#C6FF00",
+    "panelTitle.activeBorder": "#C6FF00",
+    "breadcrumb.activeSelectionForeground": "#C6FF00",
+    "menu.selectionForeground": "#C6FF00",
+    "menubar.selectionForeground": "#C6FF00",
+    "statusBar.foreground": "#FFFFFF"
   },
   "workbench.iconTheme": "eq-material-theme-icons-ocean",
   "workbench.colorTheme": "Material Theme Ocean High Contrast",
@@ -53,21 +54,21 @@
   "vim.statusBarColorControl": true,
 
   // Status bar color when in Insert mode
-  "vim.statusBarColors.insert": ["#1E90FF", "#FFFFFF"],
+  "vim.statusBarColors.insert": ["#0F9CBB", "#FFFFFF"],
 
   // Status bar color when in Normal mode
-  "vim.statusBarColors.normal": ["#32CD32", "#FFFFFF"],
+  "vim.statusBarColors.normal": ["#0FBB38", "#000000"],
 
   // Status bar color when in Replace mode
-  "vim.statusBarColors.replace": "#00CED1",
+  "vim.statusBarColors.replace": ["#BB240F","#FFFFFF"],
 
   // Status bar color when in Visual mode
-  "vim.statusBarColors.visual": ["#858EDF","#000000"],
+  "vim.statusBarColors.visual": ["#5D0FBB","#FFFFFF"],
 
-  "vim.statusBarColors.visualline": ["#858EDF","#000000"],
+  "vim.statusBarColors.visualline": ["#5D0FBB","#FFFFFF"],
 
   // Status bar color when in VisualBlock mode
-  "vim.statusBarColors.visualblock": ["#858EDF","#000000"],
+  "vim.statusBarColors.visualblock": ["#5D0FBB","#FFFFFF"],
   
   "vim.easymotionMarkerYOffset": 5,
   "vim.easymotionMarkerHeight": 15.5,
@@ -80,5 +81,7 @@
     "<C-u>": false // to undo multicursore
   },
   "git.enableSmartCommit": true,
-  "window.zoomLevel": 0.3
+  "window.zoomLevel": 0.3,
+  "workbench.statusBar.feedback.visible": false,
+  "liveServer.settings.donotVerifyTags": true
 }
